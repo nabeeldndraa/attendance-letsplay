@@ -19,33 +19,40 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response()->json([
-                'message' => 'Email atau password salah.'
-            ], 401);
+
+            return back()
+                ->withErrors([
+                    'login' => 'Email atau password salah.'
+                ])
+                ->withInput();
         }
 
         if ($user->status_akun !== 'aktif') {
-            return response()->json([
-                'message' => 'Akun tidak aktif.'
-            ], 403);
+
+            return back()
+                ->withErrors([
+                    'login' => 'Akun tidak aktif.'
+                ])
+                ->withInput();
         }
 
         Auth::login($user);
 
         $request->session()->regenerate();
 
-        return redirect('/login-test')->with('success', 'Login berhasil.');
+        return redirect('/dashboard-test');
     }
+
 
     public function logout(Request $request)
     {
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'message' => 'Logout berhasil.'
-        ]);
+        return redirect('/login-test')
+            ->with('success', 'Logout berhasil.');
     }
 }
