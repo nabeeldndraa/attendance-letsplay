@@ -2,8 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PresensiController;
 
+
+Route::get('/', function () {
+    return redirect('/login-test');
+});
 
 Route::get('/login-test', function () {
     return view('login-test');
@@ -33,3 +38,20 @@ Route::post('/presensi/cek-lokasi', [PresensiController::class, 'cekLokasi'])
 
 Route::get('/presensi/status-hari-ini', [PresensiController::class, 'statusHariIni'])
     ->middleware('auth');
+
+Route::get('/presensi/riwayat-saya', [
+    PresensiController::class,
+    'riwayatSaya'
+])->middleware('auth');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [
+        RegisterController::class,
+        'showRegister',
+    ])->name('register');
+
+    Route::post('/register', [
+        RegisterController::class,
+        'register',
+    ])->name('register.store');
+});

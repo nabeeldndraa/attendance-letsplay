@@ -1,6 +1,6 @@
-<html></html>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +30,7 @@
         }
 
         .login-card {
-            background: #ffffff;
+            background: #fff;
             border-radius: 16px;
             padding: 40px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -93,17 +93,24 @@
             box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.08);
         }
 
-        .login-button {
+        .login-button,
+        .register-button {
+            display: block;
             width: 100%;
             padding: 14px;
-            border: none;
             border-radius: 8px;
-            background: #e30613;
-            color: white;
             font-size: 15px;
             font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .login-button {
+            border: none;
+            background: #e30613;
+            color: white;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         .login-button:hover {
@@ -115,9 +122,32 @@
             cursor: not-allowed;
         }
 
+        /* Pemisah login dan register */
+        .register-section {
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        .register-section p {
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .register-button {
+            border: 1px solid #e30613;
+            background: #fff;
+            color: #e30613;
+        }
+
+        .register-button:hover {
+            background: #e30613;
+            color: #fff;
+        }
+
         .footer {
             text-align: center;
-            margin-top: 24px;
+            margin-top: 28px;
             font-size: 12px;
             color: #999;
         }
@@ -186,7 +216,6 @@
             color: #333;
         }
 
-        /* Popup ketika login gagal */
         .error-popup {
             border-left-color: #e30613;
         }
@@ -231,42 +260,30 @@
 
     {{-- Popup sukses --}}
     @if (session('success'))
-        <div class="success-popup" id="notification" role="status">
-            <div class="success-icon">✓</div>
+    <div class="success-popup" id="successNotification" role="status">
+        <div class="success-icon">✓</div>
 
-            <div class="success-text">
-                <strong>Login Berhasil</strong>
-                <span>{{ session('success') }}</span>
-            </div>
-
-            <button
-                type="button"
-                class="close-popup"
-                aria-label="Tutup notifikasi"
-                onclick="closeNotification()"
-            >&times;</button>
+        <div class="success-text">
+            <strong>Berhasil</strong>
+            <span>{{ session('success') }}</span>
         </div>
+
+        <button type="button" class="close-popup" aria-label="Tutup notifikasi" onclick="closeNotification('successNotification')">&times;</button>
+    </div>
     @endif
 
     {{-- Popup error --}}
     @if ($errors->any() || session('error'))
-        <div class="success-popup error-popup" id="notification" role="alert">
-            <div class="success-icon">!</div>
+    <div class="success-popup error-popup" id="errorNotification" role="alert">
+        <div class="success-icon">!</div>
 
-            <div class="success-text">
-                <strong>Login Gagal</strong>
-                <span>
-                    {{ session('error') ?? $errors->first() }}
-                </span>
-            </div>
-
-            <button
-                type="button"
-                class="close-popup"
-                aria-label="Tutup notifikasi"
-                onclick="closeNotification()"
-            >&times;</button>
+        <div class="success-text">
+            <strong>Login Gagal</strong>
+            <span>{{ session('error') ?? $errors->first() }}</span>
         </div>
+
+        <button type="button" class="close-popup" aria-label="Tutup notifikasi" onclick="closeNotification('errorNotification')">&times;</button>
+    </div>
     @endif
 
     <main class="login-container">
@@ -285,34 +302,27 @@
                 <div class="form-group">
                     <label for="email">Email</label>
 
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Masukkan email"
-                        value="{{ old('email', 'nabilkolin@gmail.com') }}"
-                        autocomplete="username"
-                        required
-                    >
+                    <input type="email" id="email" name="email" placeholder="Masukkan email" value="{{ old('email') }}" autocomplete="username" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Masukkan password"
-                        autocomplete="current-password"
-                        required
-                    >
+                    <input type="password" id="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
                 </div>
 
                 <button type="submit" class="login-button">
                     Login
                 </button>
             </form>
+
+            <div class="register-section">
+                <p>Belum punya akun?</p>
+
+                <a href="{{ route('register') }}" class="register-button">
+                    Daftar Sekarang
+                </a>
+            </div>
 
             <div class="footer">
                 Let's Play Indonesia &copy; 2026
@@ -322,11 +332,12 @@
     </main>
 
     <script>
-        function closeNotification() {
-            const notification = document.getElementById('notification');
+        function closeNotification(id) {
+            const notification = document.getElementById(id);
 
             if (notification) {
-                notification.style.animation = 'fadeOut 0.2s ease forwards';
+                notification.style.animation =
+                    'fadeOut 0.2s ease forwards';
 
                 setTimeout(() => {
                     notification.remove();
@@ -334,16 +345,17 @@
             }
         }
 
-        // Popup menghilang otomatis setelah 4 detik.
         document.addEventListener('DOMContentLoaded', () => {
-            const notification = document.getElementById('notification');
+            ['successNotification', 'errorNotification'].forEach(id => {
+                const notification = document.getElementById(id);
 
-            if (notification) {
-                setTimeout(closeNotification, 4000);
-            }
+                if (notification) {
+                    setTimeout(() => closeNotification(id), 4000);
+                }
+            });
         });
     </script>
 
 </body>
-</html>
 
+</html>
