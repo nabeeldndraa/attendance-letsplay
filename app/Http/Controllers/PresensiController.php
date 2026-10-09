@@ -200,6 +200,35 @@ class PresensiController extends Controller
         ]);
     }
 
+    public function riwayatSaya()
+    {
+        $user = Auth::user();
+
+        $riwayat = Presensi::with('lokasiKantor')
+            ->where('id_user', $user->id)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('jam_presensi', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat presensi berhasil diambil.',
+            'data' => $riwayat->map(function ($presensi) {
+                return [
+                    'id_presensi' => $presensi->id_presensi,
+                    'tanggal' => $presensi->tanggal,
+                    'jam_presensi' => $presensi->jam_presensi,
+                    'tipe_kerja' => $presensi->tipe_kerja,
+                    'nama_lokasi' => $presensi->lokasiKantor?->nama_lokasi,
+                    'status_presensi' => $presensi->status_presensi,
+                    'status_konfirmasi' => $presensi->status_konfirmasi,
+                    'point_didapat' => $presensi->point_didapat,
+                    'progress_hari_ini' => $presensi->progress_hari_ini,
+                ];
+            }),
+        ]);
+    }
+
     public function cekLokasi(Request $request)
     {
         $request->validate([
