@@ -1,0 +1,1079 @@
+:root {
+    --red: #c8202a;
+    --red-dark: #a51a1f;
+    --sidebar: #750810;
+    --ink: #1b1b1b;
+    --text: #333;
+    --muted: #666;
+    --line: #f1e3e3;
+    --soft: #fdeaea;
+    --font: "Poppins", Arial, sans-serif;
+    --sidebar-w: 240px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--font);
+    color: var(--ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+}
+
+svg {
+    flex-shrink: 0;
+}
+
+.star {
+    color: #f5a623;
+}
+
+/* =====================================================
+   SIDEBAR (desktop)
+   ===================================================== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: var(--sidebar-w);
+    height: 100vh;
+    padding: 0 16px 24px;
+    background: linear-gradient(180deg, #7a0a12 0%, #6c0710 100%);
+    color: #fff;
+    overflow-y: auto;
+}
+
+.sidebar-logo {
+    display: block;
+    width: 140px;
+    height: auto;
+    margin: 0 auto 36px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 18px;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menu a.active {
+    background: var(--red);
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.ico {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.menu a.active .ico {
+    fill: #fff;
+    stroke: #fff;
+}
+
+.nav-badge {
+    margin-left: auto;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #e11d2e;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =====================================================
+   MAIN + TOPBAR
+   ===================================================== */
+.main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+}
+
+.topbar {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 40px;
+    background: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.topbar-logo {
+    display: none;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.bell-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    color: #444;
+    cursor: pointer;
+}
+
+.bell-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bell-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #d4202a;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.topbar-divider {
+    width: 1px;
+    height: 36px;
+    background: #ddd;
+}
+
+/* Menu user (dropdown tanpa JS berat, memakai <details>) */
+.user-menu {
+    position: relative;
+}
+
+.user-menu summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.user-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #d4202a;
+    border: 2px solid #f6c7c9;
+}
+
+.avatar svg {
+    width: 24px;
+    height: 24px;
+    fill: #fff;
+    stroke: #fff;
+    stroke-width: 1.5;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 240px;
+}
+
+.user-name {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #777;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 60;
+    min-width: 160px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(60, 5, 5, 0.18);
+}
+
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--red);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: var(--soft);
+}
+
+.logout-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* =====================================================
+   KONTEN
+   ===================================================== */
+.content {
+    padding: 28px 40px 48px;
+}
+
+/* ----- Hero ----- */
+.hero {
+    position: relative;
+    min-height: 260px;
+    padding: 36px 40px;
+    border: 1px solid #f3dcdc;
+    border-radius: 26px;
+    background: #fbeeed url("../images/hero_background.png") center / cover
+        no-repeat;
+    box-shadow: 0 8px 18px rgba(120, 30, 30, 0.16);
+    overflow: hidden;
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+    max-width: 52%;
+}
+
+.hero h1 {
+    font-size: clamp(28px, 3.6vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.hero-sub {
+    margin-top: 14px;
+    font-size: clamp(16px, 1.8vw, 24px);
+    font-weight: 500;
+}
+
+.hero-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.hero-date svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #f59e0b;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hero-art {
+    display: contents;
+}
+
+.hero-bubble {
+    position: absolute;
+    top: 15%;
+    left: 54%;
+    z-index: 2;
+    width: clamp(200px, 22%, 300px);
+    height: auto;
+}
+
+.hero-cat {
+    position: absolute;
+    right: 2%;
+    bottom: 0;
+    z-index: 1;
+    height: 96%;
+    width: auto;
+    pointer-events: none;
+}
+
+/* ----- Statistik ----- */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+}
+
+.stat-icon {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.stat-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.bg-pink {
+    background: #fde4e4;
+}
+.bg-green {
+    background: #dff3e4;
+}
+.bg-blue {
+    background: #dbe8fd;
+}
+.bg-orange {
+    background: #fde8cf;
+}
+.bg-red {
+    background: #fcdde3;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #2a2a2a;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* ----- Baris bawah ----- */
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 22px;
+    margin-top: 28px;
+}
+
+.last-card {
+    padding: 22px 28px 26px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 22px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+}
+
+.last-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.last-head h2 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.badge {
+    padding: 8px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.badge--late {
+    background: #fde4e4;
+    color: var(--red);
+}
+.badge--ontime {
+    background: #e0f5e6;
+    color: #1f9d4d;
+}
+
+.last-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 20px 26px;
+}
+
+.date-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 112px;
+    padding: 14px 20px;
+    background: var(--soft);
+    border-radius: 14px;
+    color: var(--red);
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(120, 40, 40, 0.1);
+}
+
+.date-day,
+.date-month {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.date-num {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--red-dark);
+}
+
+.last-details {
+    flex: 1;
+    min-width: 200px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-self: center;
+}
+
+.last-details li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.last-details li svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.last-details li.points {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.last-details li.points .star {
+    width: 22px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border: 1.5px solid var(--red);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--red);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-outline:hover {
+    background: var(--soft);
+}
+
+/* ----- Kartu pet ----- */
+.pet-card {
+    position: relative;
+    min-height: 230px;
+    padding: 24px 28px;
+    background: linear-gradient(180deg, #fdf2ef 0%, #fbe6e2 100%);
+    border: 1.5px solid #ecc7c2;
+    border-radius: 22px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+    overflow: hidden;
+}
+
+.pet-text {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.pet-card h2 {
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 700;
+}
+
+.pet-card p {
+    margin-top: 2px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-pet {
+    margin-top: auto;
+    padding: 13px 34px;
+    border: 1.5px solid #e0584f;
+    border-radius: 8px;
+    background: #f9b4a8;
+    color: var(--red);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter 0.2s;
+}
+
+.btn-pet:hover {
+    filter: brightness(0.96);
+}
+
+.pet-img {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    height: 88%;
+    width: auto;
+    pointer-events: none;
+}
+
+/* =====================================================
+   TABLET & MOBILE: teks di kiri, bubble + kucing bertumpuk di kanan
+   (bubble selebar kucing, tidak menutupi teks)
+   ===================================================== */
+@media (max-width: 1100px) {
+    .hero {
+        --art-w: clamp(120px, 28vw, 210px);
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        min-height: 0;
+        padding: 22px 24px 0;
+    }
+
+    .hero-text {
+        flex: 1;
+        max-width: none;
+        align-self: center;
+        padding-bottom: 22px;
+    }
+
+    .hero-art {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 0 0 var(--art-w);
+        width: var(--art-w);
+        align-self: flex-end;
+    }
+
+    .hero-bubble,
+    .hero-cat {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+
+    .hero-bubble {
+        position: relative;
+        top: auto;
+        left: auto;
+        z-index: 2;
+        margin-bottom: -6px;
+    }
+}
+
+/* =====================================================
+   MOBILE: sidebar jadi bottom bar, header pakai gambar
+   ===================================================== */
+@media (max-width: 768px) {
+    body {
+        background: #fff;
+    }
+
+    /* ----- Bottom bar ----- */
+    .sidebar {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+        background: #fff;
+        border-top: 1px solid #e5e5e5;
+        box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.06);
+        overflow: visible;
+    }
+
+    .sidebar-logo,
+    .menu a.hide-mobile {
+        display: none;
+    }
+
+    .menu {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 0;
+    }
+
+    .menu a {
+        flex: 1;
+        flex-direction: column;
+        gap: 3px;
+        padding: 4px 2px;
+        border-radius: 10px;
+        color: #444;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .menu a:hover {
+        background: none;
+    }
+
+    .menu a.active {
+        background: none;
+        box-shadow: none;
+        color: var(--red);
+    }
+
+    .menu a.active .ico {
+        fill: var(--red);
+        stroke: var(--red);
+    }
+
+    .ico {
+        width: 22px;
+        height: 22px;
+    }
+
+    .nav-badge {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin: 0 0 0 4px;
+        min-width: 15px;
+        height: 15px;
+        padding: 0 4px;
+        font-size: 9px;
+    }
+
+    /* ----- Header bergambar ----- */
+    .main {
+        margin-left: 0;
+        padding-bottom: 80px;
+    }
+
+    .topbar {
+        height: 112px;
+        justify-content: space-between;
+        padding: 0 16px;
+        background: #a50f12 url("../images/mobile_header_background.png")
+            center / cover no-repeat;
+        border-bottom: none;
+        box-shadow: none;
+        color: #fff;
+    }
+
+    .topbar-logo {
+        display: block;
+        width: 66px;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    .topbar-right {
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .bell-btn {
+        color: #fff;
+        width: 34px;
+        height: 34px;
+    }
+
+    .bell-btn svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .bell-badge {
+        top: -2px;
+        right: -2px;
+    }
+
+    .topbar-divider {
+        height: 30px;
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .user-menu {
+        min-width: 0;
+    }
+
+    .user-menu summary {
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 38px;
+        height: 38px;
+        border-color: transparent;
+    }
+
+    .user-info {
+        max-width: 130px;
+    }
+
+    .user-name {
+        font-size: 13px;
+    }
+
+    .user-role {
+        color: #fff;
+        font-size: 12px;
+    }
+
+    /* ----- Konten ----- */
+    .content {
+        padding: 18px 14px 24px;
+    }
+
+    .hero {
+        --art-w: clamp(112px, 34vw, 190px);
+        padding: 16px 14px 0;
+        gap: 8px;
+        border-radius: 20px;
+    }
+
+    .hero-text {
+        padding-bottom: 16px;
+    }
+
+    .hero h1 {
+        font-size: 22px;
+    }
+
+    .hero-sub {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .hero-date {
+        margin-top: 12px;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    .hero-date svg {
+        width: 22px;
+        height: 22px;
+        stroke: #222;
+    }
+
+    /* Statistik: 3 kartu di atas, 2 kartu di bawah */
+    .stats {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .stat {
+        grid-column: span 3;
+        padding: 12px 12px;
+        gap: 10px;
+        border-radius: 16px;
+    }
+
+    .stat--top {
+        grid-column: span 2;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .stat {
+        order: 4;
+    }
+    .stat--hadir {
+        order: 1;
+    }
+    .stat--tepat {
+        order: 2;
+    }
+    .stat--poin {
+        order: 3;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .stat-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+
+    .stat-value {
+        font-size: 30px;
+    }
+
+    .stat-sub {
+        font-size: 11px;
+    }
+
+    .stat:not(.stat--top) .stat-value {
+        font-size: 30px;
+    }
+
+    /* Presensi terakhir */
+    .bottom-row {
+        margin-top: 18px;
+    }
+
+    .last-card {
+        padding: 16px 16px 18px;
+        border-radius: 20px;
+    }
+
+    .last-head h2 {
+        font-size: 19px;
+    }
+
+    .badge {
+        padding: 7px 16px;
+        font-size: 13px;
+    }
+
+    .last-body {
+        gap: 14px 14px;
+        align-items: stretch;
+    }
+
+    .date-box {
+        min-width: 92px;
+        padding: 10px 14px;
+    }
+
+    .date-num {
+        font-size: 34px;
+    }
+
+    .last-details {
+        min-width: 0;
+        gap: 9px;
+    }
+
+    .last-details li {
+        font-size: 13px;
+        gap: 10px;
+        font-weight: 500;
+    }
+
+    .btn-outline {
+        flex: 0 0 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Kartu pet tetap tampil, di paling bawah */
+    .bottom-row {
+        gap: 14px;
+    }
+
+    .pet-card {
+        min-height: 190px;
+        padding: 18px 16px;
+        border-radius: 20px;
+    }
+
+    .pet-card h2 {
+        font-size: 20px;
+    }
+
+    .btn-pet {
+        padding: 11px 28px;
+        font-size: 14px;
+    }
+}
+
+/* =====================================================
+   TAB (601px - 1100px): teks hero lebih besar, kartu bawah bersampingan
+   ===================================================== */
+@media (min-width: 601px) and (max-width: 1100px) {
+    .content {
+        padding: 24px 28px 28px;
+    }
+
+    .hero {
+        --art-w: clamp(170px, 26vw, 230px);
+        gap: 20px;
+        padding: 28px 32px 0;
+        border-radius: 24px;
+    }
+
+    .hero-text {
+        padding-bottom: 28px;
+    }
+
+    .hero h1 {
+        font-size: clamp(34px, 5.4vw, 46px);
+    }
+
+    .hero-sub {
+        margin-top: 14px;
+        font-size: clamp(18px, 2.8vw, 24px);
+    }
+
+    .hero-date {
+        margin-top: 18px;
+        gap: 10px;
+        font-size: 17px;
+    }
+
+    .hero-date svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .bottom-row {
+        grid-template-columns: 1.4fr 1fr;
+        align-items: stretch;
+        gap: 18px;
+    }
+
+    .pet-img {
+        height: 72%;
+    }
+}
+
+/* HP: kartu presensi terakhir dan pet menumpuk */
+@media (max-width: 600px) {
+    .bottom-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .hero h1 {
+        font-size: 21px;
+    }
+
+    .stat-value {
+        font-size: 26px;
+    }
+
+    .user-info {
+        max-width: 100px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
