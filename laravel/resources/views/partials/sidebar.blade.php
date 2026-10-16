@@ -15,7 +15,7 @@
             <span>Presensi</span>
         </a>
 
-        <a href="#" class="{{ request()->is('history*') ? 'active' : '' }}">
+        <a href="{{ url('/history-test') }}" class="{{ request()->is('history*') ? 'active' : '' }}">
             <svg class="ico" aria-hidden="true"><use href="#i-history"/></svg>
             <span>History</span>
         </a>

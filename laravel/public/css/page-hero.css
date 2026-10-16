@@ -1,0 +1,86 @@
+/* =========================================================
+   PAGE HERO  —  public/css/page-hero.css
+   Dipakai komponen <x-page-hero>. Mobile: pita merah selebar
+   layar di bawah header. Desktop: judul biasa.
+   (margin negatif mengikuti padding .content di dashboard.css)
+========================================================= */
+
+.page-hero {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin: -18px -14px 0;
+    padding: 14px 16px 18px;
+    background: #920f10;
+    color: #fff;
+}
+
+.page-hero__back {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-top: 2px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.page-hero__ico {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.page-hero__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.page-hero__title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.page-hero__sub {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.page-hero__aside {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .page-hero {
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        color: var(--ink, #1b1b1b);
+    }
+
+    .page-hero__back { display: none; }
+
+    .page-hero__title {
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .page-hero__sub {
+        margin-top: 6px;
+        font-size: 15px;
+        color: var(--muted, #666);
+    }
+
+    .page-hero__aside {
+        display: block;
+        flex-shrink: 0;
+    }
+}

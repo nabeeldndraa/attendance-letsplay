@@ -33,6 +33,8 @@ Route::get('/presensi-test', function () {
     return view('presensi-test');
 })->middleware('auth');
 
+Route::view('/history-test', 'history')->middleware('auth');
+
 Route::post('/presensi/cek-lokasi', [PresensiController::class, 'cekLokasi'])
     ->middleware('auth');
 
