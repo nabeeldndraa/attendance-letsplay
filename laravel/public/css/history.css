@@ -1,0 +1,863 @@
+/* =========================================================
+   HISTORY  —  public/css/history.css
+   Hanya isi halaman riwayat presensi. Sidebar/header/.content
+   dari dashboard.css, hero dari page-hero.css.
+   Semua class diawali "hist-".
+
+   Breakpoint:
+   - sampai 768px   : mobile (daftar kartu, periode+cari di kartu atas)
+   - 769 - 1199px   : desktop sempit (daftar kartu, periode di kanan judul)
+   - 1200px ke atas : desktop penuh (tabel 5 kolom)
+========================================================= */
+
+:root {
+    --hist-line: #e6e6e6;
+    --hist-green: #1f9d4d;
+    --hist-green-ring: #2fc65a;
+    --hist-green-bg: #e0f5e6;
+    --hist-orange: #e08900;
+    --hist-orange-ring: #f5a623;
+    --hist-orange-bg: #fdeacc;
+    --hist-red: #c8202a;
+    --hist-red-bg: #fde4e4;
+    --hist-blue: #2563eb;
+    --hist-blue-bg: #dbe8fd;
+    --hist-pink: #fdeeee;
+    --hist-cols: 44px minmax(0, 1.5fr) 104px 128px minmax(0, 2.2fr) 56px;
+}
+
+.hist,
+.hist * {
+    box-sizing: border-box;
+}
+
+.hist {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: var(--ink, #1b1b1b);
+}
+
+.hist [hidden] {
+    display: none !important;
+}
+
+.hist button,
+.hist input,
+.hist select {
+    font: inherit;
+    color: inherit;
+}
+
+.hist button {
+    cursor: pointer;
+}
+
+.hist-ico {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hist-cico {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.hist-only-desktop { display: none; }
+.hist-only-mobile  { display: block; }
+
+/* varian inline (dipakai di teks "Menampilkan ... dari ...") */
+.hist-inline-d { display: none; }
+.hist-inline-m { display: inline; }
+
+
+/* =========================================================
+   KONTROL: PERIODE & PENCARIAN
+========================================================= */
+
+.hist-period,
+.hist-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 46px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.hist-period__ico,
+.hist-search > .hist-ico {
+    position: absolute;
+    left: 14px;
+    color: #666;
+    pointer-events: none;
+}
+
+.hist-period__chev {
+    position: absolute;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    color: #555;
+    pointer-events: none;
+}
+
+.hist-period select {
+    width: 100%;
+    height: 100%;
+    padding: 0 44px 0 48px;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.hist-search input {
+    width: 100%;
+    height: 100%;
+    padding: 0 14px 0 48px;
+    border: 0;
+    border-radius: inherit;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+.hist-search input::placeholder { color: #9a9a9a; }
+
+.hist-period:focus-within,
+.hist-search:focus-within {
+    border-color: var(--red, #c8202a);
+}
+
+
+/* =========================================================
+   RINGKASAN
+========================================================= */
+
+/* Mobile: 1 kartu (ringkasan + periode + cari) */
+.hist-top {
+    padding: 14px;
+    border: 1.5px solid #e6e1e1;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.hist-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: var(--hist-pink);
+}
+
+.hist-sum {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.hist-sum--tepat { display: none; }
+
+.hist-donut {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.hist-donut svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hist-donut__track,
+.hist-donut__bar {
+    fill: none;
+    stroke-width: 14;
+}
+
+.hist-donut__track { stroke: #f6b3ae; }
+
+.hist-donut__bar {
+    stroke: #c8281f;
+    stroke-linecap: round;
+    transition: stroke-dasharray .7s ease;
+}
+
+.hist-donut__val { display: none; }
+
+.hist-sum__pct strong {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.hist-sum__pct span {
+    color: var(--muted, #666);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hist-sum__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.hist-sum__icon--pink { background: #f9d3d3; color: var(--hist-red); }
+.hist-sum__icon--blue { background: var(--hist-blue-bg); }
+
+.hist-sum__label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.hist-sum__value {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.hist-sum__sub {
+    color: var(--muted, #666);
+    font-size: 12px;
+}
+
+/* Periode + cari versi mobile */
+.hist-filters-m {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.hist-filters-m__label {
+    color: #555;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DAFTAR
+========================================================= */
+
+.hist-list__head {
+    margin: 8px 0 12px;
+}
+
+.hist-list__head h2 {
+    padding-left: 6px;
+    color: #444;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#slotSearchDesktop { display: none; }
+#slotPeriodDesktop { width: 260px; }
+
+.hist-thead { display: none; }
+
+.hist-rows {
+    padding: 2px 20px;
+    border: 1.5px solid #dcdcdc;
+    border-radius: 20px;
+    background: #fff;
+    list-style: none;
+}
+
+.hist-rows li + li {
+    border-top: 1px solid #e3e3e3;
+}
+
+.hist-row {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto 24px;
+    grid-template-areas:
+        "icon date badge chev"
+        "icon time badge chev";
+    align-items: center;
+    column-gap: 12px;
+    width: 100%;
+    padding: 14px 0;
+    border: 0;
+    background: none;
+    text-align: left;
+}
+
+.hist-row:focus-visible {
+    outline: 2px solid var(--red, #c8202a);
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+
+.hist-row__icon  { grid-area: icon; display: grid; place-items: center; }
+.hist-row__date  { grid-area: date; font-size: 15px; line-height: 1.3; }
+.hist-row__time  { grid-area: time; color: var(--muted, #666); font-size: 14px; }
+.hist-row__chev  { grid-area: chev; justify-self: center; color: #777; width: 20px; height: 20px; }
+.hist-row__progress { display: none; }
+
+.hist-row__date strong { font-weight: 600; color: #333; }
+.hist-row__date em     { font-style: normal; color: var(--muted, #666); }
+
+.hist-row__icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.hist-row__icon .hist-ico { stroke-width: 2.4; }
+.hist-row__icon--ok    { color: var(--hist-green-ring); }
+.hist-row__icon--late  { color: var(--hist-orange-ring); }
+.hist-row__icon--alpha { color: var(--hist-red); }
+
+.hist-empty {
+    padding: 32px 12px;
+    color: var(--muted, #666);
+    font-size: 14px;
+    text-align: center;
+}
+
+
+/* Badge status */
+
+.hist-badge {
+    grid-area: badge;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 112px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hist-badge svg {
+    width: 18px;
+    height: 18px;
+}
+
+.hist-badge--ok     { background: var(--hist-green-bg);  color: var(--hist-green); }
+.hist-badge--late   { background: var(--hist-orange-bg); color: var(--hist-orange); }
+.hist-badge--alpha  { background: var(--hist-red-bg);    color: var(--hist-red); }
+.hist-badge--sick   { background: var(--hist-orange-bg); color: var(--hist-orange); }
+.hist-badge--permit { background: var(--hist-blue-bg);   color: var(--hist-blue); }
+
+
+/* Footer + pagination */
+
+.hist-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.hist-foot__info {
+    color: var(--muted, #666);
+    font-size: 13px;
+}
+
+.hist-pager {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.hist-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid #d6d6d6;
+    border-radius: 8px;
+    background: #fff;
+    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.hist-page .hist-ico { width: 18px; height: 18px; }
+
+.hist-page:hover:not(:disabled):not(.is-current) { background: #f5f5f5; }
+
+.hist-page.is-current {
+    border-color: var(--red, #c8202a);
+    background: var(--red, #c8202a);
+    color: #fff;
+}
+
+.hist-page:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.hist-page-dots { color: var(--muted, #666); }
+
+
+/* =========================================================
+   POP-UP DETAIL
+========================================================= */
+
+.hist-dialog {
+    width: min(460px, calc(100vw - 28px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.hist-dialog::backdrop {
+    background: rgba(25, 0, 0, .45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.hist-dialog__panel {
+    max-height: calc(100vh - 40px);
+    padding: 12px 12px 24px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(40, 0, 0, .35);
+    overflow-y: auto;
+}
+
+.hist-dialog__bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #920f10;
+    color: #fff;
+}
+
+.hist-dialog__bar h2 {
+    flex: 1;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.hist-dialog__bar button {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+}
+
+.hist-dialog__bar .hist-ico { stroke-width: 2.4; }
+.hist-dialog__x { display: none !important; }
+
+.hist-dialog__body {
+    padding: 22px 8px 0;
+}
+
+.hist-d-hero {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hist-d-hero__icon svg {
+    display: block;
+    width: 68px;
+    height: 68px;
+}
+
+.hist-d-hero__icon .hist-ico { stroke-width: 2.2; }
+.hist-d-hero__icon--ok    { color: var(--hist-green-ring); }
+.hist-d-hero__icon--late  { color: var(--hist-orange-ring); }
+.hist-d-hero__icon--alpha { color: var(--hist-red); }
+
+.hist-d-hero__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.hist-d-hero__title h3 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.hist-d-hero__title .hist-badge {
+    min-width: 0;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.hist-d-hero__title .hist-badge svg { display: none; }
+
+.hist-d-hero p {
+    margin-top: 2px;
+    color: #444;
+    font-size: 14px;
+}
+
+.hist-d-divider {
+    height: 1px;
+    margin: 20px 0;
+    background: #e5e5e5;
+}
+
+.hist-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 24px;
+}
+
+.hist-info--stack { grid-template-columns: 1fr; }
+
+.hist-info__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+}
+
+.hist-info__item--wide-m { grid-column: 1 / -1; }
+
+.hist-info__ico {
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    color: #8a8a8a;
+}
+
+.hist-info__item > div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.hist-info__label {
+    color: var(--muted, #666);
+    font-size: 12px;
+}
+
+.hist-info__value {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.hist-note-box {
+    display: block;
+    min-height: 96px;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f2f2f2;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.hist-acc { margin-top: 22px; }
+
+.hist-acc h4 {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.hist-coords {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.hist-coords span {
+    display: block;
+    color: var(--muted, #666);
+    font-size: 12px;
+}
+
+.hist-coords strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.hist-map {
+    display: block;
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #e9e9e9;
+}
+
+
+/* =========================================================
+   769px KE ATAS
+========================================================= */
+
+@media (min-width: 769px) {
+
+    .hist { gap: 24px; }
+
+    .hist-only-desktop { display: block; }
+    .hist-only-mobile  { display: none; }
+    .hist-inline-d { display: inline; }
+    .hist-inline-m { display: none; }
+
+    /* Periode (kanan judul) */
+    .hist-period {
+        height: 52px;
+        border-color: var(--hist-line);
+        border-radius: 10px;
+    }
+
+    .hist-period__ico { color: #f59e0b; width: 26px; height: 26px; }
+
+    .hist-period select {
+        color: #222;
+        font-size: 15px;
+    }
+
+    /* Ringkasan: 3 kartu terpisah */
+    .hist-top {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .hist-filters-m { display: none; }
+
+    .hist-summary {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .hist-sum {
+        position: relative;
+        display: block;
+        padding: 22px 22px 20px;
+        border: 1px solid var(--hist-line);
+        border-radius: 18px;
+        background: #fff;
+    }
+
+    .hist-sum--tepat { display: block; }
+
+    .hist-sum--rate {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 20px 32px;
+        border-color: var(--hist-pink);
+        background: var(--hist-pink);
+    }
+
+    .hist-sum__text h2 {
+        margin-bottom: 8px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .hist-sum__text p {
+        max-width: 340px;
+        color: var(--muted, #666);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .hist-donut {
+        width: 120px;
+        height: 120px;
+    }
+
+    .hist-donut__track,
+    .hist-donut__bar { stroke-width: 12; }
+
+    .hist-donut__val {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #c8281f;
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .hist-sum__icon {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .hist-sum__icon .hist-ico,
+    .hist-sum__icon .hist-cico { width: 20px; height: 20px; }
+
+    .hist-sum__label {
+        color: #777;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .hist-sum__value {
+        margin: 12px 0 8px;
+        font-size: 36px;
+        line-height: 1.1;
+    }
+
+    /* Kartu daftar */
+    .hist-list {
+        padding: 30px 32px 26px;
+        border: 1px solid var(--hist-line);
+        border-radius: 22px;
+        background: #fff;
+    }
+
+    .hist-list__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 0 0 24px;
+    }
+
+    .hist-list__head h2 {
+        padding: 0;
+        color: var(--ink, #1b1b1b);
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    #slotSearchDesktop { display: block; width: min(380px, 100%); }
+    .hist-search { height: 44px; border-radius: 8px; border-color: var(--hist-line); }
+
+    .hist-rows {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .hist-row { padding: 16px 12px; }
+    .hist-row__date { font-size: 15px; }
+    .hist-row__time { font-size: 14px; }
+
+    .hist-row:hover { background: #fafafa; }
+
+    .hist-row__icon svg { width: 30px; height: 30px; }
+    .hist-row__chev { width: 22px; height: 22px; }
+
+    /* Badge tanpa ikon */
+    .hist-badge {
+        min-width: 0;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+    }
+
+    .hist-badge svg { display: none; }
+
+    .hist-dialog__back { display: none !important; }
+    .hist-dialog__x    { display: grid !important; }
+    .hist-dialog__bar h2 { padding-left: 4px; }
+
+    .hist-info__item--wide-m { grid-column: auto; }
+
+    .hist-foot { margin-top: 22px; }
+    .hist-page--nav { padding: 0 14px; }
+}
+
+
+/* =========================================================
+   1200px KE ATAS: tabel 5 kolom + 3 kartu sejajar
+========================================================= */
+
+@media (min-width: 1200px) {
+
+    .hist-summary {
+        grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .hist-sum--rate { grid-column: auto; }
+
+    .hist-thead {
+        display: grid;
+        grid-template-columns: var(--hist-cols);
+        align-items: center;
+        column-gap: 12px;
+        padding: 14px 12px;
+        border-bottom: 1px solid #e3e3e3;
+        background: #f5f5f5;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .hist-thead span:first-child { grid-column: 1 / 3; }
+    .hist-thead span:last-child  { text-align: center; }
+
+    .hist-row {
+        grid-template-columns: var(--hist-cols);
+        grid-template-areas: "icon date time badge progress chev";
+    }
+
+    .hist-row__time {
+        color: var(--ink, #1b1b1b);
+        font-weight: 700;
+    }
+
+    .hist-row__progress {
+        grid-area: progress;
+        display: block;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .hist-badge { justify-self: start; }
+}

@@ -19,4 +19,19 @@
     <symbol id="s-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3b82f6"/><path d="M12 6.500V12l3.500 2" stroke="#fff" stroke-width="2.200" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="s-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#f59e0b"/><path d="M12 6.500v6.500" stroke="#fff" stroke-width="2.600" stroke-linecap="round"/><circle cx="12" cy="17" r="1.500" fill="#fff"/></symbol>
     <symbol id="s-sad" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e11d48"/><circle cx="8.500" cy="9.500" r="1.500" fill="#fff"/><circle cx="15.500" cy="9.500" r="1.500" fill="#fff"/><path d="M8 16.500c1-1.500 2.400-2.200 4-2.200s3 .7 4 2.200" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+    {{-- ikon garis tambahan (halaman History dst.) --}}
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"/></symbol>
+
+    {{-- ikon berwarna tambahan (status presensi) --}}
+    <symbol id="s-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"/><path d="m7.500 12.500 3 3 6-6.500" stroke="#fff" stroke-width="2.200" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="s-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#dc2626"/><path d="m8.500 8.500 7 7M15.500 8.500l-7 7" stroke="#fff" stroke-width="2.400" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="s-sick" viewBox="0 0 24 24"><path fill="#f59e0b" d="M19 14c1.490-1.460 3-3.210 3-5.500A5.500 5.500 0 0 0 16.500 3c-1.760 0-3 .5-4.500 2-1.500-1.500-2.740-2-4.500-2A5.500 5.500 0 0 0 2 8.500c0 2.300 1.500 4.050 3 5.500l7 7Z"/><path d="m12 13-1-1 2-2-3-3 2-2" stroke="#fff" stroke-width="1.600" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="s-permit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3b82f6"/><path d="M9 17V7.500M9 8c2.500-1.500 4 1.500 6.500 0v5c-2.500 1.500-4-1.500-6.500 0" stroke="#fff" stroke-width="1.800" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
