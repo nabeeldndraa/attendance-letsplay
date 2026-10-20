@@ -1,0 +1,843 @@
+/* =========================================================
+   PROFIL  —  public/css/profil.css
+   Hanya isi halaman profil. Sidebar/header/.content dari
+   dashboard.css, hero dari page-hero.css. Prefix "prof-".
+
+   Satu halaman, tiga tampilan (atribut data-view di .prof):
+   - lihat    : profil + menu akun
+   - edit     : form edit profil
+   - password : form ubah password
+
+   Breakpoint: mobile <=768px | 769-1100px tumpuk | >=1101px 2 kolom
+========================================================= */
+
+:root {
+    --prof-line: #ececec;
+    --prof-pink: #fdeeee;
+    --prof-pink-line: #f6d4d4;
+    --prof-green-bg: #e8f7ec;
+    --prof-green-line: #bfe6cb;
+    --prof-red: var(--red, #c8202a);
+}
+
+.prof,
+.prof * {
+    box-sizing: border-box;
+}
+
+.prof {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--ink, #1b1b1b);
+}
+
+.prof [hidden] {
+    display: none !important;
+}
+
+.prof button,
+.prof input {
+    font: inherit;
+    color: inherit;
+}
+
+.prof button {
+    cursor: pointer;
+}
+
+.prof-ico {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.prof-only-desktop { display: none; }
+
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.prof-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.prof-col,
+.prof-side,
+.prof-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+/* --- visibilitas per tampilan (mobile) --- */
+.prof-password,
+.prof-actions,
+.prof-dates {
+    display: none;
+}
+
+.prof[data-view="edit"] .prof-actions { display: grid; }
+.prof[data-view="edit"] .prof-dates { display: block; }
+.prof[data-view="edit"] .prof-periode-view { display: none; }
+.prof[data-view="edit"] .prof-edit-btn { display: none; }
+.prof[data-view="edit"] .prof-menu { display: none; }
+
+.prof[data-view="password"] .prof-col { display: none; }
+.prof[data-view="password"] .prof-menu { display: none; }
+.prof[data-view="password"] .prof-password { display: block; }
+
+.prof-actions--static { display: grid; }
+
+
+/* =========================================================
+   KARTU
+========================================================= */
+
+.prof-card {
+    padding: 16px;
+    border: 1.5px solid #e6e1e1;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.prof-card__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.prof-card__head .prof-ico {
+    width: 28px;
+    height: 28px;
+    color: var(--prof-red);
+}
+
+.prof-card__head h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.prof-fields {
+    display: grid;
+    gap: 12px;
+}
+
+
+/* =========================================================
+   IDENTITAS
+========================================================= */
+
+.prof-identity {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 14px 16px;
+    padding: 16px;
+    border: 1px solid var(--prof-pink-line);
+    border-radius: 18px;
+    background: var(--prof-pink);
+}
+
+.prof-avatar {
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: #cb1f19;
+    box-shadow: 0 4px 12px rgba(160, 20, 20, .25);
+}
+
+.prof-avatar__ico {
+    width: 58px;
+    height: 58px;
+    fill: #fff;
+    stroke: #fff;
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+}
+
+.prof-identity__text { min-width: 0; }
+
+.prof-identity__text h2 {
+    font-size: 18px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.prof-identity__text p {
+    margin-top: 2px;
+    color: #555;
+    font-size: 15px;
+}
+
+.prof-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 5px 12px;
+    border: 1px solid #f3c9c9;
+    border-radius: 8px;
+    background: #fbdcdc;
+    color: var(--prof-red);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.prof-chip .prof-ico { width: 16px; height: 16px; }
+
+.prof-edit-btn {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--prof-red);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(200, 32, 42, .25);
+    transition: background .15s;
+}
+
+.prof-edit-btn:hover { background: #a51a1f; }
+.prof-edit-btn .prof-ico { width: 20px; height: 20px; }
+
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.prof-field {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    min-height: 62px;
+    padding: 10px 16px;
+    border: 1px solid var(--prof-line);
+    border-radius: 12px;
+    background: #fff;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    transition: border-color .15s, box-shadow .15s, background .15s;
+}
+
+.prof-field__ico {
+    width: 26px;
+    height: 26px;
+    color: #7a7a7a;
+}
+
+.prof-field__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.prof-field__label {
+    color: #8a8a8a;
+    font-size: 12px;
+}
+
+.prof-field__input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.prof:not([data-view="edit"]) .prof-field__input { pointer-events: none; }
+
+.prof[data-view="edit"] .prof-field:hover { border-color: #dcbcbc; }
+
+.prof[data-view="edit"] .prof-field:focus-within,
+.prof-field--btn:focus-visible {
+    border-color: var(--prof-red);
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, .12);
+    outline: none;
+}
+
+.prof-field.is-invalid {
+    border-color: #e53935;
+    background: #fffafa;
+}
+
+.prof-field--btn { cursor: pointer; }
+
+.prof-error {
+    margin: 6px 4px 0;
+    color: #c8202a;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.prof-dates__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.prof-dates .prof-field {
+    gap: 10px;
+    padding: 10px 12px;
+}
+
+
+/* =========================================================
+   MENU AKUN
+========================================================= */
+
+.prof-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--prof-line);
+    border-radius: 12px;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    transition: background .15s, border-color .15s;
+}
+
+.prof-row:hover { background: #fafafa; border-color: #e0cccc; }
+
+.prof-row__ico { width: 26px; height: 26px; color: #7a7a7a; }
+.prof-row--danger .prof-row__ico { color: var(--prof-red); }
+
+.prof-row__chev {
+    width: 20px;
+    height: 20px;
+    margin-left: auto;
+    color: #777;
+}
+
+
+/* =========================================================
+   UBAH PASSWORD
+========================================================= */
+
+.prof-password {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+}
+
+.prof-pass-title {
+    margin: 4px 0 14px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.prof-pass-box {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+    border: 1.5px solid #dcdcdc;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.prof-pass-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.prof-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.prof-input:focus-within {
+    border-color: var(--prof-red);
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, .12);
+}
+
+.prof-input__lock {
+    position: absolute;
+    left: 14px;
+    color: #9a9a9a;
+    pointer-events: none;
+}
+
+.prof-input input {
+    width: 100%;
+    height: 100%;
+    padding: 0 48px;
+    border: 0;
+    border-radius: inherit;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+}
+
+.prof-input__eye {
+    position: absolute;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: #888;
+}
+
+.prof-input__eye:hover { background: #f3f3f3; }
+.prof-input__eye .prof-ico { width: 22px; height: 22px; }
+
+/* Syarat password: merah muda -> hijau muda jika semua terpenuhi */
+.prof-rules {
+    display: grid;
+    gap: 8px;
+    margin: 16px 0;
+    padding: 14px 16px;
+    border: 1px solid var(--prof-pink-line);
+    border-radius: 10px;
+    background: var(--prof-pink);
+    list-style: none;
+    transition: background .25s, border-color .25s;
+}
+
+.prof-rules.is-valid {
+    border-color: var(--prof-green-line);
+    background: var(--prof-green-bg);
+}
+
+.prof-rules li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+.prof-rules__ico {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TOMBOL
+========================================================= */
+
+.prof-actions {
+    gap: 10px;
+}
+
+.prof-btn {
+    width: 100%;
+    height: 50px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background .15s, border-color .15s, opacity .15s;
+}
+
+.prof-btn--primary {
+    background: #c5291d;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(200, 32, 42, .22);
+}
+
+.prof-btn--primary:hover:not(:disabled) { background: #a51a1f; }
+
+.prof-btn--primary:disabled {
+    background: #cfa9a6;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.prof-btn--ghost {
+    border-color: #cfcfcf;
+    background: #fafafa;
+    color: var(--prof-red);
+}
+
+.prof-btn--ghost:hover { background: #f1f1f1; }
+
+
+/* =========================================================
+   POP-UP (kalender & konfirmasi)
+========================================================= */
+
+.prof-dialog {
+    width: min(400px, calc(100vw - 28px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.prof-dialog::backdrop {
+    background: rgba(25, 0, 0, .45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.prof-dialog[open] { animation: prof-pop .18s ease-out; }
+
+@keyframes prof-pop {
+    from { opacity: 0; transform: translateY(10px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+
+.prof-dialog__panel {
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(40, 0, 0, .35);
+    overflow: hidden;
+}
+
+/* Konfirmasi */
+.prof-confirm { width: min(380px, calc(100vw - 28px)); }
+
+.prof-confirm .prof-dialog__panel {
+    padding: 28px 24px 22px;
+    text-align: center;
+}
+
+.prof-confirm__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+}
+
+.prof-confirm__icon .prof-ico { width: 30px; height: 30px; }
+.prof-confirm__icon--danger { background: #fde4e4; color: var(--prof-red); }
+.prof-confirm__icon--warn   { background: #fdeacc; color: #e08900; }
+
+.prof-confirm h2 {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.prof-confirm p {
+    margin: 8px 0 22px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.prof-confirm__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.prof-confirm__actions .prof-btn { height: 46px; }
+
+/* Kalender */
+.prof-cal { width: min(360px, calc(100vw - 28px)); }
+
+.prof-cal__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #8f0f10, #c8202a);
+    color: #fff;
+}
+
+.prof-cal__bar small {
+    display: block;
+    font-size: 12px;
+    opacity: .85;
+}
+
+.prof-cal__bar strong {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.prof-cal__x {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+}
+
+.prof-cal__x:hover { background: rgba(255, 255, 255, .28); }
+.prof-cal__x .prof-ico { width: 20px; height: 20px; stroke-width: 2.4; }
+
+.prof-cal__body { padding: 16px 16px 8px; }
+
+.prof-cal__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.prof-cal__nav > button:not(.prof-cal__title) {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e5e5e5;
+    border-radius: 50%;
+    background: #fff;
+    color: #555;
+}
+
+.prof-cal__nav > button:not(.prof-cal__title):hover { background: #fdeeee; border-color: #f3c9c9; color: var(--prof-red); }
+
+.prof-cal__title {
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.prof-cal__title:hover { background: #f5f5f5; }
+
+.prof-cal__dow,
+.prof-cal__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.prof-cal__dow {
+    margin-bottom: 6px;
+    color: #8a8a8a;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.prof-cal__grid--pick {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+.prof-cal__cell {
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    font-size: 14px;
+    transition: background .12s, color .12s;
+}
+
+.prof-cal__grid--pick .prof-cal__cell {
+    height: 44px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.prof-cal__cell:hover:not(:disabled):not(.is-selected) { background: #fdeeee; }
+
+.prof-cal__cell.is-today { box-shadow: inset 0 0 0 1.5px var(--prof-red); color: var(--prof-red); font-weight: 700; }
+
+.prof-cal__cell.is-selected {
+    background: var(--prof-red);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(200, 32, 42, .3);
+}
+
+.prof-cal__cell:disabled { opacity: .3; cursor: not-allowed; }
+
+.prof-cal__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px 14px;
+}
+
+.prof-link {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--prof-red);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.prof-link:hover { background: #fdeeee; }
+.prof-link--muted { color: #777; }
+.prof-link--muted:hover { background: #f3f3f3; }
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.prof-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 88px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 28px);
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #1f2937;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+    transform: translateX(-50%);
+    animation: prof-toast .25s ease-out;
+}
+
+.prof-toast .prof-ico { width: 22px; height: 22px; }
+
+@keyframes prof-toast {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+
+/* =========================================================
+   769px KE ATAS
+========================================================= */
+
+@media (min-width: 769px) {
+
+    .prof { gap: 28px; }
+    .prof-grid { gap: 24px; }
+    .prof-col, .prof-side, .prof-form { gap: 22px; }
+
+    .prof-only-desktop { display: flex; }
+
+    /* tampilan per state */
+    .prof[data-view="edit"] .prof-identity { display: none; }
+    .prof[data-view="edit"] .prof-menu { display: block; }
+    .prof[data-view="password"] .prof-col { display: flex; }
+
+    /* kartu */
+    .prof-card { padding: 20px 24px 24px; border-radius: 20px; border-width: 1px; }
+    .prof-card__head { gap: 16px; margin-bottom: 16px; }
+    .prof-card__head h2 { font-size: 20px; }
+
+    /* identitas */
+    .prof-identity {
+        grid-template-columns: auto 1fr auto;
+        gap: 28px;
+        padding: 24px 28px;
+        align-items: center;
+    }
+
+    .prof-avatar { width: 110px; height: 110px; }
+    .prof-avatar__ico { width: 76px; height: 76px; }
+    .prof-identity__text h2 { font-size: 24px; }
+    .prof-identity__text p { margin-top: 4px; font-size: 18px; }
+
+    .prof-edit-btn {
+        grid-column: auto;
+        align-self: start;
+        height: auto;
+        padding: 11px 20px;
+        border: 1.5px solid var(--prof-red);
+        background: #fff;
+        color: var(--prof-red);
+        box-shadow: none;
+    }
+
+    .prof-edit-btn:hover { background: #fdeeee; }
+
+    /* field */
+    .prof-field { min-height: 66px; padding: 12px 24px; gap: 24px; }
+    .prof-dates .prof-field { gap: 18px; padding: 12px 22px; }
+    .prof-dates__row { gap: 22px; }
+    .prof-field__label { font-size: 13px; }
+    .prof-field__input { font-size: 15px; }
+
+    /* menu */
+    .prof-row { padding: 18px 22px; gap: 24px; font-size: 15px; }
+
+    /* password jadi kartu */
+    .prof-password {
+        padding: 20px 28px 28px;
+        border: 1px solid #e6e1e1;
+        border-radius: 20px;
+        background: #fff;
+    }
+
+    .prof-pass-title { margin: 6px 0 16px; font-size: 22px; }
+    .prof-pass-box { padding: 24px 28px 28px; gap: 22px; }
+    .prof-input { height: 56px; }
+    .prof-rules { padding: 18px 20px; margin: 22px 0; }
+    .prof-rules li { font-size: 13px; }
+
+    /* tombol */
+    .prof-actions { gap: 12px; }
+    .prof-btn { height: 56px; font-size: 16px; }
+    .prof-confirm__actions .prof-btn { height: 46px; font-size: 15px; }
+
+    .prof-toast { bottom: 32px; }
+}
+
+
+/* =========================================================
+   1101px KE ATAS: dua kolom
+========================================================= */
+
+@media (min-width: 1101px) {
+
+    .prof-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 36px;
+        align-items: start;
+    }
+
+    .prof-side { position: sticky; top: 24px; }
+}

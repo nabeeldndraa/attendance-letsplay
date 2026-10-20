@@ -17,11 +17,32 @@
                      :back="url('/dashboard-test')">
 
             <div id="slotPeriodDesktop">
-                <label class="hist-period" id="periodControl">
-                    <svg class="hist-ico hist-period__ico" aria-hidden="true"><use href="#i-calendar"/></svg>
-                    <select id="historyPeriod" aria-label="Periode"></select>
-                    <svg class="hist-ico hist-period__chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
-                </label>
+                <div class="hist-period" id="periodControl">
+
+                    <button type="button" class="hist-period__btn" id="periodBtn"
+                            aria-haspopup="dialog" aria-expanded="false" aria-label="Pilih periode (bulan dan tahun)">
+                        <svg class="hist-ico hist-period__ico" aria-hidden="true"><use href="#i-calendar"/></svg>
+                        <span id="periodLabel">-</span>
+                        <svg class="hist-ico hist-period__chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+                    </button>
+
+                    <div class="hist-mp" id="periodPop" role="dialog" aria-label="Pilih bulan dan tahun" hidden>
+                        <div class="hist-mp__nav">
+                            <button type="button" id="mpPrev" aria-label="Tahun sebelumnya">
+                                <svg class="hist-ico" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+                            </button>
+                            <strong id="mpYear">2026</strong>
+                            <button type="button" id="mpNext" aria-label="Tahun berikutnya">
+                                <svg class="hist-ico" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="hist-mp__grid" id="mpGrid"></div>
+
+                        <p class="hist-mp__hint">Hanya bulan yang memiliki data presensi yang dapat dipilih.</p>
+                    </div>
+
+                </div>
             </div>
 
         </x-page-hero>

@@ -1,0 +1,738 @@
+/* =====================================================
+   HALAMAN LEADERBOARD
+   Semua class memakai prefix "lb-" supaya tidak bentrok dengan dashboard.css.
+   Breakpoint: tab <= 1100px, mobile <= 768px.
+   ===================================================== */
+
+.lb-page {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* =====================================================
+   HERO (posisi kucing & bubble disamakan dengan dashboard)
+   ===================================================== */
+.lb-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 240px;
+    padding: 34px 44px;
+    border: 1px solid #f3dcdc;
+    border-radius: 26px;
+    background: #fbeeed url("../images/hero_background.png") center / cover
+        no-repeat;
+    box-shadow: 0 8px 18px rgba(120, 30, 30, 0.16);
+    overflow: hidden;
+}
+
+.lb-hero-text {
+    position: relative;
+    z-index: 2;
+    max-width: 52%;
+}
+
+.lb-hero h1 {
+    font-size: clamp(28px, 3.9vw, 52px);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.lb-hero h1 span {
+    color: var(--red, #c8202a);
+}
+
+.lb-hero-art {
+    display: contents;
+}
+
+.lb-hero-bubble {
+    position: absolute;
+    top: 15%;
+    left: 56%;
+    z-index: 2;
+    width: clamp(200px, 22%, 300px);
+    height: auto;
+}
+
+.lb-hero-cat {
+    position: absolute;
+    right: 1%;
+    bottom: 0;
+    z-index: 1;
+    height: 98%;
+    width: auto;
+    pointer-events: none;
+}
+
+/* =====================================================
+   PAPAN PERINGKAT
+   Ukuran memakai satuan cqw (mengikuti lebar papan) supaya
+   desktop, tab, dan mobile skalanya otomatis sama.
+   ===================================================== */
+.lb-board {
+    container-type: inline-size;
+    position: relative;
+
+    /* ukuran kartu podium (desktop) */
+    --w1: min(17.6cqw, 250px);
+    --h1: min(24cqw, 340px);
+    --w2: min(16.1cqw, 228px);
+    --h2: min(18.7cqw, 264px);
+    --gap: 4.7cqw;
+    --drop: 4cqw;
+
+    /* ukuran lain */
+    --tag-w: clamp(30px, 5.8cqw, 80px);
+    --tag-h: calc(var(--tag-w) * 0.87);
+    --rh: clamp(42px, 5.4cqw, 64px);
+    --row-gap: clamp(12px, 1.6cqw, 22px);
+    --panel-red: #9b0806;
+    --dark-red: #6e0707;
+}
+
+/* ----- Podium ----- */
+.lb-podium {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--gap);
+    padding-top: calc(var(--tag-h) * 0.7);
+}
+
+.lb-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: calc(var(--tag-h) * 0.7) 8px clamp(10px, 1.8cqw, 24px);
+    background: #fff;
+    border: clamp(2.5px, 0.35cqw, 5px) solid #7a0a0a;
+    border-radius: clamp(16px, 2.6cqw, 34px);
+    box-shadow:
+        0 clamp(4px, 0.6cqw, 9px) 0 #5a0505,
+        0 clamp(8px, 1.2cqw, 18px) clamp(8px, 1.4cqw, 20px) rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.lb-card--1 {
+    width: var(--w1);
+    height: var(--h1);
+    margin-bottom: var(--drop);
+}
+
+.lb-card--2,
+.lb-card--3 {
+    width: var(--w2);
+    height: var(--h2);
+}
+
+.lb-tag {
+    position: absolute;
+    top: calc(var(--tag-h) * -0.55);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tag-w);
+    height: var(--tag-h);
+    border: clamp(2px, 0.28cqw, 4px) solid #6a0606;
+    border-radius: 4px;
+    background: #b30f0f;
+    box-shadow: 0 3px 0 #5a0505;
+    color: #fff;
+    font-size: clamp(16px, 3cqw, 38px);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.lb-card--1 .lb-tag {
+    background: #fff;
+    color: #7a0a0a;
+}
+
+.lb-medal {
+    position: absolute;
+    top: calc(var(--tag-w) * -0.15);
+    right: calc(var(--tag-w) * -0.5);
+    width: clamp(34px, 5.8cqw, 80px);
+    height: auto;
+    aspect-ratio: 80 / 84;
+}
+
+.lb-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 0;
+}
+
+.lb-card-name {
+    font-size: clamp(11px, 1.9cqw, 22px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #1b1b1b;
+}
+
+.lb-card-role {
+    font-size: clamp(8px, 1.1cqw, 14px);
+    font-weight: 400;
+    color: #333;
+}
+
+.lb-pts {
+    padding: 0.55em 1.4em;
+    border-radius: 999px;
+    background: #e11d28;
+    color: #fff;
+    font-size: clamp(8px, 1.05cqw, 13px);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ----- Panel merah ----- */
+.lb-panel {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(var(--h2) * -0.74);
+    padding: calc(var(--h2) * 0.74 - var(--drop) + 3cqw) 4.4cqw 4cqw;
+    background: var(--panel-red);
+    border-radius: clamp(28px, 4.3cqw, 60px) clamp(28px, 4.3cqw, 60px) 28px 28px;
+    box-shadow: 0 10px 24px rgba(90, 5, 5, 0.25);
+    color: #fff;
+}
+
+.lb-panel-title {
+    text-align: center;
+    font-size: clamp(15px, 2.6cqw, 34px);
+    font-weight: 800;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+.lb-line {
+    width: 100%;
+    height: clamp(3px, 0.5cqw, 7px);
+    margin: 2cqw auto 3.4cqw;
+    border-radius: 999px;
+    background: #fff;
+}
+
+.lb-thead,
+.lb-row {
+    display: grid;
+    grid-template-columns: 14fr 59.4fr 13.9fr;
+    gap: clamp(6px, 1.4cqw, 20px);
+}
+
+.lb-thead {
+    margin-bottom: 1.8cqw;
+    text-align: center;
+    font-size: clamp(11px, 1.7cqw, 22px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.lb-rows {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+}
+
+.lb-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--rh);
+    border-radius: 999px;
+    background: #fff;
+    color: #2a2a2a;
+    font-weight: 700;
+}
+
+.lb-cell--pos,
+.lb-cell--pts {
+    justify-content: center;
+}
+
+.lb-cell--pos {
+    font-size: clamp(15px, 2.2cqw, 30px);
+}
+
+.lb-cell--pts {
+    font-size: clamp(12px, 1.8cqw, 24px);
+}
+
+.lb-cell--name {
+    --badge-left: clamp(10px, 3.8cqw, 54px);
+    padding-left: calc(
+        var(--badge-left) + var(--rh) * 0.747 + clamp(8px, 1.6cqw, 22px)
+    );
+    padding-right: 12px;
+    font-size: clamp(12px, 1.7cqw, 22px);
+}
+
+.lb-name-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Lencana bintang menggantung di bawah pil nama */
+.lb-rank-badge {
+    position: absolute;
+    top: 17%;
+    left: var(--badge-left);
+    height: 100%;
+    width: auto;
+    aspect-ratio: 56 / 75;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* =====================================================
+   PILIH BULAN + POINT RESET (di atas hero)
+   ===================================================== */
+.lb-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+}
+
+.lb-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.lb-controls-label {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.lb-select-wrap {
+    position: relative;
+    width: 380px;
+    max-width: 100%;
+}
+
+.lb-select {
+    width: 100%;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 18px;
+    border: 1.5px solid #8a1d1d;
+    border-radius: 10px;
+    background: #fbf4f2;
+    color: #a56a6a;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition:
+        box-shadow 0.2s,
+        border-color 0.2s;
+}
+
+.lb-select:hover,
+.lb-select[aria-expanded="true"] {
+    border-color: var(--red, #c8202a);
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.14);
+}
+
+.lb-select-ico,
+.lb-select-arrow {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: var(--red, #c8202a);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lb-select-ico {
+    fill: rgba(200, 32, 42, 0.12);
+}
+
+.lb-select-text {
+    flex: 1;
+    text-align: left;
+}
+
+.lb-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 32px;
+    border: 1.5px solid #8a1010;
+    border-radius: 10px;
+    background: var(--red, #c8202a);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.lb-reset b {
+    font-weight: 700;
+}
+
+.lb-reset svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ----- Pop-up pilih bulan (bulan + tahun saja) ----- */
+.lb-mp {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    z-index: 40;
+    width: 300px;
+    max-width: 100%;
+    padding: 16px;
+    background: #fff;
+    border: 1.5px solid #8a1d1d;
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.3);
+    animation: lbMpIn 0.15s ease;
+}
+
+.lb-mp[hidden] {
+    display: none;
+}
+
+.lb-mp-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.lb-mp-year {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b1b1b;
+}
+
+.lb-mp-nav {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: #fde8e8;
+    color: var(--red, #c8202a);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.lb-mp-nav svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lb-mp-nav:hover:not(:disabled) {
+    background: var(--red, #c8202a);
+    color: #fff;
+}
+
+.lb-mp-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.lb-mp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.lb-mp-month {
+    height: 44px;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    background: #faf3f3;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.lb-mp-month:hover:not(:disabled) {
+    background: #fde8e8;
+}
+
+.lb-mp-month.is-current {
+    border-color: var(--red, #c8202a);
+    color: var(--red, #c8202a);
+}
+
+.lb-mp-month.is-selected {
+    background: var(--red, #c8202a);
+    border-color: var(--red, #c8202a);
+    color: #fff;
+    box-shadow: 0 3px 0 #5c0f0c;
+}
+
+.lb-mp-month:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.lb-mp-foot {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #ead9d9;
+    text-align: right;
+}
+
+.lb-mp-today {
+    border: none;
+    background: none;
+    color: var(--red, #c8202a);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.lb-mp-today:hover {
+    text-decoration: underline;
+}
+
+@keyframes lbMpIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   TAB & MOBILE (<= 1100px)
+   - bubble + kucing bertumpuk di kanan, bubble selebar kucing
+   - kartu podium memakai proporsi lebih lebar agar teks terbaca
+   ===================================================== */
+@media (max-width: 1100px) {
+    .lb-controls-left {
+        flex: 1 1 100%;
+    }
+
+    .lb-select-wrap {
+        flex: 1;
+        width: auto;
+    }
+
+    .lb-reset {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    .lb-hero {
+        --art-w: clamp(120px, 28vw, 210px);
+        align-items: stretch;
+        gap: 12px;
+        min-height: 0;
+        padding: 22px 24px 0;
+    }
+
+    .lb-hero-text {
+        flex: 1;
+        max-width: none;
+        align-self: center;
+        padding-bottom: 22px;
+    }
+
+    .lb-hero-art {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 0 0 var(--art-w);
+        width: var(--art-w);
+        align-self: flex-end;
+    }
+
+    .lb-hero-bubble,
+    .lb-hero-cat {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+
+    .lb-hero-bubble {
+        position: relative;
+        top: auto;
+        left: auto;
+        z-index: 2;
+        margin-bottom: -6px;
+    }
+
+    .lb-board {
+        --w1: min(31cqw, 250px);
+        --h1: min(45cqw, 340px);
+        --w2: min(28cqw, 228px);
+        --h2: min(36cqw, 264px);
+        --gap: 3cqw;
+        --drop: 5cqw;
+        --tag-w: clamp(32px, 7.5cqw, 64px);
+    }
+
+    .lb-panel-title {
+        font-size: clamp(16px, 4.6cqw, 30px);
+    }
+
+    .lb-thead {
+        font-size: clamp(11px, 2.8cqw, 20px);
+    }
+
+    .lb-card-name {
+        font-size: clamp(11px, 3.4cqw, 20px);
+    }
+
+    .lb-card-role {
+        font-size: clamp(8.5px, 2.2cqw, 13px);
+    }
+
+    .lb-pts {
+        font-size: clamp(9px, 2.1cqw, 12px);
+    }
+
+    .lb-cell--pos {
+        font-size: clamp(15px, 4cqw, 28px);
+    }
+
+    .lb-cell--pts {
+        font-size: clamp(12px, 3cqw, 22px);
+    }
+
+    .lb-cell--name {
+        font-size: clamp(12px, 3cqw, 20px);
+    }
+
+    .lb-rank-badge {
+        height: 100%;
+    }
+}
+
+/* TAB (601px - 1100px): teks hero lebih besar */
+@media (min-width: 601px) and (max-width: 1100px) {
+    .lb-hero {
+        --art-w: clamp(140px, 21vw, 190px);
+        gap: 20px;
+        padding: 28px 32px 0;
+        border-radius: 24px;
+    }
+
+    .lb-hero-text {
+        padding-bottom: 28px;
+    }
+
+    .lb-hero h1 {
+        font-size: clamp(32px, 5.8vw, 50px);
+    }
+
+    /* Pilih Bulan dan Point Reset bersebelahan */
+    .lb-controls {
+        flex-wrap: nowrap;
+        gap: 16px;
+    }
+
+    .lb-controls-left {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .lb-reset {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+}
+
+/* MOBILE (<= 768px) */
+@media (max-width: 768px) {
+    .lb-page {
+        gap: 18px;
+    }
+
+    .lb-hero {
+        --art-w: clamp(112px, 34vw, 190px);
+        gap: 8px;
+        padding: 16px 14px 0;
+        border-radius: 20px;
+    }
+
+    .lb-hero-text {
+        padding-bottom: 16px;
+    }
+
+    .lb-hero h1 {
+        font-size: 22px;
+    }
+
+    .lb-controls-label {
+        font-size: 13px;
+    }
+
+    .lb-controls-left {
+        gap: 12px;
+    }
+
+    .lb-select {
+        height: 46px;
+        gap: 10px;
+        padding: 0 14px;
+        font-size: 14px;
+    }
+
+    .lb-reset {
+        padding: 12px 20px;
+        gap: 10px;
+        font-size: 15px;
+    }
+
+    .lb-reset svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .lb-panel {
+        border-radius: 28px 28px 22px 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lb-mp {
+        animation: none;
+    }
+}

@@ -20,12 +20,12 @@
             <span>History</span>
         </a>
 
-        <a href="#" class="hide-mobile {{ request()->is('leaderboard*') ? 'active' : '' }}">
+        <a href="{{ url('/leaderboard-test') }}" class="{{ request()->is('leaderboard*') ? 'active' : '' }}">
             <svg class="ico" aria-hidden="true"><use href="#i-trophy"/></svg>
             <span>Leaderboard</span>
         </a>
 
-        <a href="#" class="{{ request()->is('notifikasi*') ? 'active' : '' }}">
+        <a href="{{ url('/notifikasi-test') }}" class="{{ request()->is('notifikasi*') ? 'active' : '' }}">
             <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
             <span>Notifikasi</span>
             @if ($notif > 0)
@@ -33,7 +33,7 @@
             @endif
         </a>
 
-        <a href="#" class="{{ request()->is('profil*') ? 'active' : '' }}">
+        <a href="{{ url('/profil-test') }}" class="{{ request()->is('profil*') ? 'active' : '' }}">
             <svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>
             <span>Profil Saya</span>
         </a>
