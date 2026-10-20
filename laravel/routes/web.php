@@ -35,6 +35,12 @@ Route::get('/presensi-test', function () {
 
 Route::view('/history-test', 'history')->middleware('auth');
 
+Route::view('/leaderboard-test', 'leaderboard')->middleware('auth');
+
+Route::view('/notifikasi-test', 'notifikasi')->middleware('auth');
+
+Route::view('/profil-test', 'profil')->middleware('auth');
+
 Route::post('/presensi/cek-lokasi', [PresensiController::class, 'cekLokasi'])
     ->middleware('auth');
 

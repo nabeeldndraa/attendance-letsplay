@@ -70,13 +70,20 @@
     flex-shrink: 0;
 }
 
-.hist-only-desktop { display: none; }
-.hist-only-mobile  { display: block; }
+.hist-only-desktop {
+    display: none;
+}
+.hist-only-mobile {
+    display: block;
+}
 
 /* varian inline (dipakai di teks "Menampilkan ... dari ...") */
-.hist-inline-d { display: none; }
-.hist-inline-m { display: inline; }
-
+.hist-inline-d {
+    display: none;
+}
+.hist-inline-m {
+    display: inline;
+}
 
 /* =========================================================
    KONTROL: PERIODE & PENCARIAN
@@ -111,19 +118,142 @@
     pointer-events: none;
 }
 
-.hist-period select {
+.hist-period__btn {
     width: 100%;
     height: 100%;
     padding: 0 44px 0 48px;
     border: 0;
     border-radius: inherit;
+    outline: none;
     background: transparent;
-    appearance: none;
-    -webkit-appearance: none;
     color: #666;
     font-size: 14px;
     font-weight: 600;
+    text-align: left;
     cursor: pointer;
+}
+
+.hist-period__chev {
+    transition: transform 0.2s ease;
+}
+
+.hist-period.is-open {
+    border-color: var(--red, #c8202a);
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.1);
+}
+
+.hist-period.is-open .hist-period__chev {
+    transform: rotate(180deg);
+}
+
+/* Pemilih bulan & tahun */
+.hist-mp {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 60;
+    padding: 14px;
+    border: 1px solid #eadada;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(60, 5, 5, 0.2);
+    animation: hist-mp-in 0.15s ease-out;
+}
+
+.hist-mp__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.hist-mp__nav strong {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.hist-mp__nav button {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e5e5e5;
+    border-radius: 50%;
+    background: #fff;
+    color: #555;
+}
+
+.hist-mp__nav button .hist-ico {
+    width: 18px;
+    height: 18px;
+}
+
+.hist-mp__nav button:hover:not(:disabled) {
+    border-color: #f3c9c9;
+    background: #fdeeee;
+    color: var(--red, #c8202a);
+}
+
+.hist-mp__nav button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.hist-mp__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.hist-mp__cell {
+    height: 44px;
+    border: 0;
+    border-radius: 12px;
+    background: #f7f4f4;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    transition:
+        background 0.12s,
+        color 0.12s;
+}
+
+.hist-mp__cell:hover:not(:disabled):not(.is-selected) {
+    background: #fdeeee;
+    color: var(--red, #c8202a);
+}
+
+.hist-mp__cell.is-selected {
+    background: var(--red, #c8202a);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(200, 32, 42, 0.3);
+}
+
+.hist-mp__cell:disabled {
+    background: transparent;
+    color: #bdbdbd;
+    font-weight: 400;
+    cursor: not-allowed;
+}
+
+.hist-mp__hint {
+    margin-top: 12px;
+    color: #8a8a8a;
+    font-size: 11.5px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+@keyframes hist-mp-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 .hist-search input {
@@ -137,13 +267,14 @@
     font-size: 14px;
 }
 
-.hist-search input::placeholder { color: #9a9a9a; }
+.hist-search input::placeholder {
+    color: #9a9a9a;
+}
 
 .hist-period:focus-within,
 .hist-search:focus-within {
     border-color: var(--red, #c8202a);
 }
-
 
 /* =========================================================
    RINGKASAN
@@ -173,7 +304,9 @@
     min-width: 0;
 }
 
-.hist-sum--tepat { display: none; }
+.hist-sum--tepat {
+    display: none;
+}
 
 .hist-donut {
     position: relative;
@@ -194,15 +327,19 @@
     stroke-width: 14;
 }
 
-.hist-donut__track { stroke: #f6b3ae; }
+.hist-donut__track {
+    stroke: #f6b3ae;
+}
 
 .hist-donut__bar {
     stroke: #c8281f;
     stroke-linecap: round;
-    transition: stroke-dasharray .7s ease;
+    transition: stroke-dasharray 0.7s ease;
 }
 
-.hist-donut__val { display: none; }
+.hist-donut__val {
+    display: none;
+}
 
 .hist-sum__pct strong {
     display: block;
@@ -226,8 +363,13 @@
     border-radius: 50%;
 }
 
-.hist-sum__icon--pink { background: #f9d3d3; color: var(--hist-red); }
-.hist-sum__icon--blue { background: var(--hist-blue-bg); }
+.hist-sum__icon--pink {
+    background: #f9d3d3;
+    color: var(--hist-red);
+}
+.hist-sum__icon--blue {
+    background: var(--hist-blue-bg);
+}
 
 .hist-sum__label {
     font-size: 13px;
@@ -258,7 +400,6 @@
     font-weight: 600;
 }
 
-
 /* =========================================================
    DAFTAR
 ========================================================= */
@@ -274,10 +415,16 @@
     font-weight: 600;
 }
 
-#slotSearchDesktop { display: none; }
-#slotPeriodDesktop { width: 260px; }
+#slotSearchDesktop {
+    display: none;
+}
+#slotPeriodDesktop {
+    width: 260px;
+}
 
-.hist-thead { display: none; }
+.hist-thead {
+    display: none;
+}
 
 .hist-rows {
     padding: 2px 20px;
@@ -312,24 +459,58 @@
     border-radius: 10px;
 }
 
-.hist-row__icon  { grid-area: icon; display: grid; place-items: center; }
-.hist-row__date  { grid-area: date; font-size: 15px; line-height: 1.3; }
-.hist-row__time  { grid-area: time; color: var(--muted, #666); font-size: 14px; }
-.hist-row__chev  { grid-area: chev; justify-self: center; color: #777; width: 20px; height: 20px; }
-.hist-row__progress { display: none; }
+.hist-row__icon {
+    grid-area: icon;
+    display: grid;
+    place-items: center;
+}
+.hist-row__date {
+    grid-area: date;
+    font-size: 15px;
+    line-height: 1.3;
+}
+.hist-row__time {
+    grid-area: time;
+    color: var(--muted, #666);
+    font-size: 14px;
+}
+.hist-row__chev {
+    grid-area: chev;
+    justify-self: center;
+    color: #777;
+    width: 20px;
+    height: 20px;
+}
+.hist-row__progress {
+    display: none;
+}
 
-.hist-row__date strong { font-weight: 600; color: #333; }
-.hist-row__date em     { font-style: normal; color: var(--muted, #666); }
+.hist-row__date strong {
+    font-weight: 600;
+    color: #333;
+}
+.hist-row__date em {
+    font-style: normal;
+    color: var(--muted, #666);
+}
 
 .hist-row__icon svg {
     width: 36px;
     height: 36px;
 }
 
-.hist-row__icon .hist-ico { stroke-width: 2.4; }
-.hist-row__icon--ok    { color: var(--hist-green-ring); }
-.hist-row__icon--late  { color: var(--hist-orange-ring); }
-.hist-row__icon--alpha { color: var(--hist-red); }
+.hist-row__icon .hist-ico {
+    stroke-width: 2.4;
+}
+.hist-row__icon--ok {
+    color: var(--hist-green-ring);
+}
+.hist-row__icon--late {
+    color: var(--hist-orange-ring);
+}
+.hist-row__icon--alpha {
+    color: var(--hist-red);
+}
 
 .hist-empty {
     padding: 32px 12px;
@@ -337,7 +518,6 @@
     font-size: 14px;
     text-align: center;
 }
-
 
 /* Badge status */
 
@@ -360,12 +540,26 @@
     height: 18px;
 }
 
-.hist-badge--ok     { background: var(--hist-green-bg);  color: var(--hist-green); }
-.hist-badge--late   { background: var(--hist-orange-bg); color: var(--hist-orange); }
-.hist-badge--alpha  { background: var(--hist-red-bg);    color: var(--hist-red); }
-.hist-badge--sick   { background: var(--hist-orange-bg); color: var(--hist-orange); }
-.hist-badge--permit { background: var(--hist-blue-bg);   color: var(--hist-blue); }
-
+.hist-badge--ok {
+    background: var(--hist-green-bg);
+    color: var(--hist-green);
+}
+.hist-badge--late {
+    background: var(--hist-orange-bg);
+    color: var(--hist-orange);
+}
+.hist-badge--alpha {
+    background: var(--hist-red-bg);
+    color: var(--hist-red);
+}
+.hist-badge--sick {
+    background: var(--hist-orange-bg);
+    color: var(--hist-orange);
+}
+.hist-badge--permit {
+    background: var(--hist-blue-bg);
+    color: var(--hist-blue);
+}
 
 /* Footer + pagination */
 
@@ -405,9 +599,14 @@
     font-weight: 600;
 }
 
-.hist-page .hist-ico { width: 18px; height: 18px; }
+.hist-page .hist-ico {
+    width: 18px;
+    height: 18px;
+}
 
-.hist-page:hover:not(:disabled):not(.is-current) { background: #f5f5f5; }
+.hist-page:hover:not(:disabled):not(.is-current) {
+    background: #f5f5f5;
+}
 
 .hist-page.is-current {
     border-color: var(--red, #c8202a);
@@ -416,12 +615,13 @@
 }
 
 .hist-page:disabled {
-    opacity: .45;
+    opacity: 0.45;
     cursor: not-allowed;
 }
 
-.hist-page-dots { color: var(--muted, #666); }
-
+.hist-page-dots {
+    color: var(--muted, #666);
+}
 
 /* =========================================================
    POP-UP DETAIL
@@ -439,7 +639,7 @@
 }
 
 .hist-dialog::backdrop {
-    background: rgba(25, 0, 0, .45);
+    background: rgba(25, 0, 0, 0.45);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
@@ -449,7 +649,7 @@
     padding: 12px 12px 24px;
     border-radius: 22px;
     background: #fff;
-    box-shadow: 0 18px 50px rgba(40, 0, 0, .35);
+    box-shadow: 0 18px 50px rgba(40, 0, 0, 0.35);
     overflow-y: auto;
 }
 
@@ -480,8 +680,12 @@
     color: #fff;
 }
 
-.hist-dialog__bar .hist-ico { stroke-width: 2.4; }
-.hist-dialog__x { display: none !important; }
+.hist-dialog__bar .hist-ico {
+    stroke-width: 2.4;
+}
+.hist-dialog__x {
+    display: none !important;
+}
 
 .hist-dialog__body {
     padding: 22px 8px 0;
@@ -499,10 +703,18 @@
     height: 68px;
 }
 
-.hist-d-hero__icon .hist-ico { stroke-width: 2.2; }
-.hist-d-hero__icon--ok    { color: var(--hist-green-ring); }
-.hist-d-hero__icon--late  { color: var(--hist-orange-ring); }
-.hist-d-hero__icon--alpha { color: var(--hist-red); }
+.hist-d-hero__icon .hist-ico {
+    stroke-width: 2.2;
+}
+.hist-d-hero__icon--ok {
+    color: var(--hist-green-ring);
+}
+.hist-d-hero__icon--late {
+    color: var(--hist-orange-ring);
+}
+.hist-d-hero__icon--alpha {
+    color: var(--hist-red);
+}
 
 .hist-d-hero__title {
     display: flex;
@@ -524,7 +736,9 @@
     font-size: 11px;
 }
 
-.hist-d-hero__title .hist-badge svg { display: none; }
+.hist-d-hero__title .hist-badge svg {
+    display: none;
+}
 
 .hist-d-hero p {
     margin-top: 2px;
@@ -544,7 +758,9 @@
     gap: 20px 24px;
 }
 
-.hist-info--stack { grid-template-columns: 1fr; }
+.hist-info--stack {
+    grid-template-columns: 1fr;
+}
 
 .hist-info__item {
     display: flex;
@@ -553,7 +769,9 @@
     min-width: 0;
 }
 
-.hist-info__item--wide-m { grid-column: 1 / -1; }
+.hist-info__item--wide-m {
+    grid-column: 1 / -1;
+}
 
 .hist-info__ico {
     width: 28px;
@@ -592,7 +810,9 @@
     line-height: 1.5;
 }
 
-.hist-acc { margin-top: 22px; }
+.hist-acc {
+    margin-top: 22px;
+}
 
 .hist-acc h4 {
     margin-bottom: 8px;
@@ -629,19 +849,27 @@
     background: #e9e9e9;
 }
 
-
 /* =========================================================
    769px KE ATAS
 ========================================================= */
 
 @media (min-width: 769px) {
+    .hist {
+        gap: 24px;
+    }
 
-    .hist { gap: 24px; }
-
-    .hist-only-desktop { display: block; }
-    .hist-only-mobile  { display: none; }
-    .hist-inline-d { display: inline; }
-    .hist-inline-m { display: none; }
+    .hist-only-desktop {
+        display: block;
+    }
+    .hist-only-mobile {
+        display: none;
+    }
+    .hist-inline-d {
+        display: inline;
+    }
+    .hist-inline-m {
+        display: none;
+    }
 
     /* Periode (kanan judul) */
     .hist-period {
@@ -650,11 +878,21 @@
         border-radius: 10px;
     }
 
-    .hist-period__ico { color: #f59e0b; width: 26px; height: 26px; }
+    .hist-period__ico {
+        color: #f59e0b;
+        width: 26px;
+        height: 26px;
+    }
 
-    .hist-period select {
+    .hist-period__btn {
         color: #222;
         font-size: 15px;
+    }
+
+    .hist-mp {
+        left: auto;
+        right: 0;
+        width: 320px;
     }
 
     /* Ringkasan: 3 kartu terpisah */
@@ -665,7 +903,9 @@
         background: transparent;
     }
 
-    .hist-filters-m { display: none; }
+    .hist-filters-m {
+        display: none;
+    }
 
     .hist-summary {
         grid-template-columns: 1fr 1fr;
@@ -684,7 +924,9 @@
         background: #fff;
     }
 
-    .hist-sum--tepat { display: block; }
+    .hist-sum--tepat {
+        display: block;
+    }
 
     .hist-sum--rate {
         grid-column: 1 / -1;
@@ -716,7 +958,9 @@
     }
 
     .hist-donut__track,
-    .hist-donut__bar { stroke-width: 12; }
+    .hist-donut__bar {
+        stroke-width: 12;
+    }
 
     .hist-donut__val {
         position: absolute;
@@ -737,7 +981,10 @@
     }
 
     .hist-sum__icon .hist-ico,
-    .hist-sum__icon .hist-cico { width: 20px; height: 20px; }
+    .hist-sum__icon .hist-cico {
+        width: 20px;
+        height: 20px;
+    }
 
     .hist-sum__label {
         color: #777;
@@ -774,8 +1021,15 @@
         font-weight: 700;
     }
 
-    #slotSearchDesktop { display: block; width: min(380px, 100%); }
-    .hist-search { height: 44px; border-radius: 8px; border-color: var(--hist-line); }
+    #slotSearchDesktop {
+        display: block;
+        width: min(380px, 100%);
+    }
+    .hist-search {
+        height: 44px;
+        border-radius: 8px;
+        border-color: var(--hist-line);
+    }
 
     .hist-rows {
         padding: 0;
@@ -783,14 +1037,28 @@
         border-radius: 0;
     }
 
-    .hist-row { padding: 16px 12px; }
-    .hist-row__date { font-size: 15px; }
-    .hist-row__time { font-size: 14px; }
+    .hist-row {
+        padding: 16px 12px;
+    }
+    .hist-row__date {
+        font-size: 15px;
+    }
+    .hist-row__time {
+        font-size: 14px;
+    }
 
-    .hist-row:hover { background: #fafafa; }
+    .hist-row:hover {
+        background: #fafafa;
+    }
 
-    .hist-row__icon svg { width: 30px; height: 30px; }
-    .hist-row__chev { width: 22px; height: 22px; }
+    .hist-row__icon svg {
+        width: 30px;
+        height: 30px;
+    }
+    .hist-row__chev {
+        width: 22px;
+        height: 22px;
+    }
 
     /* Badge tanpa ikon */
     .hist-badge {
@@ -800,30 +1068,44 @@
         font-size: 11px;
     }
 
-    .hist-badge svg { display: none; }
+    .hist-badge svg {
+        display: none;
+    }
 
-    .hist-dialog__back { display: none !important; }
-    .hist-dialog__x    { display: grid !important; }
-    .hist-dialog__bar h2 { padding-left: 4px; }
+    .hist-dialog__back {
+        display: none !important;
+    }
+    .hist-dialog__x {
+        display: grid !important;
+    }
+    .hist-dialog__bar h2 {
+        padding-left: 4px;
+    }
 
-    .hist-info__item--wide-m { grid-column: auto; }
+    .hist-info__item--wide-m {
+        grid-column: auto;
+    }
 
-    .hist-foot { margin-top: 22px; }
-    .hist-page--nav { padding: 0 14px; }
+    .hist-foot {
+        margin-top: 22px;
+    }
+    .hist-page--nav {
+        padding: 0 14px;
+    }
 }
-
 
 /* =========================================================
    1200px KE ATAS: tabel 5 kolom + 3 kartu sejajar
 ========================================================= */
 
 @media (min-width: 1200px) {
-
     .hist-summary {
         grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1fr);
     }
 
-    .hist-sum--rate { grid-column: auto; }
+    .hist-sum--rate {
+        grid-column: auto;
+    }
 
     .hist-thead {
         display: grid;
@@ -837,8 +1119,12 @@
         font-weight: 700;
     }
 
-    .hist-thead span:first-child { grid-column: 1 / 3; }
-    .hist-thead span:last-child  { text-align: center; }
+    .hist-thead span:first-child {
+        grid-column: 1 / 3;
+    }
+    .hist-thead span:last-child {
+        text-align: center;
+    }
 
     .hist-row {
         grid-template-columns: var(--hist-cols);
@@ -859,5 +1145,7 @@
         white-space: nowrap;
     }
 
-    .hist-badge { justify-self: start; }
+    .hist-badge {
+        justify-self: start;
+    }
 }
