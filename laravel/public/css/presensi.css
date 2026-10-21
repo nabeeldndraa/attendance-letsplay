@@ -820,3 +820,131 @@
         flex-shrink: 0;
     }
 }
+
+/* =========================================================
+   REVISI RINGKAS: hanya mobile & tab (sampai 1100px)
+   Desktop (1101px ke atas) tidak berubah.
+   Taruh di PALING BAWAH file agar mengalahkan aturan di atasnya.
+========================================================= */
+
+@media (max-width: 1100px) {
+    /* Aturan presensi pindah ke paling bawah (di bawah tombol kirim) */
+    .pres-card--aturan {
+        order: 2;
+    }
+
+    /* Syarat presensi (WFO/WFH) lebih ringkas */
+    .pres-syarat {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+
+    .pres-syarat h3 {
+        margin-bottom: 6px;
+        font-size: 12.5px;
+    }
+
+    .pres-syarat ul {
+        gap: 5px;
+    }
+
+    .pres-syarat li {
+        gap: 8px;
+        font-size: 11.5px;
+        line-height: 1.35;
+    }
+
+    .pres-bullet {
+        width: 16px;
+        height: 16px;
+    }
+
+    .pres-bullet .pres-ico {
+        width: 10px;
+        height: 10px;
+    }
+
+    /* Bar "Pastikan semua informasi..." + tombol kirim */
+    .pres-submit__bar {
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+    }
+
+    .pres-submit__info {
+        gap: 10px;
+    }
+
+    .pres-submit__info div {
+        gap: 1px;
+        line-height: 1.35;
+    }
+
+    /* ukuran ikut lebar layar supaya tiap kalimat tetap 1 baris */
+    .pres-submit__info strong {
+        font-size: clamp(10px, 2.75vw, 12px);
+    }
+    .pres-submit__info span {
+        font-size: clamp(9px, 2.65vw, 11px);
+    }
+
+    .pres-submit__shield {
+        width: 24px;
+        height: 24px;
+    }
+
+    .pres-submit__btn {
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+}
+
+/* Mobile saja */
+@media (max-width: 768px) {
+    /* ikon perisai disembunyikan supaya teks muat 2 baris */
+    .pres-submit__shield {
+        display: none;
+    }
+
+    /* "Jangan lupa!" lebih kecil */
+    .pres-notice {
+        gap: 10px;
+        margin-top: 0;
+        padding: 10px 14px;
+        border-radius: 14px;
+    }
+
+    .pres-notice__pin {
+        width: 28px;
+        height: 28px;
+    }
+
+    .pres-notice h2 {
+        font-size: 15px;
+    }
+
+    .pres-notice p {
+        margin-top: 1px;
+        font-size: 12px;
+        line-height: 1.35;
+    }
+}
+
+/* Tab saja (kucing tetap tampil, tapi kartu lebih pendek) */
+@media (min-width: 769px) and (max-width: 1100px) {
+    .pres-notice {
+        min-height: 100px;
+        padding: 12px 20px 12px 130px;
+    }
+
+    .pres-notice__cat {
+        height: 92px;
+    }
+    .pres-notice h2 {
+        font-size: 17px;
+    }
+    .pres-notice p {
+        font-size: 13px;
+    }
+}

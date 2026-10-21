@@ -25,13 +25,7 @@
             <span>Leaderboard</span>
         </a>
 
-        <a href="{{ url('/notifikasi-test') }}" class="{{ request()->is('notifikasi*') ? 'active' : '' }}">
-            <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
-            <span>Notifikasi</span>
-            @if ($notif > 0)
-                <b class="nav-badge">{{ $notif }}</b>
-            @endif
-        </a>
+
 
         <a href="{{ url('/profil-test') }}" class="{{ request()->is('profil*') ? 'active' : '' }}">
             <svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>
