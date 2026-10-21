@@ -19,7 +19,6 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-
             return back()
                 ->withErrors([
                     'login' => 'Email atau password salah.'
@@ -28,7 +27,6 @@ class AuthController extends Controller
         }
 
         if ($user->status_akun !== 'aktif') {
-
             return back()
                 ->withErrors([
                     'login' => 'Akun tidak aktif.'
@@ -40,9 +38,13 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        // Arahkan pengguna sesuai role akun
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         return redirect('/dashboard-test');
     }
-
 
     public function logout(Request $request)
     {

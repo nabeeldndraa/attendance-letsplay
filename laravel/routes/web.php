@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PresensiController;
-
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminUserController;
 
 Route::get('/', function () {
     return redirect('/login-test');
@@ -62,4 +63,51 @@ Route::middleware('guest')->group(function () {
         RegisterController::class,
         'register',
     ])->name('register.store');
+});
+
+Route::get('/admin/dashboard', [
+    AdminDashboardController::class,
+    'dashboard'
+])->middleware('auth')->name('admin.dashboard');
+
+Route::post('/admin/presensi/{id}/konfirmasi', [
+    AdminDashboardController::class,
+    'konfirmasiPresensi'
+])->middleware('auth')->name('admin.presensi.konfirmasi');
+Route::get('/admin/data-presensi', [
+    \App\Http\Controllers\AdminDashboardController::class,
+    'dataPresensi'
+])->middleware('auth')->name('admin.data-presensi');
+
+
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/data-user', [
+        AdminUserController::class,
+        'index'
+    ])->name('data-user');
+
+    Route::get('/data-user/tambah', [
+        AdminUserController::class,
+        'create'
+    ])->name('data-user.create');
+
+    Route::post('/data-user', [
+        AdminUserController::class,
+        'store'
+    ])->name('data-user.store');
+
+    Route::get('/data-user/{id}/edit', [
+        AdminUserController::class,
+        'edit'
+    ])->name('data-user.edit');
+
+    Route::put('/data-user/{id}', [
+        AdminUserController::class,
+        'update'
+    ])->name('data-user.update');
+
+    Route::patch('/data-user/{id}/status', [
+        AdminUserController::class,
+        'toggleStatus'
+    ])->name('data-user.status');
 });
