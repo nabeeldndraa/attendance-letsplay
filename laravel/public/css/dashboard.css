@@ -165,6 +165,21 @@ svg {
     stroke-linejoin: round;
 }
 
+a.bell-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* lonceng ikut berwarna merah saat berada di halaman notifikasi (desktop saja;
+   di mobile latar header merah, jadi warnanya dibiarkan putih) */
+@media (min-width: 769px) {
+    .bell-btn[aria-current="page"] {
+        color: var(--red);
+    }
+}
+
 .bell-badge {
     position: absolute;
     top: 0;
