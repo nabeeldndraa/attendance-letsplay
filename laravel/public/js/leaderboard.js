@@ -6,32 +6,62 @@
  * - Bulan di masa depan tidak bisa dipilih (batas: data-max="YYYY-MM").
  */
 (function () {
-    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'];
-    const SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const MONTHS = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    const SHORT = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
 
-    const pad = (n) => String(n).padStart(2, '0');
+    const pad = (n) => String(n).padStart(2, "0");
     const parse = (value) => {
-        const [y, m] = String(value || '').split('-').map(Number);
+        const [y, m] = String(value || "")
+            .split("-")
+            .map(Number);
         return y && m ? { y, m } : null;
     };
 
-    const wraps = Array.from(document.querySelectorAll('.lb-select-wrap'));
+    const wraps = Array.from(document.querySelectorAll(".lb-select-wrap"));
 
     wraps.forEach((wrap) => {
-        const btn = wrap.querySelector('.lb-select');
-        const text = wrap.querySelector('.lb-select-text');
+        const btn = wrap.querySelector(".lb-select");
+        const text = wrap.querySelector(".lb-select-text");
         const input = wrap.querySelector('input[name="bulan"]');
-        const pop = wrap.querySelector('.lb-mp');
-        const form = wrap.closest('form');
+        const pop = wrap.querySelector(".lb-mp");
+        const form = wrap.closest("form");
 
         const max = parse(wrap.dataset.max);
-        const now = max || { y: new Date().getFullYear(), m: new Date().getMonth() + 1 };
+        const now = max || {
+            y: new Date().getFullYear(),
+            m: new Date().getMonth() + 1,
+        };
         let selected = parse(input.value) || now;
         let viewYear = selected.y;
 
-        const isFuture = (y, m) => max && (y > max.y || (y === max.y && m > max.m));
+        const isFuture = (y, m) =>
+            max && (y > max.y || (y === max.y && m > max.m));
 
         function render() {
             let html = `
@@ -41,7 +71,7 @@
                     </button>
                     <div class="lb-mp-year">${viewYear}</div>
                     <button type="button" class="lb-mp-nav" data-year="1" aria-label="Tahun berikutnya"
-                        ${max && viewYear >= max.y ? 'disabled' : ''}>
+                        ${max && viewYear >= max.y ? "disabled" : ""}>
                         <svg aria-hidden="true"><use href="#i-chevron-right"/></svg>
                     </button>
                 </div>
@@ -49,11 +79,12 @@
 
             SHORT.forEach((name, i) => {
                 const m = i + 1;
-                const cls = ['lb-mp-month'];
-                if (viewYear === now.y && m === now.m) cls.push('is-current');
-                if (viewYear === selected.y && m === selected.m) cls.push('is-selected');
-                html += `<button type="button" class="${cls.join(' ')}" data-month="${m}"
-                    ${isFuture(viewYear, m) ? 'disabled' : ''}>${name}</button>`;
+                const cls = ["lb-mp-month"];
+                if (viewYear === now.y && m === now.m) cls.push("is-current");
+                if (viewYear === selected.y && m === selected.m)
+                    cls.push("is-selected");
+                html += `<button type="button" class="${cls.join(" ")}" data-month="${m}"
+                    ${isFuture(viewYear, m) ? "disabled" : ""}>${name}</button>`;
             });
 
             html += `</div>
@@ -65,16 +96,18 @@
         }
 
         function open() {
-            wraps.forEach((w) => { if (w !== wrap) w.querySelector('.lb-mp').hidden = true; });
+            wraps.forEach((w) => {
+                if (w !== wrap) w.querySelector(".lb-mp").hidden = true;
+            });
             viewYear = selected.y;
             render();
             pop.hidden = false;
-            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute("aria-expanded", "true");
         }
 
         function close() {
             pop.hidden = true;
-            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute("aria-expanded", "false");
         }
 
         function choose(y, m) {
@@ -86,10 +119,10 @@
             if (changed && form) form.submit();
         }
 
-        btn.addEventListener('click', () => (pop.hidden ? open() : close()));
+        btn.addEventListener("click", () => (pop.hidden ? open() : close()));
 
-        pop.addEventListener('click', (e) => {
-            const target = e.target.closest('button');
+        pop.addEventListener("click", (e) => {
+            const target = e.target.closest("button");
             if (!target) return;
 
             if (target.dataset.year) {
@@ -97,17 +130,19 @@
                 render();
             } else if (target.dataset.month) {
                 choose(viewYear, Number(target.dataset.month));
-            } else if (target.hasAttribute('data-today')) {
+            } else if (target.hasAttribute("data-today")) {
                 choose(now.y, now.m);
             }
         });
 
-        document.addEventListener('click', (e) => {
-            if (!wrap.contains(e.target)) close();
+        // Pakai composedPath: tombol di dalam pop-up diganti ulang saat render(),
+        // sehingga e.target sudah lepas dari DOM dan wrap.contains() salah mengira klik di luar.
+        document.addEventListener("click", (e) => {
+            if (!e.composedPath().includes(wrap)) close();
         });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') close();
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") close();
         });
     });
 })();
