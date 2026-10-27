@@ -32,11 +32,22 @@
 
     @include('partials.icons')
 
-    @include('partials.sidebar')
+    {{-- Sidebar: default versi user. Layout lain (mis. layouts.admin) bisa menggantinya
+         dengan @section('sidebar') --}}
+    @hasSection('sidebar')
+        @yield('sidebar')
+    @else
+        @include('partials.sidebar')
+    @endif
 
     <div class="main">
 
-        @include('partials.header')
+        {{-- Header: default versi user, bisa diganti dengan @section('header') --}}
+        @hasSection('header')
+            @yield('header')
+        @else
+            @include('partials.header')
+        @endif
 
         <main class="content">
             @yield('content')
