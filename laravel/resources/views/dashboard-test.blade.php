@@ -11,33 +11,9 @@
     $firstName = \Illuminate\Support\Str::of($user->nama)->trim()->before(' ');
     $tanggal   = $now->translatedFormat('l, j F Y');
 
-    /*
-     * TODO (backend): data di bawah ini masih DUMMY untuk keperluan tampilan.
-     * Nanti ganti dengan data asli dari controller (mis. $stat, $last).
-     * ($notif sudah diatur di layouts/app.blade.php)
-     */
-    $stat = [
-        'poin'         => 240,
-        'poin_kemarin' => 30,
-        'hadir'        => 18,
-        'hari_kerja'   => 21,
-        'tepat'        => 15,
-        'terlambat'    => 2,
-        'alpha'        => 1,
-    ];
-    $persen = fn ($n) => round($n / max($stat['hadir'], 1) * 100);
-
-    $last = [
-        'status'   => 'Terlambat',   // 'Terlambat' atau 'Tepat Waktu'
-        'hari'     => 'RABU',
-        'tanggal'  => 20,
-        'bulan'    => 'AUG',
-        'lokasi'   => 'WFO - MCC Office',
-        'jam'      => '09:37 WIB',
-        'kegiatan' => 'Mengerjakan halaman dashboard',
-        'poin'     => 5,
-    ];
-    $lastLate = $last['status'] === 'Terlambat';
+    $persenHadir = fn ($n) => round($n / max($stat['hadir'], 1) * 100);
+    $persenHariKerja = fn ($n) => round($n / max($stat['hari_kerja'], 1) * 100);
+    $lastLate = $last && $last['status'] !== 'Tepat Waktu';
 @endphp
 
 
@@ -89,7 +65,7 @@
             <div class="stat-body">
                 <p class="stat-label">Tepat Waktu</p>
                 <p class="stat-value">{{ $stat['tepat'] }}</p>
-                <p class="stat-sub">{{ $persen($stat['tepat']) }}% dari total hadir</p>
+                <p class="stat-sub">{{ $persenHadir($stat['tepat']) }}% dari total hadir</p>
             </div>
         </article>
 
@@ -98,7 +74,7 @@
             <div class="stat-body">
                 <p class="stat-label">Terlambat</p>
                 <p class="stat-value">{{ $stat['terlambat'] }}</p>
-                <p class="stat-sub">{{ $persen($stat['terlambat']) }}% dari total hadir</p>
+                <p class="stat-sub">{{ $persenHadir($stat['terlambat']) }}% dari total hadir</p>
             </div>
         </article>
 
@@ -107,7 +83,7 @@
             <div class="stat-body">
                 <p class="stat-label">Alpha</p>
                 <p class="stat-value">{{ $stat['alpha'] }}</p>
-                <p class="stat-sub">{{ $persen($stat['alpha']) }}% dari total hadir</p>
+                <p class="stat-sub">{{ $persenHariKerja($stat['alpha']) }}% dari hari kerja</p>
             </div>
         </article>
 
@@ -121,25 +97,31 @@
 
             <div class="last-head">
                 <h2>Presensi Terakhir</h2>
-                <span class="badge {{ $lastLate ? 'badge--late' : 'badge--ontime' }}">{{ $last['status'] }}</span>
+                @if ($last)
+                    <span class="badge {{ $lastLate ? 'badge--late' : 'badge--ontime' }}">{{ $last['status'] }}</span>
+                @endif
             </div>
 
             <div class="last-body">
 
-                <div class="date-box">
-                    <span class="date-day">{{ $last['hari'] }}</span>
-                    <span class="date-num">{{ $last['tanggal'] }}</span>
-                    <span class="date-month">{{ $last['bulan'] }}</span>
-                </div>
+                @if ($last)
+                    <div class="date-box">
+                        <span class="date-day">{{ $last['hari'] }}</span>
+                        <span class="date-num">{{ $last['tanggal'] }}</span>
+                        <span class="date-month">{{ $last['bulan'] }}</span>
+                    </div>
 
-                <ul class="last-details">
-                    <li><svg aria-hidden="true"><use href="#i-pin"/></svg>{{ $last['lokasi'] }}</li>
-                    <li><svg aria-hidden="true"><use href="#i-clock"/></svg>{{ $last['jam'] }}</li>
-                    <li><svg aria-hidden="true"><use href="#i-note"/></svg>{{ $last['kegiatan'] }}</li>
-                    <li class="points"><span class="star">★</span>+{{ $last['poin'] }} Poin</li>
-                </ul>
+                    <ul class="last-details">
+                        <li><svg aria-hidden="true"><use href="#i-pin"/></svg>{{ $last['lokasi'] }}</li>
+                        <li><svg aria-hidden="true"><use href="#i-clock"/></svg>{{ $last['jam'] }}</li>
+                        <li><svg aria-hidden="true"><use href="#i-note"/></svg>{{ $last['kegiatan'] }}</li>
+                        <li class="points"><span class="star">★</span>+{{ $last['poin'] }} Poin</li>
+                    </ul>
+                @else
+                    <p>Belum ada presensi tercatat.</p>
+                @endif
 
-                <a href="#" class="btn-outline">Lihat History</a>
+                <a href="{{ url('/history-test') }}" class="btn-outline">Lihat History</a>
 
             </div>
         </article>

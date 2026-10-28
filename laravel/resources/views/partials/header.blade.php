@@ -6,12 +6,11 @@
     <div class="topbar-right">
 
         <a href="{{ url('/notifikasi-test') }}" class="bell-btn"
+        data-unread-url="{{ url('/notifikasi/belum-dibaca') }}"
         aria-label="Notifikasi{{ $notif > 0 ? ' (' . $notif . ' belum dibaca)' : '' }}"
         @if (request()->is('notifikasi*')) aria-current="page" @endif>
             <svg aria-hidden="true"><use href="#i-bell"/></svg>
-            @if ($notif > 0)
-                <b class="bell-badge">{{ $notif }}</b>
-            @endif
+            <b class="bell-badge" @if ($notif === 0) hidden @endif>{{ $notif }}</b>
         </a>
 
         <span class="topbar-divider"></span>

@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(RiwayatPoin::class, 'id_user', 'id');
     }
 
+    public function notifikasiSaya(): HasMany
+    {
+        return $this->hasMany(UserNotification::class, 'id_user', 'id');
+    }
+
     public function presensiDikonfirmasi(): HasMany
     {
         return $this->hasMany(Presensi::class, 'id_admin_konfirmasi', 'id');

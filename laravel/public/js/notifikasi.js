@@ -1,13 +1,5 @@
 /* =========================================================
    NOTIFIKASI  —  public/js/notifikasi.js
-   Belum ada backend: data di bawah adalah DUMMY dan status
-   "dibaca" hanya disimpan di memori (hilang saat refresh).
-   Bentuk data (per notifikasi):
-   {
-     id, kat:'presensi'|'poin'|'pengumuman'|'akun',
-     judul, isi, waktu:'YYYY-MM-DDTHH:mm', dibaca:true|false
-   }
-   Titik sambung backend ditandai "TODO (backend)".
 ========================================================= */
 
 (function () {
@@ -18,14 +10,7 @@
 
     const $ = (id) => document.getElementById(id);
 
-    /* =========================
-       KONFIGURASI (DUMMY)
-    ========================= */
-
     const PER_PAGE = 7;
-
-    // Tanggal "hari ini" untuk data dummy. TODO (backend): ganti dengan waktu server.
-    const REF_HARI_INI = "2026-08-31";
 
     const KAT = {
         semua: { label: "Semua", icon: "#i-bell" },
@@ -55,64 +40,7 @@
         profil: app.dataset.urlProfil,
     };
 
-    const data = [
-        {
-            id: 1,
-            kat: "presensi",
-            judul: "Presensi Berhasil",
-            isi: "Kamu berhasil melakukan presensi pada 31 Agustus 2026 (Senin).",
-            waktu: "2026-08-31T09:10",
-            dibaca: false,
-        },
-        {
-            id: 2,
-            kat: "poin",
-            judul: "Poin Bertambah",
-            isi: "Kamu mendapatkan +10 poin dari presensi hari ini.",
-            waktu: "2026-08-31T09:10",
-            dibaca: false,
-        },
-        {
-            id: 3,
-            kat: "pengumuman",
-            judul: "Pengumuman Baru",
-            isi: "Template laporan mingguan sudah diperbarui. Silakan cek di menu Magang.",
-            waktu: "2026-08-30T16:32",
-            dibaca: false,
-        },
-        {
-            id: 4,
-            kat: "akun",
-            judul: "Perubahan Password",
-            isi: "Password akun kamu telah berhasil diubah pada 26 Agustus 2026 pukul 16.24 WIB.",
-            waktu: "2026-08-26T16:24",
-            dibaca: true,
-        },
-        {
-            id: 5,
-            kat: "presensi",
-            judul: "Presensi Terlambat",
-            isi: "Kamu melakukan presensi pada 28 Agustus 2026 (Jumat) pukul 12:18 WIB.",
-            waktu: "2026-08-28T12:18",
-            dibaca: true,
-        },
-        {
-            id: 6,
-            kat: "poin",
-            judul: "Poin Bertambah",
-            isi: "Kamu mendapatkan +10 poin dari tugas magang mingguan.",
-            waktu: "2026-08-25T10:05",
-            dibaca: true,
-        },
-        {
-            id: 7,
-            kat: "pengumuman",
-            judul: "Pengumuman Jadwal Meeting",
-            isi: "Jadwal meeting internal Let's Play akan dilaksanakan pada 2 September 2026.",
-            waktu: "2026-08-24T13:40",
-            dibaca: true,
-        },
-    ];
+    let data = [];
 
     /* =========================
        HELPER
@@ -142,32 +70,78 @@
         day: "numeric",
         month: "long",
         year: "numeric",
-        timeZone: "UTC",
+        timeZone: "Asia/Jakarta",
     });
-    const toDate = (iso) => new Date(iso + "T00:00:00Z");
+    const fmtTglWaktu = new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+    });
+    const toDate = (iso) => new Date(iso);
 
-    function kemarinDari(iso) {
-        const d = toDate(iso);
-        d.setUTCDate(d.getUTCDate() - 1);
-        return d.toISOString().slice(0, 10);
+    function tanggalLokal(date) {
+        const parts = new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Jakarta",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).formatToParts(date);
+        const values = Object.fromEntries(
+            parts.map(({ type, value }) => [type, value]),
+        );
+        return values.year + "-" + values.month + "-" + values.day;
     }
 
-    // "09:10 WIB" / "Kemarin, 16:32" / "26 Agustus 2026"
     function waktuSingkat(dt) {
-        const [tgl, jam] = dt.split("T");
+        const waktu = toDate(dt);
+        const hariIni = tanggalLokal(new Date());
+        const tanggal = dt.slice(0, 10);
+        const jam = new Intl.DateTimeFormat("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "Asia/Jakarta",
+        }).format(waktu);
 
-        if (tgl === REF_HARI_INI) return jam + " WIB";
-        if (tgl === kemarinDari(REF_HARI_INI)) return "Kemarin, " + jam;
-        return fmtTgl.format(toDate(tgl));
+        if (tanggal === hariIni) return jam + " WIB";
+        const [tahun, bulan, hari] = hariIni.split("-").map(Number);
+        const kemarin = new Date(Date.UTC(tahun, bulan - 1, hari - 1))
+            .toISOString()
+            .slice(0, 10);
+        if (tanggal === kemarin) return "Kemarin, " + jam;
+        return fmtTgl.format(waktu);
     }
 
-    // "31 Agustus 2026, 09:10 WIB"
     function waktuLengkap(dt) {
-        const [tgl, jam] = dt.split("T");
-        return fmtTgl.format(toDate(tgl)) + ", " + jam + " WIB";
+        return fmtTglWaktu.format(toDate(dt)) + " WIB";
     }
 
     const belumDibaca = () => data.filter((n) => !n.dibaca).length;
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    async function kirimPermintaan(url, options = {}) {
+        const response = await fetch(url, {
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+                ...(options.method === "POST"
+                    ? {
+                          "Content-Type": "application/json",
+                          "X-CSRF-TOKEN": token,
+                      }
+                    : {}),
+            },
+            ...options,
+        });
+
+        if (!response.ok) {
+            throw new Error("Permintaan notifikasi gagal diproses.");
+        }
+
+        return response.json();
+    }
 
     /* =========================
        STATE
@@ -229,7 +203,8 @@
 
         document.querySelectorAll(".nav-badge, .bell-badge").forEach((b) => {
             b.textContent = jumlah;
-            b.style.display = jumlah > 0 ? "" : "none";
+            b.hidden = jumlah === 0;
+            b.style.display = "";
         });
     }
 
@@ -302,7 +277,7 @@
     ========================= */
 
     function itemHtml(n) {
-        const k = KAT[n.kat];
+        const k = KAT[n.kat] || KAT.akun;
 
         return (
             '<li><button type="button" class="notif-item' +
@@ -410,9 +385,11 @@
         el.empty.hidden = tampil.length !== 0;
 
         el.emptyText.textContent =
-            state.query.trim() || state.filter !== "semua"
-                ? "Coba ubah kata kunci atau pilih kategori lain."
-                : "Belum ada notifikasi untuk ditampilkan.";
+            firstLoad && data.length === 0
+                ? "Notifikasi sedang dimuat..."
+                : state.query.trim() || state.filter !== "semua"
+                  ? "Coba ubah kata kunci atau pilih kategori lain."
+                  : "Belum ada notifikasi untuk ditampilkan.";
 
         el.info.textContent =
             "Menampilkan " +
@@ -427,6 +404,37 @@
         renderKategori();
         renderDaftar();
         syncBadge();
+    }
+
+    let firstLoad = true;
+    let refreshAktif = false;
+
+    async function refreshNotifikasi() {
+        if (refreshAktif) return;
+        refreshAktif = true;
+
+        try {
+            const response = await kirimPermintaan(app.dataset.urlData);
+            if (!response.success || !Array.isArray(response.data)) {
+                throw new Error("Format data notifikasi tidak valid.");
+            }
+
+            data = response.data;
+            renderSemua();
+        } catch (error) {
+            console.error(error);
+            if (firstLoad) {
+                el.empty.hidden = false;
+                el.emptyText.textContent =
+                    "Notifikasi gagal dimuat. Silakan muat ulang halaman.";
+                el.list.hidden = true;
+                el.info.textContent = "";
+                el.pager.innerHTML = "";
+            }
+        } finally {
+            firstLoad = false;
+            refreshAktif = false;
+        }
     }
 
     /* =========================
@@ -459,16 +467,24 @@
         if (el.filterDlg.open) el.filterDlg.close();
     });
 
-    $("btnMarkAll").addEventListener("click", () => {
+    $("btnMarkAll").addEventListener("click", async () => {
         if (belumDibaca() === 0) {
             toast("Tidak ada notifikasi baru");
         } else {
-            // TODO (backend): kirim permintaan "tandai semua dibaca" ke server.
-            data.forEach((n) => {
-                n.dibaca = true;
-            });
-            renderSemua();
-            toast("Semua notifikasi ditandai sudah dibaca");
+            try {
+                await kirimPermintaan(app.dataset.urlMarkAll, {
+                    method: "POST",
+                    body: JSON.stringify({}),
+                });
+                data.forEach((n) => {
+                    n.dibaca = true;
+                });
+                renderSemua();
+                toast("Semua notifikasi ditandai sudah dibaca");
+            } catch (error) {
+                console.error(error);
+                toast("Notifikasi gagal diperbarui. Coba lagi.");
+            }
         }
 
         if (el.filterDlg.open) el.filterDlg.close();
@@ -478,7 +494,7 @@
        POP-UP DETAIL
     ========================= */
 
-    function bukaDetail(id) {
+    async function bukaDetail(id) {
         const n = data.find((item) => String(item.id) === String(id));
         if (!n) return;
 
@@ -493,18 +509,30 @@
         $("detailText").textContent = n.isi;
 
         const link = $("detailLink");
-        if (k.link && URL_TUJUAN[k.link]) {
-            link.href = URL_TUJUAN[k.link];
+        const urlTujuan = n.url || URL_TUJUAN[k.link];
+        if (urlTujuan) {
+            link.href = urlTujuan;
             link.textContent = k.linkTeks;
             link.hidden = false;
         } else {
             link.hidden = true;
         }
 
-        // TODO (backend): tandai notifikasi ini sudah dibaca di server.
         if (!n.dibaca) {
-            n.dibaca = true;
-            renderSemua();
+            try {
+                await kirimPermintaan(
+                    app.dataset.urlMarkBase + "/" + encodeURIComponent(n.id) + "/dibaca",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({}),
+                    },
+                );
+                n.dibaca = true;
+                renderSemua();
+            } catch (error) {
+                console.error(error);
+                toast("Status notifikasi gagal diperbarui.");
+            }
         }
 
         el.detailDlg.showModal();
@@ -645,4 +673,11 @@
 
     tempatkanFilter();
     renderSemua();
+    refreshNotifikasi();
+    window.setInterval(() => {
+        if (!document.hidden) refreshNotifikasi();
+    }, 15000);
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) refreshNotifikasi();
+    });
 })();
