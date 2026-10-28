@@ -9,7 +9,8 @@
 
 @section('content')
 
-    <div class="hist" id="historyApp">
+    <div class="hist" id="historyApp"
+         data-history-url="{{ url('/presensi/riwayat-saya') }}">
 
         {{-- JUDUL + PERIODE (periode pindah ke kartu atas di mobile, diatur history.js) --}}
         <x-page-hero title="Riwayat Presensi"
@@ -39,7 +40,7 @@
 
                         <div class="hist-mp__grid" id="mpGrid"></div>
 
-                        <p class="hist-mp__hint">Hanya bulan yang memiliki data presensi yang dapat dipilih.</p>
+                        <p class="hist-mp__hint">Pilih bulan dalam periode magang kamu.</p>
                     </div>
 
                 </div>
@@ -57,7 +58,7 @@
                 <article class="hist-sum hist-sum--rate">
                     <div class="hist-sum__text hist-only-desktop">
                         <h2>Persentase Kehadiran</h2>
-                        <p>Pertahankan performa kehadiran kamu agar mendapat predikat terbaik.</p>
+                        <p>Persentase dihitung dari hari kerja Senin–Jumat pada periode terpilih.</p>
                     </div>
 
                     <div class="hist-donut" role="img" aria-label="Persentase kehadiran">
@@ -83,7 +84,7 @@
                     <div class="hist-sum__body">
                         <p class="hist-sum__label">Total Presensi</p>
                         <p class="hist-sum__value" id="sumTotal">0</p>
-                        <p class="hist-sum__sub">dari <span id="sumHari">60</span> hari internship</p>
+                        <p class="hist-sum__sub">dari <span id="sumHari">0</span> hari kerja</p>
                     </div>
                 </article>
 

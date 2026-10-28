@@ -1,12 +1,6 @@
 @php
     $user = auth()->user();
-
-    /*
-     * TODO (backend): $notif masih DUMMY dan hanya ditulis di SATU tempat ini.
-     * Nanti ganti dengan data asli (mis. lewat View Composer) supaya semua
-     * halaman otomatis mendapat jumlah notifikasi yang sama.
-     */
-    $notif = $notif ?? 3;
+    $notif = $user?->notifikasiSaya()->whereNull('dibaca_pada')->count() ?? 0;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -57,6 +51,7 @@
 
     {{-- JS khusus halaman --}}
     @stack('scripts')
+    <script src="{{ asset('js/notification-badge.js') }}"></script>
 
 </body>
 </html>

@@ -197,6 +197,10 @@ a.bell-btn {
     font-weight: 700;
 }
 
+.bell-badge[hidden] {
+    display: none;
+}
+
 .topbar-divider {
     width: 1px;
     height: 36px;
