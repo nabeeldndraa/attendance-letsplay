@@ -5,34 +5,66 @@
  * - Tanggal selesai (data-min="tanggal_mulai") tidak bisa lebih awal dari tanggal mulai.
  */
 (function () {
-    const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    const SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const DOW = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    const MONTHS = [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+    ];
+    const SHORT = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Agu",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Des",
+    ];
+    const DOW = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
 
-    const pad = (n) => String(n).padStart(2, '0');
-    const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const pad = (n) => String(n).padStart(2, "0");
+    const toISO = (d) =>
+        `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const fromISO = (s) => {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return null;
-        const [y, m, d] = s.split('-').map(Number);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(s || "")) return null;
+        const [y, m, d] = s.split("-").map(Number);
         return new Date(y, m - 1, d);
     };
-    const format = (d) => `${d.getDate()} ${SHORT[d.getMonth()]} ${d.getFullYear()}`;
-    const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const format = (d) =>
+        `${d.getDate()} ${SHORT[d.getMonth()]} ${d.getFullYear()}`;
+    const startOfDay = (d) =>
+        new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
     const pickers = [];
 
     function closeAll(except) {
-        pickers.forEach((p) => { if (p !== except) p.close(); });
+        pickers.forEach((p) => {
+            if (p !== except) p.close();
+        });
     }
 
-    document.querySelectorAll('.datepicker').forEach((wrap) => {
-        const input = wrap.querySelector('.dp-input');
-        const hidden = wrap.querySelector('.dp-value');
-        const minEl = wrap.dataset.min ? document.getElementById(wrap.dataset.min) : null;
+    document.querySelectorAll(".datepicker").forEach((wrap) => {
+        const input = wrap.querySelector(".dp-input");
+        const hidden = wrap.querySelector(".dp-value");
+        const minEl = wrap.dataset.min
+            ? document.getElementById(wrap.dataset.min)
+            : null;
 
-        const pop = document.createElement('div');
-        pop.className = 'dp-pop';
+        const pop = document.createElement("div");
+        pop.className = "dp-pop";
         pop.hidden = true;
         wrap.appendChild(pop);
 
@@ -43,9 +75,9 @@
         const getValue = () => fromISO(hidden.value);
 
         function setValue(d) {
-            hidden.value = d ? toISO(d) : '';
-            input.value = d ? format(d) : '';
-            hidden.dispatchEvent(new Event('change'));
+            hidden.value = d ? toISO(d) : "";
+            input.value = d ? format(d) : "";
+            hidden.dispatchEvent(new Event("change"));
         }
 
         function render() {
@@ -64,16 +96,17 @@
                     <button type="button" class="dp-nav" data-nav="1" aria-label="Bulan berikutnya">&rsaquo;</button>
                 </div>
                 <div class="dp-grid">
-                    ${DOW.map((d) => `<div class="dp-dow">${d}</div>`).join('')}
+                    ${DOW.map((d) => `<div class="dp-dow">${d}</div>`).join("")}
                     ${'<div class="dp-empty"></div>'.repeat(offset)}`;
 
             for (let day = 1; day <= total; day++) {
                 const date = new Date(y, m, day);
-                const cls = ['dp-day'];
-                if (date.getTime() === today.getTime()) cls.push('today');
-                if (selected && date.getTime() === selected.getTime()) cls.push('selected');
-                const disabled = min && date < min ? 'disabled' : '';
-                html += `<button type="button" class="${cls.join(' ')}" data-day="${day}" ${disabled}>${day}</button>`;
+                const cls = ["dp-day"];
+                if (date.getTime() === today.getTime()) cls.push("today");
+                if (selected && date.getTime() === selected.getTime())
+                    cls.push("selected");
+                const disabled = min && date < min ? "disabled" : "";
+                html += `<button type="button" class="${cls.join(" ")}" data-day="${day}" ${disabled}>${day}</button>`;
             }
 
             html += `</div>
@@ -101,43 +134,57 @@
         pickers.push(api);
 
         // Klik di dalam popup
-        pop.addEventListener('click', (e) => {
-            const btn = e.target.closest('button');
+        pop.addEventListener("click", (e) => {
+            const btn = e.target.closest("button");
             if (!btn) return;
 
             if (btn.dataset.nav) {
-                view = new Date(view.getFullYear(), view.getMonth() + Number(btn.dataset.nav), 1);
+                view = new Date(
+                    view.getFullYear(),
+                    view.getMonth() + Number(btn.dataset.nav),
+                    1,
+                );
                 render();
             } else if (btn.dataset.day) {
-                setValue(new Date(view.getFullYear(), view.getMonth(), Number(btn.dataset.day)));
+                setValue(
+                    new Date(
+                        view.getFullYear(),
+                        view.getMonth(),
+                        Number(btn.dataset.day),
+                    ),
+                );
                 close();
-            } else if (btn.dataset.action === 'today') {
+            } else if (btn.dataset.action === "today") {
                 const today = startOfDay(new Date());
                 const min = getMin();
                 if (!min || today >= min) {
                     setValue(today);
                     close();
                 }
-            } else if (btn.dataset.action === 'clear') {
+            } else if (btn.dataset.action === "clear") {
                 setValue(null);
                 close();
             }
         });
 
         // Input hanya bisa diisi lewat popup (tidak diketik manual)
-        input.addEventListener('click', open);
-        input.addEventListener('focus', open);
-        input.addEventListener('paste', (e) => e.preventDefault());
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') return;
-            if (e.key === 'Escape') { close(); return; }
+        input.addEventListener("click", open);
+        input.addEventListener("focus", open);
+        input.addEventListener("paste", (e) => e.preventDefault());
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Tab") return;
+            if (e.key === "Escape") {
+                close();
+                return;
+            }
             e.preventDefault();
-            if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') open();
+            if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown")
+                open();
         });
 
         // Kalau tanggal mulai berubah dan melewati tanggal selesai, kosongkan tanggal selesai
         if (minEl) {
-            minEl.addEventListener('change', () => {
+            minEl.addEventListener("change", () => {
                 const min = getMin();
                 const current = getValue();
                 if (min && current && current < min) setValue(null);
@@ -150,7 +197,11 @@
     });
 
     // Klik di luar popup menutup popup
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.datepicker')) closeAll();
+    document.addEventListener("click", (e) => {
+        const diDalam = e
+            .composedPath()
+            .some((el) => el.classList && el.classList.contains("datepicker"));
+
+        if (!diDalam) closeAll();
     });
 })();

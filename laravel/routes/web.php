@@ -9,6 +9,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserNotificationController;
 use App\Http\Controllers\UserDashboardController;
 
+
 Route::get('/', function () {
     return redirect('/login-test');
 });
@@ -125,4 +126,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         AdminUserController::class,
         'toggleStatus'
     ])->name('data-user.status');
+
+    Route::view('/leaderboard', 'admin.leaderboard')->name('leaderboard');
+    // Route::view('/notifikasi', 'admin.notifikasi')->name('notifikasi');
 });
