@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserNotificationController;
+use App\Http\Controllers\UserDashboardController;
 
 
 Route::get('/', function () {
@@ -23,10 +25,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 
-Route::get('/dashboard-test', function () {
-
-    return view('dashboard-test');
-})->middleware('auth');
+Route::get('/dashboard-test', [UserDashboardController::class, 'index'])
+    ->middleware('auth');
 
 Route::post('/presensi', [PresensiController::class, 'store'])
     ->middleware('auth');
@@ -39,7 +39,22 @@ Route::view('/history-test', 'history')->middleware('auth');
 
 Route::view('/leaderboard-test', 'leaderboard')->middleware('auth');
 
-Route::view('/notifikasi-test', 'notifikasi')->middleware('auth');
+Route::get('/notifikasi-test', [UserNotificationController::class, 'index'])
+    ->middleware('auth');
+Route::get('/notifikasi/data', [UserNotificationController::class, 'data'])
+    ->middleware('auth');
+Route::get('/notifikasi/belum-dibaca', [
+    UserNotificationController::class,
+    'unreadCount',
+])->middleware('auth');
+Route::post('/notifikasi/dibaca-semua', [
+    UserNotificationController::class,
+    'markAllAsRead',
+])->middleware('auth');
+Route::post('/notifikasi/{id}/dibaca', [
+    UserNotificationController::class,
+    'markAsRead',
+])->whereNumber('id')->middleware('auth');
 
 Route::view('/profil-test', 'profil')->middleware('auth');
 

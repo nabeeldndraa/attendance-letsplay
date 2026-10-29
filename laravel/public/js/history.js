@@ -1,15 +1,5 @@
 /* =========================================================
    HISTORY  —  public/js/history.js
-   Belum ada backend: data di bawah adalah DUMMY.
-   Saat backend siap, ganti fungsi buatDummy() dengan fetch()
-   ke endpoint riwayat. Bentuk data (per log):
-   {
-     id, tanggal:'YYYY-MM-DD', jam:'09.10'|null,
-     status:'tepat'|'terlambat'|'alpha'|'sakit'|'izin',
-     mode:'WFO'|'WFH'|null, lokasi, poin, progress,
-     alasan, keterangan,          // khusus sakit/izin
-     lat, lng                     // boleh null
-   }
 ========================================================= */
 
 (function () {
@@ -20,13 +10,7 @@
 
     const $ = (id) => document.getElementById(id);
 
-    /* =========================
-       KONFIGURASI (DUMMY)
-    ========================= */
-
-    const HARI_INTERNSHIP = 60;
     const PER_PAGE = 7;
-    const JUMLAH_DUMMY = 48;
 
     const STATUS = {
         tepat: {
@@ -40,6 +24,15 @@
         },
         terlambat: {
             label: "Terlambat",
+            cls: "late",
+            rowIcon: "#i-clock",
+            badgeIcon: "#s-alert",
+            title: "Hadir",
+            poin: "+5 poin",
+            presensi: true,
+        },
+        menunggu: {
+            label: "Menunggu Konfirmasi",
             cls: "late",
             rowIcon: "#i-clock",
             badgeIcon: "#s-alert",
@@ -74,144 +67,12 @@
         },
     };
 
-    /* =========================
-       DATA DUMMY
-    ========================= */
-
-    const OVERRIDE = {
-        "2026-08-31": {
-            jam: "09.10",
-            progress: "Melanjutkan development modul history",
-        },
-        "2026-08-28": {
-            status: "terlambat",
-            jam: "12.18",
-            progress: "Selesai slicing template admin",
-        },
-        "2026-08-27": {
-            jam: "09.05",
-            progress: "Daily standup & perbaikan bug layout",
-        },
-        "2026-08-26": {
-            status: "alpha",
-            jam: "17.15",
-            progress: "Sakit dengan surat keterangan dokter",
-        },
-        "2026-08-25": {
-            jam: "10.10",
-            progress: "Research component design system",
-        },
-        "2026-08-24": {
-            status: "terlambat",
-            jam: "14.45",
-            progress: "Koordinasi timeline project",
-        },
-        "2026-08-21": {
-            jam: "09.50",
-            progress: "Kickoff meeting internal Letsplay",
-        },
-        "2026-08-19": {
-            status: "izin",
-            alasan: "Izin",
-            keterangan: "Ada keperluan keluarga di luar kota.",
-        },
-        "2026-08-13": {
-            status: "sakit",
-            alasan: "Sakit",
-            keterangan: "Demam dan flu, istirahat sesuai anjuran dokter.",
-        },
-        "2026-08-06": {
-            mode: "WFH",
-            jam: "08.47",
-            lokasi: "Kolektif",
-            progress: "Melanjutkan development modul history",
-            lat: -7.948586156707261,
-            lng: 112.64341358036212,
-        },
-        "2026-07-16": { status: "terlambat" },
-        "2026-07-02": { status: "terlambat" },
-    };
-
-    const PROGRESS_DUMMY = [
-        "Membuat halaman dashboard user",
-        "Revisi UI halaman presensi",
-        "Slicing desain mobile",
-        "Meeting mingguan bersama tim",
-        "Memperbaiki bug responsive",
-        "Menyusun dokumentasi komponen",
-        "Review desain bersama mentor",
-        "Integrasi komponen sidebar",
-    ];
-
     const pad = (n) => String(n).padStart(2, "0");
-
-    function buatDummy() {
-        const out = [];
-        const d = new Date(Date.UTC(2026, 7, 31));
-
-        while (out.length < JUMLAH_DUMMY) {
-            const hari = d.getUTCDay();
-
-            if (hari !== 0 && hari !== 6) {
-                const i = out.length;
-                const iso = d.toISOString().slice(0, 10);
-                const o = OVERRIDE[iso] || {};
-                const status = o.status || "tepat";
-                const presensi = STATUS[status].presensi;
-
-                let jam = null;
-                if (presensi) {
-                    if (o.jam) {
-                        jam = o.jam;
-                    } else {
-                        const menit =
-                            status === "tepat"
-                                ? 510 + ((i * 13) % 90) // 08.30 - 09.59
-                                : status === "terlambat"
-                                  ? 720 + ((i * 17) % 180) // 12.00 - 14.59
-                                  : 905 + ((i * 11) % 120); // setelah 15.00
-                        jam =
-                            pad(Math.floor(menit / 60)) + "." + pad(menit % 60);
-                    }
-                }
-
-                const mode = presensi
-                    ? o.mode || (i % 5 === 3 ? "WFH" : "WFO")
-                    : null;
-
-                out.push({
-                    id: i + 1,
-                    tanggal: iso,
-                    jam: jam,
-                    status: status,
-                    mode: mode,
-                    lokasi: presensi
-                        ? o.lokasi ||
-                          (mode === "WFH" ? "Kolektif" : "MCC Office")
-                        : null,
-                    poin: presensi ? STATUS[status].poin : null,
-                    progress: presensi
-                        ? o.progress ||
-                          PROGRESS_DUMMY[i % PROGRESS_DUMMY.length]
-                        : null,
-                    alasan: o.alasan || null,
-                    keterangan: o.keterangan || null,
-                    lat: presensi
-                        ? (o.lat ?? -7.948586 + ((i % 5) - 2) * 0.00002)
-                        : null,
-                    lng: presensi
-                        ? (o.lng ?? 112.643413 + ((i % 5) - 2) * 0.00002)
-                        : null,
-                });
-            }
-
-            d.setUTCDate(d.getUTCDate() - 1);
-        }
-
-        return out;
-    }
-
-    const logs = buatDummy();
+    let logs = [];
+    let periodeList = [];
+    let tanggalMulai = null;
+    let tanggalSelesai = null;
+    let tanggalHariIni = null;
 
     /* =========================
        HELPER
@@ -275,21 +136,31 @@
         );
     }
 
+    function daftarPeriode(tanggalAwal, tanggalAkhir) {
+        const awal = toDate(tanggalAwal);
+        const akhir = toDate(tanggalAkhir);
+        const periode = [];
+        let tahun = awal.getUTCFullYear();
+        let bulan = awal.getUTCMonth();
+
+        while (
+            Date.UTC(tahun, bulan, 1) <=
+            Date.UTC(akhir.getUTCFullYear(), akhir.getUTCMonth(), 1)
+        ) {
+            periode.push(tahun + "-" + pad(bulan + 1));
+            bulan++;
+            if (bulan === 12) {
+                bulan = 0;
+                tahun++;
+            }
+        }
+
+        return periode.reverse();
+    }
+
     /* =========================
        STATE
     ========================= */
-
-    const periodeList = Array.from(
-        new Set(logs.map((l) => l.tanggal.slice(0, 7))),
-    )
-        .sort()
-        .reverse();
-
-    const state = {
-        periode: periodeList[0],
-        query: "",
-        page: 1,
-    };
 
     const el = {
         search: $("historySearch"),
@@ -300,6 +171,48 @@
         dialog: $("detailDialog"),
         body: $("detailBody"),
     };
+
+    el.empty.hidden = false;
+    el.empty.textContent = "Memuat riwayat presensi...";
+
+    fetch(app.dataset.historyUrl, {
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Gagal memuat riwayat presensi.");
+            }
+
+            return response.json();
+        })
+        .then((response) => {
+            if (
+                !response.success ||
+                !response.meta ||
+                !Array.isArray(response.data)
+            ) {
+                throw new Error("Format data riwayat presensi tidak valid.");
+            }
+
+            logs = response.data;
+            tanggalMulai = response.meta.tanggal_mulai;
+            tanggalSelesai = response.meta.tanggal_selesai;
+            tanggalHariIni = response.meta.tanggal_hari_ini;
+            periodeList = daftarPeriode(tanggalMulai, tanggalSelesai);
+
+            if (periodeList.length === 0) {
+                periodeList = [tanggalHariIni.slice(0, 7)];
+            }
+
+            const periodeTerakhirHadir = logs.find((log) => log.tercatat);
+            const state = {
+                periode:
+                    periodeTerakhirHadir?.tanggal.slice(0, 7) ??
+                    periodeList[0],
+                query: "",
+                page: 1,
+            };
 
     function daftarTerfilter() {
         const q = state.query.trim().toLowerCase();
@@ -326,25 +239,29 @@
     ========================= */
 
     function renderRingkasan() {
-        const total = logs.length;
-        const tepat = logs.filter((l) => l.status === "tepat").length;
-        const persen = Math.min(
-            100,
-            Math.round((total / HARI_INTERNSHIP) * 100),
+        const periodeLogs = logs.filter(
+            (l) => l.tanggal.slice(0, 7) === state.periode,
         );
-        const rasioTepat = total ? tepat / total : 0;
+        const hariKerja = periodeLogs.length;
+        const hadir = periodeLogs.filter((l) =>
+            ["tepat", "terlambat", "menunggu"].includes(l.status),
+        ).length;
+        const tepat = periodeLogs.filter((l) => l.status === "tepat").length;
+        const persen = hariKerja ? Math.round((hadir / hariKerja) * 100) : 0;
+        const rasioTepat = hadir ? tepat / hadir : 0;
 
         $("sumPct").textContent = persen + "%";
         $("sumPctM").textContent = persen + "%";
-        $("sumTotal").textContent = total;
-        $("sumHari").textContent = HARI_INTERNSHIP;
+        $("sumTotal").textContent = hadir;
+        $("sumHari").textContent = hariKerja;
         $("sumTepat").textContent = tepat;
-        $("sumPredikat").textContent =
-            rasioTepat >= 0.85
-                ? "Predikat disiplin tinggi"
-                : rasioTepat >= 0.7
-                  ? "Predikat disiplin baik"
-                  : "Perlu ditingkatkan";
+        $("sumPredikat").textContent = !hadir
+            ? "-"
+            : rasioTepat >= 0.85
+              ? "Predikat disiplin tinggi"
+              : rasioTepat >= 0.7
+                ? "Predikat disiplin baik"
+                : "Perlu ditingkatkan";
 
         // diberi jeda supaya animasi donut terlihat
         requestAnimationFrame(() => {
@@ -573,12 +490,14 @@
 
         const info =
             '<div class="hist-info">' +
-            infoItem("#i-clock", "Time In", esc(l.jam)) +
+            infoItem("#i-clock", "Time In", esc(l.jam || "-")) +
             infoItem(modeIcon, "Mode", esc(l.mode || "-")) +
             infoItem(
                 "#i-star",
                 "Point",
-                esc(l.poin || "-"),
+                l.poin === null
+                    ? "-"
+                    : esc((l.poin >= 0 ? "+" : "") + l.poin + " poin"),
                 "hist-info__item--wide-m",
             ) +
             infoItem(
@@ -594,6 +513,19 @@
                 "hist-info__item--wide-m",
             ) +
             "</div>";
+
+        if (l.status === "alpha" && !l.tercatat) {
+            return (
+                atas +
+                '<div class="hist-info hist-info--stack">' +
+                infoItem(
+                    "#i-info",
+                    "Keterangan",
+                    "Tidak ada presensi tercatat pada hari kerja ini.",
+                ) +
+                "</div>"
+            );
+        }
 
         // Koordinat bisa kosong (mis. WFH tanpa GPS) -> blok Accuracy disembunyikan
         const adaKoordinat =
@@ -652,8 +584,8 @@
 
     const tersedia = new Set(periodeList);
     const daftarTahun = periodeList.map((k) => Number(k.slice(0, 4)));
-    const tahunMin = Math.min.apply(null, daftarTahun);
-    const tahunMax = Math.max.apply(null, daftarTahun);
+    const tahunMin = Math.min(...daftarTahun);
+    const tahunMax = Math.max(...daftarTahun);
 
     const mp = {
         wrap: $("periodControl"),
@@ -711,6 +643,7 @@
         state.periode = key;
         state.page = 1;
         mp.label.textContent = labelPeriode(key);
+        renderRingkasan();
         renderDaftar();
     }
 
@@ -797,4 +730,14 @@
 
     renderRingkasan();
     renderDaftar();
+        })
+        .catch((error) => {
+            console.error(error);
+            el.rows.hidden = true;
+            el.pager.innerHTML = "";
+            el.info.textContent = "";
+            el.empty.hidden = false;
+            el.empty.textContent =
+                "Riwayat presensi gagal dimuat. Silakan muat ulang halaman.";
+        });
 })();

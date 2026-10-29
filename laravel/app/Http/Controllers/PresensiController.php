@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Presensi;
 use App\Models\LokasiKantor;
+use App\Models\Presensi;
+use App\Models\UserNotification;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PresensiController extends Controller
 {
@@ -31,7 +34,7 @@ class PresensiController extends Controller
         if ($sudahPresensi) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda sudah melakukan presensi hari ini.'
+                'message' => 'Anda sudah melakukan presensi hari ini.',
             ], 422);
         }
 
@@ -39,7 +42,7 @@ class PresensiController extends Controller
         if ($jam->hour < 6) {
             return response()->json([
                 'success' => false,
-                'message' => 'Presensi belum dibuka. Presensi dimulai pukul 06.00 WIB.'
+                'message' => 'Presensi belum dibuka. Presensi dimulai pukul 06.00 WIB.',
             ], 422);
         }
 
@@ -47,7 +50,7 @@ class PresensiController extends Controller
         if ($jam->hour >= 15) {
             return response()->json([
                 'success' => false,
-                'message' => 'Waktu presensi sudah ditutup.'
+                'message' => 'Waktu presensi sudah ditutup.',
             ], 422);
         }
 
@@ -75,10 +78,10 @@ class PresensiController extends Controller
         */
         if ($request->tipe_kerja === 'WFO') {
 
-            if (!$request->latitude_user || !$request->longitude_user) {
+            if (! $request->latitude_user || ! $request->longitude_user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Lokasi pengguna tidak ditemukan.'
+                    'message' => 'Lokasi pengguna tidak ditemukan.',
                 ], 422);
             }
 
@@ -104,10 +107,10 @@ class PresensiController extends Controller
             }
 
             // Tidak ada lokasi kantor
-            if (!$lokasiTerdekat) {
+            if (! $lokasiTerdekat) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data lokasi kantor belum tersedia.'
+                    'message' => 'Data lokasi kantor belum tersedia.',
                 ], 422);
             }
 
@@ -117,8 +120,8 @@ class PresensiController extends Controller
                     'success' => false,
                     'message' => 'Anda berada di luar radius lokasi kantor.',
                     'lokasi_terdekat' => $lokasiTerdekat->nama_lokasi,
-                    'jarak' => $jarakTerdekat . ' meter',
-                    'radius' => $lokasiTerdekat->radius_meter . ' meter'
+                    'jarak' => $jarakTerdekat.' meter',
+                    'radius' => $lokasiTerdekat->radius_meter.' meter',
                 ], 422);
             }
 
@@ -139,23 +142,61 @@ class PresensiController extends Controller
             $jarakDariKantor = null;
         }
 
-        // Simpan presensi
-        $presensi = Presensi::create([
-            'id_user' => $user->id,
-            'tanggal' => $tanggal,
-            'jam_presensi' => $jam->format('H:i:s'),
-            'tipe_kerja' => $request->tipe_kerja,
-            'id_lokasi' => $idLokasi,
-            'latitude_user' => $request->latitude_user,
-            'longitude_user' => $request->longitude_user,
-            'jarak_dari_kantor' => $jarakDariKantor,
-            'progress_hari_ini' => $request->progress_hari_ini,
-            'status_presensi' => $status,
-            'status_konfirmasi' => '-',
-            'id_admin_konfirmasi' => null,
-            'catatan_admin' => null,
-            'point_didapat' => $point,
-        ]);
+        [$presensi] = DB::transaction(function () use (
+            $user,
+            $tanggal,
+            $jam,
+            $request,
+            $idLokasi,
+            $jarakDariKantor,
+            $status,
+            $point
+        ) {
+            $presensi = Presensi::create([
+                'id_user' => $user->id,
+                'tanggal' => $tanggal,
+                'jam_presensi' => $jam->format('H:i:s'),
+                'tipe_kerja' => $request->tipe_kerja,
+                'id_lokasi' => $idLokasi,
+                'latitude_user' => $request->latitude_user,
+                'longitude_user' => $request->longitude_user,
+                'jarak_dari_kantor' => $jarakDariKantor,
+                'progress_hari_ini' => $request->input('progress_hari_ini')
+                    ?: 'Tidak ada catatan kegiatan.',
+                'status_presensi' => $status,
+                'status_konfirmasi' => '-',
+                'id_admin_konfirmasi' => null,
+                'catatan_admin' => null,
+                'point_didapat' => $point,
+            ]);
+
+            $tanggalLabel = $jam->locale('id')->translatedFormat('j F Y');
+            $waktuLabel = $jam->format('H:i').' WIB';
+            $judulPresensi = $status === 'Terlambat'
+                ? 'Presensi Terlambat'
+                : 'Presensi Berhasil';
+            $isiPresensi = $status === 'Terlambat'
+                ? "Kamu melakukan presensi terlambat pada {$tanggalLabel} pukul {$waktuLabel}."
+                : "Presensi {$request->tipe_kerja} kamu berhasil pada {$tanggalLabel} pukul {$waktuLabel}.";
+
+            UserNotification::create([
+                'id_user' => $user->getKey(),
+                'kategori' => 'presensi',
+                'judul' => $judulPresensi,
+                'isi' => $isiPresensi,
+                'url_tujuan' => url('/history-test'),
+            ]);
+
+            UserNotification::create([
+                'id_user' => $user->getKey(),
+                'kategori' => 'poin',
+                'judul' => 'Poin Bertambah',
+                'isi' => "Kamu mendapatkan +{$point} poin dari presensi pada {$tanggalLabel}.",
+                'url_tujuan' => url('/history-test'),
+            ]);
+
+            return [$presensi];
+        });
 
         return response()->json([
             'success' => true,
@@ -180,7 +221,7 @@ class PresensiController extends Controller
             ->where('tanggal', $tanggal)
             ->first();
 
-        if (!$presensi) {
+        if (! $presensi) {
             return response()->json([
                 'success' => true,
                 'sudah_presensi' => false,
@@ -203,29 +244,106 @@ class PresensiController extends Controller
     public function riwayatSaya()
     {
         $user = Auth::user();
+        $tanggalHariIni = Carbon::now('Asia/Jakarta')->startOfDay();
+        $tanggalMulai = Carbon::parse(
+            $user->tanggal_mulai->toDateString(),
+            'Asia/Jakarta'
+        )->startOfDay();
+        $tanggalSelesai = min(
+            Carbon::parse(
+                $user->tanggal_selesai->toDateString(),
+                'Asia/Jakarta'
+            )->startOfDay(),
+            $tanggalHariIni
+        );
 
         $riwayat = Presensi::with('lokasiKantor')
             ->where('id_user', $user->id)
+            ->whereBetween('tanggal', [
+                $tanggalMulai->toDateString(),
+                $tanggalSelesai->toDateString(),
+            ])
             ->orderBy('tanggal', 'desc')
             ->orderBy('jam_presensi', 'desc')
-            ->get();
+            ->get()
+            ->keyBy(fn ($presensi) => Carbon::parse($presensi->tanggal)->toDateString());
+
+        $dataRiwayat = [];
+
+        if ($tanggalMulai->lte($tanggalSelesai)) {
+            foreach (CarbonPeriod::create($tanggalMulai, $tanggalSelesai) as $tanggal) {
+                if (! $tanggal->isWeekday()) {
+                    continue;
+                }
+
+                $tanggalIso = $tanggal->toDateString();
+                $presensi = $riwayat->get($tanggalIso);
+
+                if (! $presensi) {
+                    $dataRiwayat[] = [
+                        'id' => 'alpha-'.$tanggal->format('Ymd'),
+                        'tanggal' => $tanggalIso,
+                        'jam' => null,
+                        'status' => 'alpha',
+                        'mode' => null,
+                        'lokasi' => null,
+                        'poin' => null,
+                        'progress' => null,
+                        'alasan' => null,
+                        'keterangan' => null,
+                        'lat' => null,
+                        'lng' => null,
+                        'tercatat' => false,
+                    ];
+
+                    continue;
+                }
+
+                $status = match ($presensi->status_presensi) {
+                    'Tepat Waktu' => 'tepat',
+                    'Terlambat' => 'terlambat',
+                    'Menunggu Konfirmasi' => 'menunggu',
+                    'Alpha' => 'alpha',
+                    default => 'alpha',
+                };
+
+                $dataRiwayat[] = [
+                    'id' => $presensi->id_presensi,
+                    'tanggal' => $tanggalIso,
+                    'jam' => $presensi->jam_presensi
+                        ? Carbon::parse($presensi->jam_presensi)->format('H:i')
+                        : null,
+                    'status' => $status,
+                    'mode' => $presensi->tipe_kerja,
+                    'lokasi' => $presensi->tipe_kerja === 'WFH'
+                        ? 'WFH'
+                        : $presensi->lokasiKantor?->nama_lokasi,
+                    'poin' => $presensi->point_didapat,
+                    'progress' => $presensi->progress_hari_ini,
+                    'alasan' => $presensi->catatan_admin,
+                    'keterangan' => $presensi->catatan_admin,
+                    'lat' => $presensi->latitude_user !== null
+                        ? (float) $presensi->latitude_user
+                        : null,
+                    'lng' => $presensi->longitude_user !== null
+                        ? (float) $presensi->longitude_user
+                        : null,
+                    'tercatat' => true,
+                ];
+            }
+        }
+
+        $dataRiwayat = array_reverse($dataRiwayat);
 
         return response()->json([
             'success' => true,
             'message' => 'Riwayat presensi berhasil diambil.',
-            'data' => $riwayat->map(function ($presensi) {
-                return [
-                    'id_presensi' => $presensi->id_presensi,
-                    'tanggal' => $presensi->tanggal,
-                    'jam_presensi' => $presensi->jam_presensi,
-                    'tipe_kerja' => $presensi->tipe_kerja,
-                    'nama_lokasi' => $presensi->lokasiKantor?->nama_lokasi,
-                    'status_presensi' => $presensi->status_presensi,
-                    'status_konfirmasi' => $presensi->status_konfirmasi,
-                    'point_didapat' => $presensi->point_didapat,
-                    'progress_hari_ini' => $presensi->progress_hari_ini,
-                ];
-            }),
+            'meta' => [
+                'tanggal_mulai' => $tanggalMulai->toDateString(),
+                'tanggal_selesai' => $tanggalSelesai->toDateString(),
+                'tanggal_hari_ini' => $tanggalHariIni->toDateString(),
+            ],
+            'data' => $dataRiwayat,
         ]);
     }
 
@@ -256,10 +374,10 @@ class PresensiController extends Controller
             }
         }
 
-        if (!$lokasiTerdekat) {
+        if (! $lokasiTerdekat) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data lokasi kantor belum tersedia.'
+                'message' => 'Data lokasi kantor belum tersedia.',
             ], 422);
         }
 
@@ -281,7 +399,7 @@ class PresensiController extends Controller
                 'nama_lokasi' => $lokasiTerdekat->nama_lokasi,
                 'jarak_meter' => $jarakTerdekat,
                 'radius_meter' => $lokasiTerdekat->radius_meter,
-            ]
+            ],
         ]);
     }
 

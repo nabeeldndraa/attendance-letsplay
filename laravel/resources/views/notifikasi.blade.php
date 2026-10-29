@@ -11,7 +11,10 @@
 
     <div class="notif" id="notifApp"
          data-url-history="{{ url('/history-test') }}"
-         data-url-profil="{{ url('/profil-test') }}">
+         data-url-profil="{{ url('/profil-test') }}"
+         data-url-data="{{ url('/notifikasi/data') }}"
+         data-url-mark-all="{{ url('/notifikasi/dibaca-semua') }}"
+         data-url-mark-base="{{ url('/notifikasi') }}">
 
         <x-page-hero title="Notifikasi"
                      subtitle="Informasi terbaru seputar presensi, magang, dan akun kamu"
@@ -66,7 +69,7 @@
                 <div class="notif-empty" id="notifEmpty" hidden>
                     <span class="notif-empty__icon"><svg class="notif-ico" aria-hidden="true"><use href="#i-bell"/></svg></span>
                     <strong>Tidak ada notifikasi</strong>
-                    <p id="notifEmptyText">Belum ada notifikasi untuk ditampilkan.</p>
+                    <p id="notifEmptyText">Notifikasi sedang dimuat...</p>
                 </div>
 
                 <div class="notif-foot">

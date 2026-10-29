@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Presensi;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
@@ -177,20 +179,51 @@ class AdminDashboardController extends Controller
             );
         }
 
-        $presensi->status_konfirmasi = $validated['keputusan'];
-        $presensi->id_admin_konfirmasi = $request->user()->getKey();
-        $presensi->catatan_admin = $validated['catatan_admin'] ?? null;
+        DB::transaction(function () use ($presensi, $request, $validated) {
+            $poinSebelumnya = $presensi->point_didapat;
+            $presensi->status_konfirmasi = $validated['keputusan'];
+            $presensi->id_admin_konfirmasi = $request->user()->getKey();
+            $presensi->catatan_admin = $validated['catatan_admin'] ?? null;
 
-        // Jika disetujui, status menjadi tepat waktu sesuai aturan konfirmasi
-        if ($validated['keputusan'] === 'Disetujui') {
-            $presensi->status_presensi = 'Tepat Waktu';
-            $presensi->point_didapat = 10;
-        } else {
-            $presensi->status_presensi = 'Terlambat';
-            $presensi->point_didapat = 5;
-        }
+            if ($validated['keputusan'] === 'Disetujui') {
+                $presensi->status_presensi = 'Tepat Waktu';
+                $presensi->point_didapat = 10;
+            } else {
+                $presensi->status_presensi = 'Terlambat';
+                $presensi->point_didapat = 5;
+            }
 
-        $presensi->save();
+            $presensi->save();
+
+            $tanggalLabel = \Carbon\Carbon::parse($presensi->tanggal)
+                ->locale('id')
+                ->translatedFormat('j F Y');
+            $disetujui = $validated['keputusan'] === 'Disetujui';
+
+            UserNotification::create([
+                'id_user' => $presensi->id_user,
+                'kategori' => 'presensi',
+                'judul' => $disetujui
+                    ? 'Presensi Disetujui'
+                    : 'Presensi Ditolak',
+                'isi' => $disetujui
+                    ? "Pengajuan presensi tanggal {$tanggalLabel} telah disetujui."
+                    : "Pengajuan presensi tanggal {$tanggalLabel} ditolak.",
+                'url_tujuan' => url('/history-test'),
+            ]);
+
+            $tambahanPoin = $presensi->point_didapat - $poinSebelumnya;
+
+            if ($tambahanPoin > 0) {
+                UserNotification::create([
+                    'id_user' => $presensi->id_user,
+                    'kategori' => 'poin',
+                    'judul' => 'Poin Bertambah',
+                    'isi' => "Kamu mendapatkan tambahan +{$tambahanPoin} poin setelah presensi tanggal {$tanggalLabel} disetujui.",
+                    'url_tujuan' => url('/history-test'),
+                ]);
+            }
+        });
 
         return back()->with(
             'success',
