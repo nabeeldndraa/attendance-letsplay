@@ -1,0 +1,1179 @@
+/* =====================================================
+   DATA PRESENSI (ADMIN)  —  public/css/admin/data-presensi.css
+   Satu tema dengan halaman Data User (adm-user-*).
+   Prefix class: "adm-pres-". Sidebar/header/.content dari dashboard.css.
+   Breakpoint: tab <= 1200px, mobile <= 768px.
+   ===================================================== */
+
+.adm-pres {
+    --p-red: var(--red, #c8202a);
+    --p-red-dark: #5c0f0c;
+    --p-line: #f1e3e3;
+    --p-muted: #7a6a6a;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.adm-pres,
+.adm-pres * {
+    box-sizing: border-box;
+}
+
+.adm-pres [hidden] {
+    display: none !important;
+}
+
+.adm-pres button,
+.adm-pres input {
+    font: inherit;
+}
+
+.adm-pres button {
+    cursor: pointer;
+}
+
+/* fokus keyboard yang terlihat di semua tombol & tautan */
+.adm-pres a:focus-visible,
+.adm-pres button:focus-visible {
+    outline: 2px solid var(--p-red);
+    outline-offset: 2px;
+}
+
+.adm-pres-ico {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ----- Judul ----- */
+.adm-pres-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.adm-pres-head h1 {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.adm-pres-head p {
+    margin-top: 4px;
+    font-size: 15px;
+    color: var(--p-muted);
+}
+
+/* ----- Tombol ----- */
+.adm-pres-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 24px;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        transform 0.08s,
+        box-shadow 0.08s,
+        filter 0.2s,
+        background 0.2s;
+}
+
+.adm-pres-btn--primary {
+    background: var(--p-red);
+    color: #fff;
+    font-size: 15px;
+    box-shadow: 0 4px 0 var(--p-red-dark);
+}
+
+.adm-pres-btn--primary:hover {
+    filter: brightness(1.06);
+}
+
+.adm-pres-btn--primary:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--p-red-dark);
+}
+
+.adm-pres-btn--light {
+    background: #f1ecec;
+    color: #3a2a2a;
+}
+
+.adm-pres-btn--light:hover {
+    background: #e9e1e1;
+}
+
+.adm-pres-btn--light:active {
+    transform: translateY(1px);
+}
+
+.adm-pres-btn--outline {
+    height: 44px;
+    padding: 0 18px;
+    background: #fff;
+    border-color: #d9c3c3;
+    color: #3a2a2a;
+}
+
+.adm-pres-btn--outline:hover {
+    background: #faf3f3;
+}
+
+/* tombol ikon bulat (tutup pop-up) */
+.adm-pres-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #f6eded;
+    color: #3a2a2a;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.adm-pres-icon-btn:hover {
+    background: var(--p-red);
+    color: #fff;
+}
+
+/* ----- Ringkasan ----- */
+.adm-pres-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.adm-pres-stat {
+    padding: 22px 26px;
+    background: #fff;
+    border: 1.5px solid var(--p-line);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+}
+
+.adm-pres-stat span {
+    display: block;
+    font-size: 15px;
+    color: #4a3a3a;
+}
+
+.adm-pres-stat strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.adm-pres-stat small {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--p-muted);
+}
+
+/* ----- Filter + pencarian ----- */
+.adm-pres-search {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 24px 22px;
+    background: #fff;
+    border: 1.5px solid var(--p-line);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+}
+
+/*
+   Desktop: .adm-pres-sheet "menghilang" (display: contents) sehingga baris filter
+   langsung jadi anak form. Header/footer/backdrop/tombol Filter disembunyikan.
+   Di mobile semuanya aktif (lihat media query paling bawah).
+*/
+.adm-pres-sheet {
+    display: contents;
+}
+
+.adm-pres-sheet-head,
+.adm-pres-sheet-foot,
+.adm-pres-sheet-backdrop,
+.adm-pres-filter-btn {
+    display: none;
+}
+
+.adm-pres-filters {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.adm-pres-filter {
+    min-width: 0;
+}
+
+.adm-pres-filter-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.adm-pres-pick {
+    position: relative;
+}
+
+.adm-pres-select-btn {
+    width: 100%;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 10px;
+    background: #fdf6f5;
+    color: #2a2a2a;
+    font-size: 14px;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.adm-pres-select-btn:hover,
+.adm-pres-select-btn[aria-expanded="true"] {
+    border-color: var(--p-red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.12);
+}
+
+.adm-pres .adm-pres-select-btn:focus-visible {
+    outline: none;
+    border-color: var(--p-red);
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.18);
+}
+
+.adm-pres-select-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.adm-pres-select-text.is-placeholder {
+    color: #8a6a6a;
+}
+
+.adm-pres-select-ico,
+.adm-pres-select-arrow {
+    color: var(--p-red);
+    stroke-width: 2.2;
+}
+
+.adm-pres-select-arrow {
+    transition: transform 0.2s;
+}
+
+.adm-pres-select-btn[aria-expanded="true"] .adm-pres-select-arrow {
+    transform: rotate(180deg);
+}
+
+/* daftar pilihan */
+.adm-pres-select-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 40;
+    min-width: 100%;
+    max-width: 320px;
+    max-height: 264px;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.22);
+    animation: admPresIn 0.15s ease;
+}
+
+.adm-pres-option {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.adm-pres-option:hover,
+.adm-pres-option:focus-visible {
+    background: #fde8e8;
+    outline: none;
+}
+
+.adm-pres-option.is-selected {
+    background: #fde8e8;
+    color: var(--p-red);
+    font-weight: 700;
+}
+
+/* kalender */
+.adm-pres-cal {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 40;
+    width: 300px;
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.25);
+    animation: admPresIn 0.15s ease;
+}
+
+.adm-pres-pick[data-align="right"] .adm-pres-cal {
+    left: auto;
+    right: 0;
+}
+
+.adm-pres-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.adm-pres-cal-title {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.adm-pres-cal-title:hover {
+    background: #faf3f3;
+}
+
+.adm-pres-cal-nav {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #fde8e8;
+    color: var(--p-red);
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.adm-pres-cal-nav svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-pres-cal-nav:hover {
+    background: var(--p-red);
+    color: #fff;
+}
+
+.adm-pres-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.adm-pres-cal-grid--pick {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.adm-pres-cal-dow {
+    padding: 4px 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #a08080;
+}
+
+.adm-pres-cal-day,
+.adm-pres-cal-month {
+    height: 36px;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.12s;
+}
+
+.adm-pres-cal-month {
+    height: 42px;
+    background: #faf3f3;
+    font-weight: 600;
+}
+
+/* FIX: sebelumnya hover menimpa tanggal terpilih (teks putih di latar pink) */
+.adm-pres-cal-day:hover:not(:disabled):not(.is-selected),
+.adm-pres-cal-month:hover:not(.is-selected) {
+    background: #fde8e8;
+}
+
+.adm-pres-cal-day.is-today,
+.adm-pres-cal-month.is-today {
+    border-color: var(--p-red);
+    color: var(--p-red);
+    font-weight: 700;
+}
+
+.adm-pres-cal-day.is-selected,
+.adm-pres-cal-month.is-selected {
+    background: var(--p-red);
+    border-color: var(--p-red);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 3px 0 var(--p-red-dark);
+}
+
+.adm-pres-cal-day:disabled {
+    color: #cdbcbc;
+    cursor: not-allowed;
+}
+
+.adm-pres-cal-foot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #ead9d9;
+}
+
+.adm-pres-cal-link {
+    padding: 4px 6px;
+    border: none;
+    background: none;
+    color: var(--p-red);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.adm-pres-cal-link:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.adm-pres-cal-link:disabled {
+    color: #cdbcbc;
+    cursor: not-allowed;
+}
+
+/* baris pencarian */
+.adm-pres-searchbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* pembungkus ini hanya dipakai di mobile; di desktop tidak mengubah susunan */
+.adm-pres-searchrow,
+.adm-pres-actions {
+    display: contents;
+}
+
+.adm-pres-search-field {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.adm-pres-search-field svg {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    color: var(--p-red);
+    pointer-events: none;
+}
+
+.adm-pres-search-field input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px 0 50px;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 10px;
+    background: #fdf6f5;
+    font-size: 14px;
+    color: #2a2a2a;
+    outline: none;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.adm-pres-search-field input::placeholder {
+    color: #a07a7a;
+}
+
+.adm-pres-search-field input:focus {
+    border-color: var(--p-red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.14);
+}
+
+/* ----- Panel daftar ----- */
+.adm-pres-panel {
+    padding: 26px 28px 22px;
+    background: #fff;
+    border: 1.5px solid var(--p-line);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.07);
+}
+
+.adm-pres-panel-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.adm-pres-panel-sub {
+    margin: 4px 0 18px;
+    font-size: 13px;
+    color: var(--p-muted);
+}
+
+.adm-pres-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+}
+
+.adm-pres-table {
+    width: 100%;
+    min-width: 1380px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.adm-pres-table th {
+    padding: 15px 18px;
+    background: linear-gradient(180deg, #d42a32 0%, #bf1d26 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.adm-pres-table th:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.adm-pres-table th:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+.adm-pres-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f4e9e9;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.adm-pres-table tbody tr {
+    transition: background 0.15s;
+}
+
+.adm-pres-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.adm-pres-table tbody tr:hover {
+    background: #fffafa;
+}
+
+.adm-pres-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.adm-pres-avatar {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #fde8e8;
+    color: var(--p-red);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.adm-pres-name {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.adm-pres-muted {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--p-muted);
+}
+
+.adm-pres-location {
+    max-width: 210px;
+}
+
+.adm-pres-location .adm-pres-muted {
+    overflow-wrap: anywhere;
+}
+
+/* label status */
+.adm-pres-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.adm-pres-badge--ok {
+    background: #e0f5e6;
+    color: #1f9d4d;
+}
+.adm-pres-badge--late {
+    background: #fdeacc;
+    color: #b36b00;
+}
+.adm-pres-badge--alpha {
+    background: #fde4e4;
+    color: var(--p-red);
+}
+.adm-pres-badge--wait {
+    background: #ece6fd;
+    color: #5b34c9;
+}
+.adm-pres-badge--gray {
+    background: #f1ecec;
+    color: #5a4a4a;
+}
+.adm-pres-badge--izin {
+    background: #e1edfd;
+    color: #1d5fc4;
+}
+.adm-pres-badge--sakit {
+    background: #dcf3f2;
+    color: #0f7c82;
+}
+
+/* progress (teks biasa) */
+.adm-pres-progress-text {
+    max-width: 200px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* tautan / tombol "Lihat ..." */
+.adm-pres-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--p-red);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.adm-pres-link:hover {
+    text-decoration: underline;
+}
+
+.adm-pres-link--btn {
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.adm-pres-empty {
+    padding: 44px 20px !important;
+    text-align: center;
+    color: var(--p-muted);
+    line-height: 1.7;
+}
+
+.adm-pres-empty strong {
+    color: #3a2a2a;
+}
+
+/* ----- Pagination ----- */
+.adm-pres-pager-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #f4e9e9;
+}
+
+.adm-pres-pager-info {
+    font-size: 13px;
+    color: var(--p-muted);
+}
+
+.adm-pres-pager ul {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+}
+
+.adm-pres-page {
+    min-width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    border: 1.5px solid #f0e2e2;
+    border-radius: 10px;
+    background: #fff;
+    color: #3a2a2a;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+}
+
+a.adm-pres-page:hover {
+    background: #fde8e8;
+    border-color: #f2c4c4;
+}
+
+.adm-pres-page.is-active {
+    background: var(--p-red);
+    border-color: var(--p-red);
+    color: #fff;
+    box-shadow: 0 3px 0 var(--p-red-dark);
+}
+
+.adm-pres-page.is-disabled {
+    color: #b5a3a3;
+    background: #faf6f6;
+}
+
+.adm-pres-page-gap {
+    padding: 0 4px;
+    color: var(--p-muted);
+}
+
+/* ----- Pop-up alasan izin ----- */
+.adm-pres-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.adm-pres-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 8, 8, 0.5);
+    animation: admPresFade 0.2s ease;
+}
+
+.adm-pres-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100vh - 32px);
+    padding: 22px 24px 24px;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(60, 5, 5, 0.35);
+    outline: none;
+    animation: admPresPop 0.2s ease;
+}
+
+.adm-pres-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.adm-pres-modal-head h2 {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.adm-pres-modal-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #fdf6f5;
+}
+
+.adm-pres-modal-meta strong {
+    display: block;
+    font-size: 14px;
+}
+
+.adm-pres-modal-meta span:not(.adm-pres-badge) {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--p-muted);
+}
+
+.adm-pres-modal-reason {
+    margin: 16px 0 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #2a2a2a;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.adm-pres-modal-close {
+    width: 100%;
+}
+
+@keyframes admPresIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes admPresFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes admPresPop {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =====================================================
+   TAB (<= 1200px)
+   ===================================================== */
+@media (max-width: 1200px) {
+    .adm-pres-filters {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1100px) {
+    .adm-pres-stat strong {
+        font-size: 28px;
+    }
+}
+
+/* =====================================================
+   MOBILE (<= 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+    .adm-pres {
+        gap: 18px;
+    }
+
+    .adm-pres-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .adm-pres-head h1 {
+        font-size: 24px;
+    }
+
+    .adm-pres-head p {
+        font-size: 13px;
+    }
+
+    .adm-pres-head .adm-pres-btn {
+        width: 100%;
+    }
+
+    .adm-pres-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .adm-pres-stat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px;
+        border-radius: 16px;
+    }
+
+    .adm-pres-stat span {
+        font-size: 14px;
+    }
+
+    .adm-pres-stat strong {
+        margin-top: 0;
+        font-size: 26px;
+    }
+
+    .adm-pres-search {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    /* --- baris pencarian: [cari ........][Filter] lalu [Cari][Reset] --- */
+    .adm-pres-searchbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .adm-pres-searchrow,
+    .adm-pres-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .adm-pres-actions {
+        gap: 12px;
+    }
+
+    .adm-pres-actions .adm-pres-btn {
+        flex: 1;
+    }
+
+    .adm-pres-filter-btn {
+        position: relative;
+        display: inline-flex;
+        flex: 0 0 auto;
+        height: 48px;
+        padding: 0 16px;
+    }
+
+    .adm-pres-filter-count {
+        min-width: 20px;
+        height: 20px;
+        display: inline-grid;
+        place-items: center;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: var(--p-red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    /* --- filter jadi pop-up dari bawah --- */
+    .adm-pres-sheet {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        max-height: 88vh;
+        max-height: 88dvh;
+        background: #fff;
+        border-radius: 22px 22px 0 0;
+        box-shadow: 0 -12px 40px rgba(60, 5, 5, 0.25);
+        transform: translateY(100%);
+        visibility: hidden;
+        transition:
+            transform 0.25s ease,
+            visibility 0s linear 0.25s;
+    }
+
+    .adm-pres-sheet.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition:
+            transform 0.25s ease,
+            visibility 0s;
+    }
+
+    .adm-pres-sheet-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: block;
+        background: rgba(40, 8, 8, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.25s ease,
+            visibility 0s linear 0.25s;
+    }
+
+    .adm-pres-sheet-backdrop.is-open {
+        opacity: 1;
+        visibility: visible;
+        transition:
+            opacity 0.25s ease,
+            visibility 0s;
+    }
+
+    .adm-pres-sheet-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px 8px;
+    }
+
+    .adm-pres-sheet-head h2 {
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .adm-pres-sheet .adm-pres-filters {
+        flex: 1;
+        min-height: 0;
+        padding: 8px 20px 18px;
+        overflow-y: auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* di dalam pop-up, daftar & kalender membuka ke bawah (tidak melayang),
+       supaya tidak terpotong oleh area scroll */
+    .adm-pres-sheet .adm-pres-select-list,
+    .adm-pres-sheet .adm-pres-cal {
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 6px;
+        box-shadow: none;
+    }
+
+    .adm-pres-sheet .adm-pres-select-list {
+        max-height: 220px;
+    }
+
+    .adm-pres-sheet-foot {
+        display: flex;
+        gap: 12px;
+        padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--p-line);
+    }
+
+    .adm-pres-sheet-foot .adm-pres-btn {
+        flex: 1;
+    }
+
+    /* --- tabel & lainnya --- */
+    .adm-pres-panel {
+        padding: 18px 14px 16px;
+        border-radius: 16px;
+    }
+
+    .adm-pres-panel-title {
+        font-size: 19px;
+    }
+
+    .adm-pres-pager-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .adm-pres-page {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+    }
+
+    .adm-pres-modal-box {
+        padding: 18px 18px 20px;
+    }
+}
+
+@media (max-width: 460px) {
+    .adm-pres-sheet .adm-pres-filters {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adm-pres-select-list,
+    .adm-pres-cal,
+    .adm-pres-modal-backdrop,
+    .adm-pres-modal-box {
+        animation: none;
+    }
+
+    .adm-pres-sheet,
+    .adm-pres-sheet-backdrop {
+        transition: none;
+    }
+}

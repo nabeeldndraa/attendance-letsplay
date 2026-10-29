@@ -7,6 +7,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminUserController;
 
+
 Route::get('/', function () {
     return redirect('/login-test');
 });
@@ -110,4 +111,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         AdminUserController::class,
         'toggleStatus'
     ])->name('data-user.status');
+
+    Route::view('/leaderboard', 'admin.leaderboard')->name('leaderboard');
+    // Route::view('/notifikasi', 'admin.notifikasi')->name('notifikasi');
 });

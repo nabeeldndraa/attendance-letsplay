@@ -1,458 +1,196 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Data User - Let's Play Indonesia</title>
+@extends('layouts.admin')
+@section('title', 'Data User')
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/data-user.css') }}">
+@endpush
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f5f6fa;
-            color: #242424;
-        }
+@section('content')
+@php
+    // ---- Filter (dikirim lewat query string: instansi, bidang, periode) ----
+    $instansiDipilih = (string) request('instansi');
+    $bidangDipilih   = (string) request('bidang');
+    $periodeReq      = (string) request('periode');
+    $periodeValid    = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periodeReq) ? $periodeReq : '';
+    $periodeLabel    = $periodeValid
+        ? \Carbon\Carbon::createFromFormat('!Y-m', $periodeValid)->locale('id')->translatedFormat('F Y')
+        : null;
 
-        .topbar {
-            background: #b91c2c;
-            color: white;
-            padding: 20px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
+    $filterAktif = $keyword || $instansiDipilih !== '' || $bidangDipilih !== '' || $periodeValid !== '';
 
-        .brand {
-            font-size: 19px;
-            font-weight: 700;
-        }
+    /*
+     * Pilihan dropdown diambil dari data peserta. Kalau nanti controller mengirim
+     * $daftarInstansi / $daftarBidang, otomatis dipakai menggantikan query ini.
+     */
+    $opsiInstansi = collect($daftarInstansi ?? \App\Models\User::where('role', 'user')
+        ->whereNotNull('asal_instansi')->where('asal_instansi', '!=', '')
+        ->distinct()->orderBy('asal_instansi')->pluck('asal_instansi'));
 
-        .brand small {
-            display: block;
-            font-size: 12px;
-            font-weight: 400;
-            margin-top: 5px;
-            opacity: .85;
-        }
+    $opsiBidang = collect($daftarBidang ?? \App\Models\User::where('role', 'user')
+        ->whereNotNull('bidang_magang')->where('bidang_magang', '!=', '')
+        ->distinct()->orderBy('bidang_magang')->pluck('bidang_magang'));
 
-        .topbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-        }
+    $filterSelect = [
+        ['name' => 'instansi', 'label' => 'Instansi',      'semua' => 'Semua Instansi', 'value' => $instansiDipilih, 'opsi' => $opsiInstansi],
+        ['name' => 'bidang',   'label' => 'Bidang Magang', 'semua' => 'Semua Bidang',   'value' => $bidangDipilih,   'opsi' => $opsiBidang],
+    ];
 
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 24px;
-        }
+    // ---- Nomor halaman untuk pagination (1 ... 4 5 6 ... 10) ----
+    $halaman  = $users->currentPage();
+    $terakhir = $users->lastPage();
+    $jendela  = collect([1, $terakhir, $halaman - 1, $halaman, $halaman + 1])
+        ->filter(fn ($p) => $p >= 1 && $p <= $terakhir)
+        ->unique()->sort()->values();
+@endphp
 
-        .page-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+{{-- Ikon khusus halaman ini (prefix p-admuser-) --}}
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="p-admuser-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
 
-        .page-heading h1 {
-            font-size: 25px;
-            margin-bottom: 7px;
-        }
+<div class="adm-user">
 
-        .page-heading p {
-            color: #777;
-            font-size: 14px;
-        }
-
-        .btn {
-            border: none;
-            border-radius: 8px;
-            padding: 11px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            background: #b91c2c;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #991b1b;
-        }
-
-        .btn-light {
-            background: #f1f1f1;
-            color: #333;
-        }
-
-        .btn-edit {
-            background: #fff0f0;
-            color: #b91c2c;
-        }
-
-        .btn-status {
-            background: #f1f1f1;
-            color: #333;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #eee;
-        }
-
-        .stat-card span {
-            display: block;
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 10px;
-        }
-
-        .stat-card strong {
-            font-size: 27px;
-        }
-
-        .panel {
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .panel-header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .panel-header h2 {
-            font-size: 17px;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 8px;
-        }
-
-        .search-form input {
-            width: 260px;
-            max-width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-form input:focus,
-        .field input:focus,
-        .field select:focus {
-            border-color: #b91c2c;
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-        }
-
-        th, td {
-            padding: 15px 18px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 13px;
-        }
-
-        th {
-            background: #fafafa;
-            color: #666;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        tbody tr:hover {
-            background: #fffafa;
-        }
-
-        .user-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .muted {
-            color: #888;
-            font-size: 12px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .status-aktif {
-            background: #e6f7ed;
-            color: #187747;
-        }
-
-        .status-nonaktif {
-            background: #feecec;
-            color: #b91c2c;
-        }
-
-        .actions {
-            display: flex;
-            gap: 7px;
-            align-items: center;
-        }
-
-        .actions form {
-            display: inline;
-        }
-
-        .alert {
-            padding: 13px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .alert-success {
-            background: #e6f7ed;
-            color: #187747;
-        }
-
-        .alert-error {
-            background: #feecec;
-            color: #b91c2c;
-        }
-
-        .validation-errors {
-            margin: 8px 0 16px;
-            padding-left: 20px;
-        }
-
-        .pagination {
-            padding: 20px;
-        }
-
-        .pagination nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .pagination nav p {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .pagination nav div:last-child {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .pagination a,
-        .pagination span[aria-current="page"] span,
-        .pagination span[aria-disabled="true"] span {
-            display: inline-block;
-            padding: 7px 11px;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #444;
-            font-size: 13px;
-        }
-
-        .pagination span[aria-current="page"] span {
-            background: #b91c2c;
-            border-color: #b91c2c;
-            color: white;
-        }
-
-        .empty {
-            padding: 40px 20px;
-            text-align: center;
-            color: #777;
-        }
-
-        @media (max-width: 760px) {
-            .topbar {
-                padding: 18px;
-            }
-
-            .container {
-                padding: 0 14px;
-                margin: 22px auto;
-            }
-
-            .page-heading {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 16px;
-            }
-
-            .stat-card strong {
-                font-size: 23px;
-            }
-
-            .panel-header {
-                align-items: stretch;
-                flex-direction: column;
-                padding: 16px;
-            }
-
-            .search-form input {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .search-form {
-                width: 100%;
-            }
-
-            .search-form button {
-                flex-shrink: 0;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<header class="topbar">
-    <div class="brand">
-        Let's Play Indonesia
-        <small>Admin Panel · Sistem Presensi Intern</small>
-    </div>
-
-    <a href="{{ route('admin.dashboard') }}">← Kembali ke Dashboard</a>
-</header>
-
-<main class="container">
-
-    <div class="page-heading">
+    {{-- ===== JUDUL + TOMBOL TAMBAH ===== --}}
+    <div class="adm-user-head">
         <div>
             <h1>Data User</h1>
             <p>Kelola akun dan informasi peserta magang.</p>
         </div>
 
-        <a href="{{ route('admin.data-user.create') }}"
-           class="btn btn-primary">
-            + Tambah User
+        <a href="{{ route('admin.data-user.create') }}" class="adm-user-btn adm-user-btn--primary adm-user-btn--lg">
+            <svg aria-hidden="true"><use href="#p-admuser-plus"/></svg>
+            Tambah User
         </a>
     </div>
 
+
+    {{-- ===== NOTIFIKASI ===== --}}
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="adm-user-alert adm-user-alert--success" role="status">
+            <svg aria-hidden="true"><use href="#s-ok"/></svg>
+            <div class="adm-user-alert-text">{{ session('success') }}</div>
+            <button type="button" class="adm-user-alert-close" aria-label="Tutup notifikasi">&times;</button>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-error">
-            <strong>Terjadi kesalahan:</strong>
-            <ul class="validation-errors">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="adm-user-alert adm-user-alert--error" role="alert">
+            <svg aria-hidden="true"><use href="#s-alert"/></svg>
+            <div class="adm-user-alert-text">
+                <strong>Terjadi kesalahan:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            <button type="button" class="adm-user-alert-close" aria-label="Tutup notifikasi">&times;</button>
         </div>
     @endif
 
-    <section class="stats">
-        <div class="stat-card">
+
+    {{-- ===== STATISTIK ===== --}}
+    <section class="adm-user-stats">
+        <article class="adm-user-stat">
             <span>Total peserta terdaftar</span>
             <strong>{{ $users->total() }}</strong>
-        </div>
+        </article>
 
-        <div class="stat-card">
+        <article class="adm-user-stat">
             <span>Peserta aktif</span>
             <strong>
                 {{ \App\Models\User::where('role', 'user')->where('status_akun', 'aktif')->count() }}
             </strong>
-        </div>
+        </article>
 
-        <div class="stat-card">
+        <article class="adm-user-stat">
             <span>Peserta nonaktif</span>
             <strong>
                 {{ \App\Models\User::where('role', 'user')->where('status_akun', 'nonaktif')->count() }}
             </strong>
-        </div>
+        </article>
     </section>
 
-    <section class="panel">
-        <div class="panel-header">
-            <h2>Daftar Peserta</h2>
 
-            <form action="{{ route('admin.data-user') }}"
-                  method="GET"
-                  class="search-form">
+    {{-- ===== FILTER + PENCARIAN =====
+         Semua dikirim lewat GET. Filter baru berlaku saat tombol "Cari" ditekan. --}}
+    <form action="{{ route('admin.data-user') }}" method="GET" class="adm-user-search">
 
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ $keyword }}"
-                    placeholder="Cari nama, email, instansi..."
-                >
+        {{-- Filter: Instansi & Bidang Magang (dropdown kustom) --}}
+        @foreach ($filterSelect as $f)
+            <div class="adm-user-filter">
+                <span class="adm-user-filter-label">{{ $f['label'] }}</span>
 
-                <button type="submit" class="btn btn-primary">
-                    Cari
+                <div class="adm-user-select" data-select>
+                    <input type="hidden" name="{{ $f['name'] }}" value="{{ $f['value'] }}">
+
+                    <button type="button" class="adm-user-select-btn" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="adm-user-select-text {{ $f['value'] === '' ? 'is-placeholder' : '' }}">{{ $f['value'] !== '' ? $f['value'] : $f['semua'] }}</span>
+                        <svg class="adm-user-select-arrow" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+                    </button>
+
+                    <ul class="adm-user-select-list" role="listbox" hidden>
+                        <li>
+                            <button type="button" role="option" data-value=""
+                                    class="adm-user-option {{ $f['value'] === '' ? 'is-selected' : '' }}">{{ $f['semua'] }}</button>
+                        </li>
+                        @foreach ($f['opsi'] as $opsi)
+                            <li>
+                                <button type="button" role="option" data-value="{{ $opsi }}"
+                                        class="adm-user-option {{ $f['value'] === (string) $opsi ? 'is-selected' : '' }}">{{ $opsi }}</button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endforeach
+
+        {{-- Filter: Periode Magang (pilih bulan + tahun) --}}
+        <div class="adm-user-filter">
+            <span class="adm-user-filter-label">Periode Magang</span>
+
+            <div class="adm-user-mp-wrap">
+                <input type="hidden" name="periode" value="{{ $periodeValid }}">
+
+                <button type="button" class="adm-user-select-btn" aria-haspopup="dialog" aria-expanded="false">
+                    <!-- <svg class="adm-user-select-ico" aria-hidden="true"><use href="#i-calendar"/></svg> -->
+                    <span class="adm-user-select-text {{ $periodeLabel ? '' : 'is-placeholder' }}"
+                          data-placeholder="Semua Periode">{{ $periodeLabel ?? 'Semua Periode' }}</span>
+                    <svg class="adm-user-select-arrow" aria-hidden="true"><use href="#i-chevron-down"/></svg>
                 </button>
 
-                @if ($keyword)
-                    <a href="{{ route('admin.data-user') }}"
-                       class="btn btn-light">
-                        Reset
-                    </a>
-                @endif
-            </form>
+                <div class="adm-user-mp" role="dialog" aria-label="Pilih periode magang" hidden></div>
+            </div>
         </div>
 
-        <div class="table-wrap">
-            <table>
+        {{-- Pencarian --}}
+        <label class="adm-user-search-field">
+            <svg aria-hidden="true"><use href="#i-search"/></svg>
+            <input
+                type="text"
+                name="search"
+                value="{{ $keyword }}"
+                placeholder="Cari nama, email, instansi..."
+                autocomplete="off"
+            >
+        </label>
+
+        <button type="submit" class="adm-user-btn adm-user-btn--primary adm-user-btn--lg">Cari</button>
+
+        @if ($filterAktif)
+            <a href="{{ route('admin.data-user') }}" class="adm-user-btn adm-user-btn--light adm-user-btn--lg">Reset</a>
+        @endif
+
+    </form>
+
+
+    {{-- ===== DAFTAR PESERTA ===== --}}
+    <section class="adm-user-panel">
+
+        <h2 class="adm-user-panel-title">Daftar Peserta</h2>
+
+        <div class="adm-user-table-wrap">
+            <table class="adm-user-table">
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -467,15 +205,14 @@
 
                 <tbody>
                     @forelse ($users as $user)
+                        @php $aktif = $user->status_akun === 'aktif'; @endphp
                         <tr>
-                            <td>
-                                {{ $users->firstItem() + $loop->index }}
-                            </td>
+                            <td class="adm-user-no">{{ $users->firstItem() + $loop->index }}</td>
 
                             <td>
-                                <div class="user-name">{{ $user->nama }}</div>
-                                <div class="muted">{{ $user->email }}</div>
-                                <div class="muted">{{ $user->no_wa }}</div>
+                                <div class="adm-user-name">{{ $user->nama }}</div>
+                                <div class="adm-user-muted">{{ $user->email }}</div>
+                                <div class="adm-user-muted">{{ $user->no_wa }}</div>
                             </td>
 
                             <td>{{ $user->asal_instansi }}</td>
@@ -483,35 +220,41 @@
                             <td>{{ $user->bidang_magang }}</td>
 
                             <td>
-                                {{ $user->tanggal_mulai?->format('d M Y') ?? '-' }}
-                                <div class="muted">sampai</div>
-                                {{ $user->tanggal_selesai?->format('d M Y') ?? '-' }}
+                                {{ $user->tanggal_mulai?->locale('id')->translatedFormat('d M Y') ?? '-' }}
+                                <div class="adm-user-muted">sampai</div>
+                                {{ $user->tanggal_selesai?->locale('id')->translatedFormat('d M Y') ?? '-' }}
                             </td>
 
                             <td>
-                                <span class="status {{ $user->status_akun === 'aktif' ? 'status-aktif' : 'status-nonaktif' }}">
+                                <span class="adm-user-status {{ $aktif ? 'adm-user-status--aktif' : 'adm-user-status--nonaktif' }}">
                                     {{ ucfirst($user->status_akun) }}
                                 </span>
                             </td>
 
                             <td>
-                                <div class="actions">
-                                    <a
-                                        href="{{ route('admin.data-user.edit', $user->id) }}"
-                                        class="btn btn-edit">
+                                <div class="adm-user-actions">
+                                    <a href="{{ route('admin.data-user.edit', $user->id) }}"
+                                       class="adm-user-btn adm-user-btn--edit">
                                         Edit
                                     </a>
 
-                                    <form
-                                        action="{{ route('admin.data-user.status', $user->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirm('Yakin ingin mengubah status akun peserta ini?')">
+                                    {{-- Konfirmasi memakai pop-up kustom (lihat js/admin/data-user.js) --}}
+                                    <form action="{{ route('admin.data-user.status', $user->id) }}"
+                                          method="POST"
+                                          data-confirm
+                                          data-confirm-name="{{ $user->nama }}"
+                                          data-confirm-tone="{{ $aktif ? 'danger' : 'success' }}"
+                                          data-confirm-title="{{ $aktif ? 'Nonaktifkan akun?' : 'Aktifkan akun?' }}"
+                                          data-confirm-text="{{ $aktif
+                                                ? 'Akun ' . $user->nama . ' tidak akan bisa login sampai diaktifkan kembali.'
+                                                : 'Akun ' . $user->nama . ' akan bisa login kembali.' }}"
+                                          data-confirm-button="{{ $aktif ? 'Ya, Nonaktifkan' : 'Ya, Aktifkan' }}">
 
                                         @csrf
                                         @method('PATCH')
 
-                                        <button type="submit" class="btn btn-status">
-                                            {{ $user->status_akun === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                        <button type="submit" class="adm-user-btn adm-user-btn--status">
+                                            {{ $aktif ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
                                 </div>
@@ -519,9 +262,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="empty">
-                                @if ($keyword)
-                                    Tidak ditemukan peserta yang cocok dengan pencarian.
+                            <td colspan="7" class="adm-user-empty">
+                                @if ($filterAktif)
+                                    Tidak ditemukan peserta yang cocok dengan pencarian atau filter.
                                 @else
                                     Belum ada data peserta magang.
                                 @endif
@@ -532,11 +275,77 @@
             </table>
         </div>
 
-        <div class="pagination">
-            {{ $users->links() }}
-        </div>
-    </section>
-</main>
 
-</body>
-</html>
+        {{-- ===== PAGINATION (bahasa Indonesia) ===== --}}
+        <div class="adm-user-pager-wrap">
+            <p class="adm-user-pager-info">
+                Menampilkan {{ $users->firstItem() ?? 0 }}–{{ $users->lastItem() ?? 0 }}
+                dari {{ $users->total() }} peserta
+            </p>
+
+            @if ($users->hasPages())
+                <nav class="adm-user-pager" aria-label="Navigasi halaman">
+                    <ul>
+                        <li>
+                            @if ($users->onFirstPage())
+                                <span class="adm-user-page is-disabled">Sebelumnya</span>
+                            @else
+                                <a href="{{ $users->previousPageUrl() }}" rel="prev" class="adm-user-page">Sebelumnya</a>
+                            @endif
+                        </li>
+
+                        @foreach ($jendela as $i => $p)
+                            @if ($i > 0 && $p - $jendela[$i - 1] > 1)
+                                <li><span class="adm-user-page-gap">…</span></li>
+                            @endif
+
+                            <li>
+                                @if ($p === $halaman)
+                                    <span class="adm-user-page is-active" aria-current="page">{{ $p }}</span>
+                                @else
+                                    <a href="{{ $users->url($p) }}" class="adm-user-page" aria-label="Halaman {{ $p }}">{{ $p }}</a>
+                                @endif
+                            </li>
+                        @endforeach
+
+                        <li>
+                            @if ($users->hasMorePages())
+                                <a href="{{ $users->nextPageUrl() }}" rel="next" class="adm-user-page">Berikutnya</a>
+                            @else
+                                <span class="adm-user-page is-disabled">Berikutnya</span>
+                            @endif
+                        </li>
+                    </ul>
+                </nav>
+            @endif
+        </div>
+
+    </section>
+
+</div>
+
+
+{{-- ===== POP-UP KONFIRMASI (dipakai tombol Aktifkan/Nonaktifkan) ===== --}}
+<div class="adm-user-modal" id="adm-user-modal" hidden>
+    <div class="adm-user-modal-backdrop" data-modal-close></div>
+
+    <div class="adm-user-modal-box" role="dialog" aria-modal="true" aria-labelledby="adm-user-modal-title">
+        <span class="adm-user-modal-icon">
+            <svg class="adm-user-modal-icon--danger" aria-hidden="true"><use href="#s-alert"/></svg>
+            <svg class="adm-user-modal-icon--success" aria-hidden="true"><use href="#s-ok"/></svg>
+        </span>
+
+        <h3 id="adm-user-modal-title" class="adm-user-modal-title"></h3>
+        <p class="adm-user-modal-text"></p>
+
+        <div class="adm-user-modal-actions">
+            <button type="button" class="adm-user-btn adm-user-btn--outline adm-user-btn--lg" data-modal-close>Batal</button>
+            <button type="button" class="adm-user-btn adm-user-btn--primary adm-user-btn--lg" id="adm-user-modal-confirm">Ya</button>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+    <script src="{{ asset('js/admin/data-user.js') }}"></script>
+@endpush
