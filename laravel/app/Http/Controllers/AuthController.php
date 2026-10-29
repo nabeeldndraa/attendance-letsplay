@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RegistrationSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,19 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function showLogin()
+    {
+        if (Auth::check()) {
+            return $this->redirectForUser(Auth::user());
+        }
+
+        return view('login-test', [
+            'registrationOpen' => RegistrationSetting::query()
+                ->findOrFail(1)
+                ->isOpen(),
+        ]);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -18,10 +32,10 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             return back()
                 ->withErrors([
-                    'login' => 'Email atau password salah.'
+                    'login' => 'Email atau password salah.',
                 ])
                 ->withInput();
         }
@@ -29,16 +43,20 @@ class AuthController extends Controller
         if ($user->status_akun !== 'aktif') {
             return back()
                 ->withErrors([
-                    'login' => 'Akun tidak aktif.'
+                    'login' => 'Akun tidak aktif.',
                 ])
                 ->withInput();
         }
 
-        Auth::login($user);
+        Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
 
-        // Arahkan pengguna sesuai role akun
+        return $this->redirectForUser($user);
+    }
+
+    private function redirectForUser(User $user)
+    {
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
@@ -56,5 +74,10 @@ class AuthController extends Controller
 
         return redirect('/login-test')
             ->with('success', 'Logout berhasil.');
+    }
+
+    public function redirectAfterLogin(User $user)
+    {
+        return $this->redirectForUser($user);
     }
 }
