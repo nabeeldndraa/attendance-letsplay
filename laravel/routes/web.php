@@ -150,5 +150,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     ])->name('data-user.status');
 
     Route::view('/leaderboard', 'admin.leaderboard')->name('leaderboard');
-    // Route::view('/notifikasi', 'admin.notifikasi')->name('notifikasi');
+    Route::view('/notifikasi', 'admin.notifikasi')->name('notifikasi');
+    Route::view('/pengumuman', 'admin.pengumuman')->name('pengumuman');
 });
