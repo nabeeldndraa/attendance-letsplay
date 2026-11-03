@@ -1,0 +1,222 @@
+/* =========================================================
+   NOTIFIKASI ADMIN  —  public/css/admin-notifikasi.css
+   Dimuat SETELAH notifikasi.css (css halaman user), jadi semua
+   kelas "notif-" dipakai ulang. File ini hanya berisi tambahan
+   khusus admin: kategori, tombol Setujui/Tolak, dan penyesuaian
+   posisi titik belum dibaca. Prefix tambahan: "adm-notif-".
+
+   Breakpoint sama dengan dashboard.css:
+   <=768px mobile | 769-1100px tab | >=1101px desktop
+========================================================= */
+
+/* =========================================================
+   KATEGORI ADMIN (key dari JS: keterlambatan, perizinan,
+   leaderboard, akun). Kategori "semua" sudah ada di notifikasi.css
+========================================================= */
+
+.notif-icon--keterlambatan {
+    background: var(--notif-semua-bg);
+    color: var(--notif-red);
+}
+.notif-icon--perizinan {
+    background: var(--notif-poin-bg);
+    color: var(--notif-poin);
+}
+.notif-icon--leaderboard {
+    background: var(--notif-pengumuman-bg);
+    color: var(--notif-pengumuman);
+}
+
+/* di daftar, ikon akun berwarna hijau (di filter tetap biru) */
+.adm-notif .notif-item .notif-icon--akun,
+.adm-notif .notif-detail__top .notif-icon--akun {
+    background: var(--notif-presensi-bg);
+    color: var(--notif-presensi);
+}
+
+.notif-chip--keterlambatan {
+    background: var(--notif-semua-bg);
+    color: var(--notif-red);
+}
+.notif-chip--perizinan {
+    background: var(--notif-poin-bg);
+    color: #e08900;
+}
+.notif-chip--leaderboard {
+    background: var(--notif-pengumuman-bg);
+    color: #5b34c9;
+}
+
+/* angka kategori (mobile; di desktop dibuat abu oleh notifikasi.css) */
+.notif-cat--keterlambatan .notif-cat__count {
+    background: var(--notif-semua-bg);
+    color: var(--notif-red);
+}
+.notif-cat--perizinan .notif-cat__count {
+    background: var(--notif-poin-bg);
+    color: #b36b00;
+}
+.notif-cat--leaderboard .notif-cat__count {
+    background: var(--notif-pengumuman-bg);
+    color: var(--notif-pengumuman);
+}
+
+.adm-notif-flip {
+    transform: scaleX(-1);
+}
+
+/* =========================================================
+   WAKTU + TITIK BELUM DIBACA
+   Titik merah berada di depan waktu, di semua ukuran layar.
+========================================================= */
+
+.adm-notif .notif-item__time {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.adm-notif .notif-item__time .notif-dot {
+    position: static;
+    display: inline-block;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.adm-notif .notif-item {
+    cursor: pointer;
+}
+
+/* =========================================================
+   TOMBOL SETUJUI / TOLAK
+========================================================= */
+
+.adm-notif-actions {
+    grid-column: 2;
+    grid-row: 4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.notif-item.has-actions .notif-item__chev {
+    grid-row: 1 / 5;
+}
+
+.adm-notif-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    transition:
+        background 0.15s,
+        opacity 0.15s;
+}
+
+.adm-notif-btn .notif-ico {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.4;
+}
+
+.adm-notif-btn:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.adm-notif-btn--ok {
+    border-color: var(--notif-presensi);
+    background: #f2fbf5;
+    color: #1b8a4b;
+}
+.adm-notif-btn--ok:hover:not(:disabled) {
+    background: #e0f5e6;
+}
+
+.adm-notif-btn--no {
+    border-color: #e11d2e;
+    background: #fff5f5;
+    color: #d11a2a;
+}
+.adm-notif-btn--no:hover:not(:disabled) {
+    background: #fde4e4;
+}
+
+/* status setelah diputuskan */
+.adm-notif-status {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: start;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+.adm-notif-status--disetujui {
+    background: var(--notif-presensi-bg);
+    color: #1b8a4b;
+}
+.adm-notif-status--ditolak {
+    background: var(--notif-semua-bg);
+    color: #d11a2a;
+}
+
+/* di pop-up detail */
+.adm-notif-decide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: -8px 0 14px;
+}
+
+.adm-notif-decide .adm-notif-btn {
+    height: 48px;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.adm-notif-decide .adm-notif-btn .notif-ico {
+    width: 18px;
+    height: 18px;
+}
+
+/* =========================================================
+   769px KE ATAS: tombol sejajar dengan chip (kanan bawah)
+========================================================= */
+
+@media (min-width: 769px) {
+    .adm-notif-actions,
+    .adm-notif-status {
+        grid-column: 2 / 4;
+        grid-row: 3;
+        justify-self: end;
+        align-self: center;
+        margin-top: 6px;
+    }
+
+    .notif-item.has-actions .notif-item__chev {
+        grid-row: 1 / 4;
+    }
+}
+
+/* =========================================================
+   1101px KE ATAS: ikon filter berwarna (tanpa lingkaran)
+========================================================= */
+
+@media (min-width: 1101px) {
+    .notif-cat .notif-icon--keterlambatan,
+    .notif-cat .notif-icon--perizinan {
+        color: var(--notif-poin);
+    }
+}

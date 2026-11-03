@@ -17,3 +17,6 @@
 @section('header')
     @include('partials.admin-header')
 @endsection
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-nav.css') }}">
+@endpush

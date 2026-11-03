@@ -11,15 +11,16 @@
      * Jika route belum ada, menu tetap tampil dengan link "#" (tidak error).
      */
     $adminMenu = [
-        ['label' => 'Dashboard',        'route' => 'admin.dashboard',     'icon' => '#i-home'],
-        ['label' => 'Data Intern',      'route' => 'admin.data-user',     'icon' => '#i-users'],
-        ['label' => 'History Presensi', 'route' => 'admin.data-presensi', 'icon' => '#i-history'],
-        ['label' => 'Leaderboard',      'route' => 'admin.leaderboard',   'icon' => '#i-trophy'],
-        ['label' => 'Notifikasi',       'route' => 'admin.notifikasi',    'icon' => '#i-bell', 'badge' => $adminNotif ?? 0],
+        ['label' => 'Dashboard',   'route' => 'admin.dashboard',     'icon' => '#i-home'],
+        ['label' => 'Data Intern', 'route' => 'admin.data-user',     'icon' => '#i-users'],
+        ['label' => 'History',     'route' => 'admin.data-presensi', 'icon' => '#i-history'],
+        ['label' => 'Leaderboard', 'route' => 'admin.leaderboard',   'icon' => '#i-trophy'],
+        ['label' => 'Notifikasi',  'route' => 'admin.notifikasi',    'icon' => '#i-bell', 'badge' => $adminNotif ?? 0],
+        ['label' => 'Pengumuman',  'route' => 'admin.pengumuman',    'icon' => '#i-megaphone'],
     ];
 @endphp
 
-<aside class="sidebar">
+<aside class="sidebar sidebar--admin">
 
     <img src="{{ asset('images/login/logo_letsplay.png') }}" alt="Let's Play Indonesia" class="sidebar-logo">
 
