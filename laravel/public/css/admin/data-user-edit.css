@@ -1,0 +1,828 @@
+/* =====================================================
+   EDIT USER (ADMIN)
+   Prefix class: "adm-edit-". Sidebar/header memakai dashboard.css (bersama).
+   Breakpoint: tab <= 1100px, mobile <= 768px.
+   ===================================================== */
+
+/* Variabel dipakai juga oleh pop-up konfirmasi yang berada di luar .adm-edit */
+.adm-edit,
+.adm-edit-modal {
+    --e-red: var(--red, #c8202a);
+    --e-red-dark: #5c0f0c;
+    --e-line: #f1e3e3;
+    --e-muted: #7a6a6a;
+    --e-field: #fdf6f5;
+    --e-field-line: #f0dcdc;
+}
+
+.adm-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+:where(.adm-edit) h1,
+:where(.adm-edit) h2,
+:where(.adm-edit) p,
+:where(.adm-edit) ul {
+    margin: 0;
+}
+
+.adm-edit svg {
+    flex-shrink: 0;
+}
+
+/* ----- Judul ----- */
+.adm-edit-head h1 {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.adm-edit-head p {
+    margin-top: 4px;
+    font-size: 15px;
+    color: var(--e-muted);
+}
+
+/* ----- Kartu form ----- */
+.adm-edit-card {
+    padding: 28px 32px 26px;
+    background: #fff;
+    border: 1.5px solid var(--e-line);
+    border-radius: 22px;
+    box-shadow: 0 2px 10px rgba(120, 40, 40, 0.07);
+}
+
+.adm-edit-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.adm-edit-card-head svg {
+    width: 34px;
+    height: 34px;
+    color: var(--e-red);
+}
+
+.adm-edit-card-head h2 {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+/* ----- Alert error ----- */
+.adm-edit-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background: #fde8e8;
+    border-left: 5px solid var(--e-red);
+    border-radius: 12px;
+    color: #9d1d18;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.adm-edit-alert svg {
+    width: 24px;
+    height: 24px;
+}
+
+.adm-edit-alert ul {
+    margin-top: 4px;
+    padding-left: 18px;
+}
+
+/* ----- Grid field ----- */
+.adm-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+}
+
+.adm-edit-field {
+    min-width: 0;
+}
+
+.adm-edit-field--full {
+    grid-column: 1 / -1;
+}
+
+.adm-edit-field > label:not(.adm-edit-switch),
+.adm-edit-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.adm-edit-field label i,
+.adm-edit-label i {
+    color: var(--e-red);
+    font-style: normal;
+}
+
+.adm-edit-dates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+}
+
+.adm-edit-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid var(--e-field-line);
+    border-radius: 10px;
+    background: var(--e-field);
+    font-family: inherit;
+    font-size: 14px;
+    color: #2a2a2a;
+    outline: none;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.adm-edit-input::placeholder {
+    color: #a07a7a;
+}
+
+.adm-edit-input:hover {
+    border-color: #e7c9c9;
+}
+
+.adm-edit-input:focus {
+    border-color: var(--e-red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.14);
+}
+
+.adm-edit-input.has-error {
+    border-color: var(--e-red);
+    background: #fff5f5;
+}
+
+.adm-edit-error {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--e-red);
+}
+
+/* ----- Combo Divisi / Posisi ----- */
+.adm-edit-combo {
+    position: relative;
+}
+
+.adm-edit-combo-input {
+    padding-right: 52px;
+}
+
+.adm-edit-combo-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.adm-edit-combo-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--e-red);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s;
+}
+
+.adm-edit-combo.is-open .adm-edit-combo-toggle svg {
+    transform: rotate(180deg);
+}
+
+.adm-edit-combo-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: 244px;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.22);
+    animation: admEditIn 0.15s ease;
+}
+
+.adm-edit-combo-list[hidden],
+.adm-edit-combo-empty[hidden],
+.adm-edit-combo-list li[hidden] {
+    display: none;
+}
+
+.adm-edit-option {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.adm-edit-option:hover,
+.adm-edit-option:focus-visible {
+    background: #fde8e8;
+    outline: none;
+}
+
+.adm-edit-option.is-selected {
+    background: #fde8e8;
+    color: var(--e-red);
+    font-weight: 700;
+}
+
+.adm-edit-combo-empty {
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--e-muted);
+}
+
+/* ----- Tanggal + kalender kustom ----- */
+.adm-edit-date {
+    position: relative;
+}
+
+.adm-edit-date-view {
+    padding-right: 52px;
+    cursor: pointer;
+}
+
+.adm-edit-date-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.adm-edit-date-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: rgba(200, 32, 42, 0.12);
+    stroke: var(--e-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-edit-cal {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 50;
+    width: 308px;
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.28);
+    animation: admEditIn 0.15s ease;
+}
+
+.adm-edit-date--right .adm-edit-cal {
+    left: auto;
+    right: 0;
+}
+
+.adm-edit-cal[hidden] {
+    display: none;
+}
+
+.adm-edit-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.adm-edit-cal-title {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #1b1b1b;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.adm-edit-cal-title:hover {
+    background: #fde8e8;
+}
+
+.adm-edit-cal-nav {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: #fde8e8;
+    color: var(--e-red);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.adm-edit-cal-nav svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-edit-cal-nav:hover {
+    background: var(--e-red);
+    color: #fff;
+}
+
+.adm-edit-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+}
+
+.adm-edit-cal-grid--months {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.adm-edit-cal-dow {
+    padding: 4px 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9a6a6a;
+}
+
+.adm-edit-cal-empty {
+    height: 36px;
+}
+
+.adm-edit-cal-day {
+    height: 36px;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.adm-edit-cal-day:hover:not(:disabled) {
+    background: #fde8e8;
+}
+
+.adm-edit-cal-day.is-today {
+    border-color: var(--e-red);
+    color: var(--e-red);
+}
+
+.adm-edit-cal-day.is-selected {
+    background: var(--e-red);
+    border-color: var(--e-red);
+    color: #fff;
+    box-shadow: 0 3px 0 var(--e-red-dark);
+}
+
+.adm-edit-cal-day:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+}
+
+.adm-edit-cal-month {
+    height: 42px;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    background: #faf3f3;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.adm-edit-cal-month:hover:not(:disabled) {
+    background: #fde8e8;
+}
+
+.adm-edit-cal-month.is-today {
+    border-color: var(--e-red);
+    color: var(--e-red);
+}
+
+.adm-edit-cal-month.is-selected {
+    background: var(--e-red);
+    border-color: var(--e-red);
+    color: #fff;
+}
+
+.adm-edit-cal-month:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+}
+
+.adm-edit-cal-foot {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #ead9d9;
+    text-align: right;
+}
+
+.adm-edit-cal-link {
+    border: none;
+    background: none;
+    color: var(--e-red);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.adm-edit-cal-link:hover {
+    text-decoration: underline;
+}
+
+/* ----- Toggle status akun ----- */
+.adm-edit-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.adm-edit-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.adm-edit-switch-track {
+    position: relative;
+    display: block;
+    flex: 0 0 58px;
+    width: 58px;
+    height: 32px;
+    border-radius: 999px;
+    background: #d9cccc;
+    transition: background 0.2s;
+}
+
+.adm-edit-switch-track::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.adm-edit-switch input:checked + .adm-edit-switch-track {
+    background: #d4202a;
+}
+
+.adm-edit-switch input:checked + .adm-edit-switch-track::after {
+    transform: translateX(26px);
+}
+
+.adm-edit-switch input:focus-visible + .adm-edit-switch-track {
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.25);
+}
+
+.adm-edit-switch-text {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ----- Tombol ----- */
+.adm-edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #f1e3e3;
+}
+
+.adm-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 50px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        transform 0.08s,
+        box-shadow 0.08s,
+        filter 0.2s,
+        background 0.2s;
+}
+
+.adm-edit-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.adm-edit-btn--cancel {
+    background: #fde8e8;
+    color: var(--e-red);
+}
+
+.adm-edit-btn--cancel svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-edit-btn--cancel:hover {
+    background: #fbd6d6;
+}
+
+.adm-edit-btn--save {
+    background: var(--e-red);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--e-red-dark);
+}
+
+.adm-edit-btn--save:hover {
+    filter: brightness(1.06);
+}
+
+.adm-edit-btn--save:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--e-red-dark);
+}
+
+.adm-edit-btn--save:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+@keyframes admEditIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ----- Pop-up konfirmasi ----- */
+.adm-edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.adm-edit-modal[hidden] {
+    display: none;
+}
+
+.adm-edit-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 4, 6, 0.55);
+    backdrop-filter: blur(3px);
+    animation: admEditFade 0.2s ease;
+}
+
+.adm-edit-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 32px 28px 26px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(40, 4, 6, 0.4);
+    text-align: center;
+    animation: admEditPop 0.22s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+
+.adm-edit-modal-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fde8cf;
+}
+
+.adm-edit-modal-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.adm-edit-modal[data-tone="save"] .adm-edit-modal-icon--leave,
+.adm-edit-modal[data-tone="leave"] .adm-edit-modal-icon--save {
+    display: none;
+}
+
+.adm-edit-modal[data-tone="save"] .adm-edit-modal-icon {
+    background: #dff3e4;
+}
+
+.adm-edit-modal-title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.adm-edit-modal-text {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #5a4a4a;
+}
+
+.adm-edit-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.adm-edit-modal-actions .adm-edit-btn {
+    flex: 1;
+    padding: 0 12px;
+}
+
+.adm-edit-btn--outline {
+    background: #fff;
+    border: 1.5px solid #d9c3c3;
+    color: #3a2a2a;
+}
+
+.adm-edit-btn--outline:hover {
+    background: #faf3f3;
+}
+
+@keyframes admEditFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes admEditPop {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* =====================================================
+   TAB (<= 1100px)
+   ===================================================== */
+@media (max-width: 1100px) {
+    .adm-edit-card {
+        padding: 24px 24px 22px;
+    }
+}
+
+/* =====================================================
+   MOBILE (<= 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+    .adm-edit {
+        gap: 16px;
+    }
+
+    .adm-edit-head h1 {
+        font-size: 24px;
+    }
+
+    .adm-edit-head p {
+        font-size: 13px;
+    }
+
+    .adm-edit-card {
+        padding: 20px 16px 18px;
+        border-radius: 18px;
+    }
+
+    .adm-edit-card-head {
+        margin-bottom: 18px;
+    }
+
+    .adm-edit-card-head h2 {
+        font-size: 18px;
+    }
+
+    .adm-edit-grid,
+    .adm-edit-dates {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .adm-edit-dates {
+        grid-column: auto;
+    }
+
+    /* kalender tanggal selesai ikut rata kiri di layar kecil */
+    .adm-edit-date--right .adm-edit-cal {
+        left: 0;
+        right: auto;
+    }
+
+    .adm-edit-actions {
+        gap: 10px;
+        margin-top: 22px;
+        padding-top: 18px;
+    }
+
+    .adm-edit-btn {
+        flex: 1;
+        padding: 0 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adm-edit-combo-list,
+    .adm-edit-cal,
+    .adm-edit-modal-backdrop,
+    .adm-edit-modal-box {
+        animation: none;
+    }
+}
