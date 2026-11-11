@@ -122,12 +122,31 @@
                     </div>
 
                     <div class="field">
-                        <label for="bidang_magang">Bidang Magang :</label>
-                        <div class="input-wrap">
+                        <label for="bidang_magang_select">Magang di Posisi :</label>
+                        <div class="input-wrap select-wrap">
                             <svg aria-hidden="true"><use href="#i-bag"/></svg>
-                            <input type="text" id="bidang_magang" name="bidang_magang" value="{{ old('bidang_magang') }}"
-                                   placeholder="Contoh : Backend Developer" required>
+                            <select id="bidang_magang_select" name="bidang_magang_select" required>
+                                <option value="" {{ old('bidang_magang_select') == '' ? 'selected' : '' }}>Pilih posisi</option>
+                                <option value="Illustrator 2D" {{ old('bidang_magang_select') == 'Illustrator 2D' ? 'selected' : '' }}>Illustrator 2D</option>
+                                <option value="Illustrator 3D" {{ old('bidang_magang_select') == 'Illustrator 3D' ? 'selected' : '' }}>Illustrator 3D</option>
+                                <option value="Animator" {{ old('bidang_magang_select') == 'Animator' ? 'selected' : '' }}>Animator</option>
+                                <option value="Content Creator" {{ old('bidang_magang_select') == 'Content Creator' ? 'selected' : '' }}>Content Creator</option>
+                                <option value="Videographer" {{ old('bidang_magang_select') == 'Videographer' ? 'selected' : '' }}>Videographer</option>
+                                <option value="Video Editor" {{ old('bidang_magang_select') == 'Video Editor' ? 'selected' : '' }}>Video Editor</option>
+                                <option value="Digital Marketing" {{ old('bidang_magang_select') == 'Digital Marketing' ? 'selected' : '' }}>Digital Marketing</option>
+                                <option value="Public Relation" {{ old('bidang_magang_select') == 'Public Relation' ? 'selected' : '' }}>Public Relation</option>
+                                <option value="Game Designer" {{ old('bidang_magang_select') == 'Game Designer' ? 'selected' : '' }}>Game Designer</option>
+                                <option value="UI/UX Designer" {{ old('bidang_magang_select') == 'UI/UX Designer' ? 'selected' : '' }}>UI/UX Designer</option>
+                                <option value="Programmer" {{ old('bidang_magang_select') == 'Programmer' ? 'selected' : '' }}>Programmer</option>
+                                <option value="Human Resource" {{ old('bidang_magang_select') == 'Human Resource' ? 'selected' : '' }}>Human Resource</option>
+                                <option value="lainnya" {{ old('bidang_magang_select') == 'lainnya' ? 'selected' : '' }}>Yang lain</option>
+                            </select>
                         </div>
+                        <div class="input-wrap custom-role-wrap" id="custom_role_wrapper" style="display: {{ old('bidang_magang_select') == 'lainnya' ? 'block' : 'none' }}; margin-top: 10px;">
+                            <input type="text" id="bidang_magang_custom" name="bidang_magang_custom" value="{{ old('bidang_magang_custom') }}"
+                                   placeholder="Tuliskan posisi lain" {{ old('bidang_magang_select') == 'lainnya' ? 'required' : '' }}>
+                        </div>
+                        <input type="hidden" id="bidang_magang" name="bidang_magang" value="{{ old('bidang_magang', '') }}">
                     </div>
 
                     {{-- Tanggal: input tampilan (teks) + input tersembunyi yang dikirim ke backend (format Y-m-d) --}}

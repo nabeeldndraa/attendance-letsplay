@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RegistrationSetting;
 use App\Models\User;
+use App\Services\AdminNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
@@ -20,12 +21,19 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function register(Request $request)
+    public function register(Request $request, AdminNotificationService $adminNotifications)
     {
         if (! RegistrationSetting::query()->findOrFail(1)->isOpen()) {
             return redirect()->route('login')
                 ->with('error', 'Pendaftaran akun baru sudah ditutup.');
         }
+
+        $selectedBidang = trim((string) $request->input('bidang_magang_select', ''));
+        $customBidang = trim((string) $request->input('bidang_magang_custom', ''));
+
+        $request->merge([
+            'bidang_magang' => $selectedBidang === 'lainnya' ? $customBidang : $selectedBidang,
+        ]);
 
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
@@ -54,7 +62,7 @@ class RegisterController extends Controller
         $validated['role'] = 'user';
         $validated['status_akun'] = 'aktif';
 
-        $registered = DB::transaction(function () use ($validated): bool {
+        $registered = DB::transaction(function () use ($validated, $adminNotifications): bool {
             $setting = RegistrationSetting::query()
                 ->lockForUpdate()
                 ->findOrFail(1);
@@ -63,7 +71,8 @@ class RegisterController extends Controller
                 return false;
             }
 
-            User::create($validated);
+            $user = User::create($validated);
+            $adminNotifications->notifyNewAccount($user, 'berhasil mendaftar');
             $setting->update(['closed_at' => now()]);
 
             return true;

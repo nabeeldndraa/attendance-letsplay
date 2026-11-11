@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeaveRequest;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -52,6 +53,18 @@ class UserDashboardController extends Controller
             ->pluck('tanggal')
             ->filter(fn ($tanggal) => Carbon::parse($tanggal, 'Asia/Jakarta')->isWeekday())
             ->count();
+        $hariIzinDisetujui = LeaveRequest::query()
+            ->where('id_user', $user->getKey())
+            ->where('status', 'Disetujui')
+            ->whereBetween('tanggal', [
+                $periodStart->toDateString(),
+                $periodEnd->toDateString(),
+            ])
+            ->get(['tanggal'])
+            ->pluck('tanggal')
+            ->unique()
+            ->filter(fn ($tanggal) => Carbon::parse($tanggal, 'Asia/Jakarta')->isWeekday())
+            ->count();
 
         $poin = (clone $presensi)
             ->whereIn('status_presensi', $statusHadir)
@@ -79,7 +92,7 @@ class UserDashboardController extends Controller
             'terlambat' => (clone $presensi)
                 ->whereIn('status_presensi', $statusTerlambat)
                 ->count(),
-            'alpha' => max(0, $hariKerja - $hariHadir),
+            'alpha' => max(0, $hariKerja - $hariHadir - $hariIzinDisetujui),
         ];
 
         $last = null;

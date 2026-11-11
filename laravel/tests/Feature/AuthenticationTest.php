@@ -41,6 +41,17 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseCount('users', 1);
     }
 
+    public function test_registration_form_has_dropdown_for_position_and_custom_other_option(): void
+    {
+        $this->get('/register')
+            ->assertOk()
+            ->assertSee('Magang di Posisi')
+            ->assertSee('Illustrator 2D')
+            ->assertSee('Yang lain')
+            ->assertSee('id="bidang_magang_select"', false)
+            ->assertSee('id="bidang_magang_custom"', false);
+    }
+
     public function test_login_remembers_the_user_when_remember_is_selected(): void
     {
         $user = $this->createUser();
