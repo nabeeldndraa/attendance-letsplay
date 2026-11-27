@@ -140,6 +140,41 @@
     background: #e9e1e1;
 }
 
+/* ----- Kelompok tombol di judul + tombol Tambah Point ----- */
+.adm-user-head-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.adm-user-btn--point {
+    background: #fff;
+    border-color: var(--u-red);
+    color: var(--u-red);
+    box-shadow: 0 4px 0 #f0b9bc;
+}
+
+.adm-user-btn--point:hover {
+    background: #fde8e8;
+}
+
+.adm-user-btn--point:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #f0b9bc;
+}
+
+.adm-user-btn--point svg {
+    width: 20px;
+    height: 20px;
+    fill: #fbbf24;
+    stroke: #b45309;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 /* ----- Notifikasi ----- */
 .adm-user-alert {
     display: flex;
@@ -872,6 +907,18 @@ a.adm-user-page:hover {
 
     .adm-user-head .adm-user-btn {
         width: 100%;
+    }
+
+    .adm-user-head-actions {
+        width: 100%;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+
+    .adm-user-head-actions .adm-user-btn {
+        flex: 1 1 0;
+        padding: 0 12px;
+        font-size: 14px;
     }
 
     .adm-user-stats {

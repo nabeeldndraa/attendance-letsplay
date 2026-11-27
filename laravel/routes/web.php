@@ -152,6 +152,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         'toggleStatus',
     ])->name('data-user.status');
 
+    Route::view('/tambah-point', 'admin.tambah-point')->name('tambah-point');
+
     Route::view('/leaderboard', 'admin.leaderboard')->name('leaderboard');
     Route::get('/notifikasi', [
         AdminNotificationController::class,
