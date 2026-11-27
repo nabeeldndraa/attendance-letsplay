@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="berry" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f66b78"/>
+      <stop offset="1" stop-color="#b91f3d"/>
+    </linearGradient>
+    <linearGradient id="brim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d93655"/>
+      <stop offset="1" stop-color="#84182f"/>
+    </linearGradient>
+  </defs>
+  <!-- Aligned to the pet's 180 x 180 artwork canvas. This sample is dev-only. -->
+  <path d="M49 62c2-22 19-37 41-37s39 15 41 37l-2 8H51z" fill="url(#berry)" stroke="#76162b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M43 65c12-9 82-9 94 0 4 3 2 10-4 12-24 9-62 9-86 0-6-2-8-9-4-12Z" fill="url(#brim)" stroke="#76162b" stroke-width="3"/>
+  <path d="M90 27v35" stroke="#ffb4bc" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+  <path d="M76 43c4-5 9-7 14-7" fill="none" stroke="#ffd6d9" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+  <circle cx="90" cy="24" r="5" fill="#ffd1a1" stroke="#8d2033" stroke-width="2"/>
+</svg>
