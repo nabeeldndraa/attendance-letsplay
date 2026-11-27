@@ -1,8 +1,11 @@
 /**
- * Date picker kustom untuk halaman register.
- * - Input yang terlihat (.dp-input) hanya untuk tampilan, mis. "13 Okt 2026".
- * - Input tersembunyi (.dp-value) menyimpan format Y-m-d dan itulah yang dikirim ke backend.
- * - Tanggal selesai (data-min="tanggal_mulai") tidak bisa lebih awal dari tanggal mulai.
+ * Script halaman register:
+ * - Date picker kustom (tanggal mulai & selesai magang)
+ * - Tombol lihat/sembunyikan password
+ */
+
+/**
+ * Date picker kustom.
  */
 (function () {
     const MONTHS = [
@@ -231,5 +234,31 @@
             .some((el) => el.classList && el.classList.contains("datepicker"));
 
         if (!diDalam) closeAll();
+    });
+})();
+
+/**
+ * Tombol lihat/sembunyikan password.
+ * Pakai: <button data-toggle-password="id_input"> di dalam .input-wrap.
+ */
+(function () {
+    document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+        const input = document.getElementById(button.dataset.togglePassword);
+
+        if (!input) return;
+
+        button.addEventListener("click", () => {
+            const show = input.type === "password";
+
+            input.type = show ? "text" : "password";
+            button.classList.toggle("is-visible", show);
+            button.setAttribute("aria-pressed", String(show));
+            button.setAttribute(
+                "aria-label",
+                show ? "Sembunyikan password" : "Tampilkan password",
+            );
+
+            input.focus();
+        });
     });
 })();

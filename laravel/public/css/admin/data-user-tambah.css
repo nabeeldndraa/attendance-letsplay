@@ -1,0 +1,1342 @@
+/* =====================================================
+   TAMBAH USER (ADMIN)
+   Prefix class: "adm-add-". Sidebar/header memakai dashboard.css (bersama).
+   Breakpoint: tab <= 1100px, mobile <= 768px.
+   ===================================================== */
+
+/* Variabel dipakai juga oleh pop-up konfirmasi yang berada di luar .adm-add */
+.adm-add,
+.adm-add-modal {
+    --e-red: var(--red, #c8202a);
+    --e-red-dark: #5c0f0c;
+    --e-line: #f1e3e3;
+    --e-muted: #7a6a6a;
+    --e-field: #fdf6f5;
+    --e-field-line: #f0dcdc;
+}
+
+.adm-add {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+:where(.adm-add) h1,
+:where(.adm-add) h2,
+:where(.adm-add) p,
+:where(.adm-add) ul {
+    margin: 0;
+}
+
+.adm-add svg {
+    flex-shrink: 0;
+}
+
+/* ----- Judul ----- */
+.adm-add-head h1 {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.adm-add-head p {
+    margin-top: 4px;
+    font-size: 15px;
+    color: var(--e-muted);
+}
+
+/* ----- Kartu form ----- */
+.adm-add-card {
+    padding: 28px 32px 26px;
+    background: #fff;
+    border: 1.5px solid var(--e-line);
+    border-radius: 22px;
+    box-shadow: 0 2px 10px rgba(120, 40, 40, 0.07);
+}
+
+.adm-add-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.adm-add-card-head svg {
+    width: 34px;
+    height: 34px;
+    color: var(--e-red);
+}
+
+.adm-add-card-head h2 {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+/* ----- Alert error ----- */
+.adm-add-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background: #fde8e8;
+    border-left: 5px solid var(--e-red);
+    border-radius: 12px;
+    color: #9d1d18;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.adm-add-alert svg {
+    width: 24px;
+    height: 24px;
+}
+
+.adm-add-alert ul {
+    margin-top: 4px;
+    padding-left: 18px;
+}
+
+/* ----- Grid field ----- */
+.adm-add-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+}
+
+.adm-add-field {
+    min-width: 0;
+}
+
+.adm-add-field--full {
+    grid-column: 1 / -1;
+}
+
+.adm-add-field > label:not(.adm-add-switch),
+.adm-add-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2a2a;
+}
+
+.adm-add-field label i,
+.adm-add-label i {
+    color: var(--e-red);
+    font-style: normal;
+}
+
+.adm-add-dates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+}
+
+.adm-add-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid var(--e-field-line);
+    border-radius: 10px;
+    background: var(--e-field);
+    font-family: inherit;
+    font-size: 14px;
+    color: #2a2a2a;
+    outline: none;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.adm-add-input::placeholder {
+    color: #a07a7a;
+}
+
+.adm-add-input:hover {
+    border-color: #e7c9c9;
+}
+
+.adm-add-input:focus {
+    border-color: var(--e-red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(200, 32, 42, 0.14);
+}
+
+.adm-add-input.has-error {
+    border-color: var(--e-red);
+    background: #fff5f5;
+}
+
+.adm-add-error {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--e-red);
+}
+
+/* ----- Combo Divisi / Posisi ----- */
+.adm-add-combo {
+    position: relative;
+}
+
+.adm-add-combo-input {
+    padding-right: 52px;
+}
+
+.adm-add-combo-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.adm-add-combo-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--e-red);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s;
+}
+
+.adm-add-combo.is-open .adm-add-combo-toggle svg {
+    transform: rotate(180deg);
+}
+
+.adm-add-combo-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: 244px;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.22);
+    animation: admAddIn 0.15s ease;
+}
+
+.adm-add-combo-list[hidden],
+.adm-add-combo-empty[hidden],
+.adm-add-combo-list li[hidden] {
+    display: none;
+}
+
+.adm-add-option {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.adm-add-option:hover,
+.adm-add-option:focus-visible {
+    background: #fde8e8;
+    outline: none;
+}
+
+.adm-add-option.is-selected {
+    background: #fde8e8;
+    color: var(--e-red);
+    font-weight: 700;
+}
+
+.adm-add-combo-empty {
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--e-muted);
+}
+
+/* ----- Tanggal + kalender kustom ----- */
+.adm-add-date {
+    position: relative;
+}
+
+.adm-add-date-view {
+    padding-right: 52px;
+    cursor: pointer;
+}
+
+.adm-add-date-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.adm-add-date-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: rgba(200, 32, 42, 0.12);
+    stroke: var(--e-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-cal {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 50;
+    width: 308px;
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(60, 5, 5, 0.28);
+    animation: admAddIn 0.15s ease;
+}
+
+.adm-add-date--right .adm-add-cal {
+    left: auto;
+    right: 0;
+}
+
+.adm-add-cal[hidden] {
+    display: none;
+}
+
+.adm-add-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.adm-add-cal-title {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 10px;
+    background: none;
+    color: #1b1b1b;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.adm-add-cal-title:hover {
+    background: #fde8e8;
+}
+
+.adm-add-cal-nav {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: #fde8e8;
+    color: var(--e-red);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.adm-add-cal-nav svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-cal-nav:hover {
+    background: var(--e-red);
+    color: #fff;
+}
+
+.adm-add-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+}
+
+.adm-add-cal-grid--months {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.adm-add-cal-dow {
+    padding: 4px 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9a6a6a;
+}
+
+.adm-add-cal-empty {
+    height: 36px;
+}
+
+.adm-add-cal-day {
+    height: 36px;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    background: none;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.adm-add-cal-day:hover:not(:disabled) {
+    background: #fde8e8;
+}
+
+.adm-add-cal-day.is-today {
+    border-color: var(--e-red);
+    color: var(--e-red);
+}
+
+.adm-add-cal-day.is-selected {
+    background: var(--e-red);
+    border-color: var(--e-red);
+    color: #fff;
+    box-shadow: 0 3px 0 var(--e-red-dark);
+}
+
+.adm-add-cal-day:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+}
+
+.adm-add-cal-month {
+    height: 42px;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    background: #faf3f3;
+    color: #2a2a2a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.adm-add-cal-month:hover:not(:disabled) {
+    background: #fde8e8;
+}
+
+.adm-add-cal-month.is-today {
+    border-color: var(--e-red);
+    color: var(--e-red);
+}
+
+.adm-add-cal-month.is-selected {
+    background: var(--e-red);
+    border-color: var(--e-red);
+    color: #fff;
+}
+
+.adm-add-cal-month:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+}
+
+.adm-add-cal-foot {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #ead9d9;
+    text-align: right;
+}
+
+.adm-add-cal-link {
+    border: none;
+    background: none;
+    color: var(--e-red);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.adm-add-cal-link:hover {
+    text-decoration: underline;
+}
+
+/* ----- Password + tampilkan/sembunyikan ----- */
+.adm-add-pass {
+    position: relative;
+}
+
+.adm-add-pass-input {
+    padding-right: 52px;
+}
+
+.adm-add-pass-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.adm-add-pass-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--e-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-pass-toggle .is-off {
+    display: none;
+}
+
+.adm-add-pass-toggle.is-visible .is-on {
+    display: none;
+}
+
+.adm-add-pass-toggle.is-visible .is-off {
+    display: block;
+}
+
+.adm-add-hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--e-muted);
+}
+
+.adm-add-error[hidden] {
+    display: none;
+}
+
+/* ----- Catatan status akun ----- */
+.adm-add-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #fdf6f5;
+    border: 1.5px dashed #ecc7c7;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #5a4a4a;
+}
+
+.adm-add-note svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--e-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ikon bergaya garis (tanpa isi) */
+.adm-add svg.is-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ----- Pemilih cara tambah user ----- */
+.adm-add-modes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.adm-add-mode {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: #fff;
+    border: 1.5px solid var(--e-line);
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(120, 40, 40, 0.06);
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        box-shadow 0.2s;
+}
+
+.adm-add-mode:hover {
+    border-color: #e7c9c9;
+}
+
+.adm-add-mode input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.adm-add-mode-ico {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #fde8e8;
+    color: var(--e-red);
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+
+.adm-add-mode-ico svg {
+    width: 26px;
+    height: 26px;
+}
+
+.adm-add-mode-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.adm-add-mode-text strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.adm-add-mode-text small {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--e-muted);
+}
+
+.adm-add-mode-dot {
+    position: relative;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #d9c3c3;
+    border-radius: 50%;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.adm-add-mode-dot::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--e-red);
+    transform: scale(0);
+    transition: transform 0.18s;
+}
+
+.adm-add-mode.is-active {
+    border-color: var(--e-red);
+    background: #fff7f6;
+    box-shadow:
+        0 0 0 3px rgba(200, 32, 42, 0.1),
+        0 4px 12px rgba(120, 40, 40, 0.1);
+}
+
+.adm-add-mode.is-active .adm-add-mode-ico {
+    background: var(--e-red);
+    color: #fff;
+}
+
+.adm-add-mode.is-active .adm-add-mode-dot {
+    border-color: var(--e-red);
+}
+
+.adm-add-mode.is-active .adm-add-mode-dot::after {
+    transform: scale(1);
+}
+
+.adm-add-mode:has(input:focus-visible) {
+    outline: 3px solid rgba(200, 32, 42, 0.3);
+    outline-offset: 2px;
+}
+
+/* ----- Panel (yang tidak dipilih menjadi abu-abu) ----- */
+.adm-add-panel {
+    transition:
+        opacity 0.25s,
+        filter 0.25s;
+}
+
+.adm-add-panel.is-disabled {
+    opacity: 0.55;
+    filter: grayscale(1);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Isi kartu bisa dilipat: panel yang tidak dipilih hanya menampilkan judulnya */
+.adm-add-collapse {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.3s ease;
+}
+
+.adm-add-collapse-inner {
+    min-height: 0;
+}
+
+.adm-add-panel.is-disabled .adm-add-collapse {
+    grid-template-rows: 0fr;
+}
+
+.adm-add-panel.is-disabled .adm-add-collapse-inner {
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.adm-add-card {
+    transition: padding 0.3s ease;
+}
+
+.adm-add-card-head {
+    transition: margin-bottom 0.3s ease;
+}
+
+.adm-add-panel.is-disabled .adm-add-card {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.adm-add-panel.is-disabled .adm-add-card-head {
+    margin-bottom: 0;
+}
+
+.adm-add-collapsed-note {
+    display: none;
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--e-muted);
+}
+
+.adm-add-panel.is-disabled .adm-add-collapsed-note {
+    display: block;
+}
+
+/* ----- Upload Excel ----- */
+.adm-add-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0 0 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.adm-add-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #fdf6f5;
+    border-radius: 14px;
+}
+
+.adm-add-step-no {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--e-red);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.adm-add-steps strong {
+    display: block;
+    font-size: 14px;
+}
+
+.adm-add-steps p {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--e-muted);
+}
+
+.adm-add-template {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 18px 20px;
+    border: 1.5px dashed #ecc7c7;
+    border-radius: 14px;
+}
+
+.adm-add-template-info {
+    min-width: 0;
+}
+
+.adm-add-template-info > strong {
+    font-size: 14px;
+}
+
+.adm-add-template-info p {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--e-muted);
+}
+
+.adm-add-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.adm-add-chips span {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fde8e8;
+    color: var(--e-red);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.adm-add-btn-ico {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* area tarik & lepas */
+.adm-add-dropzone {
+    position: relative;
+    padding: 28px 20px;
+    background: var(--e-field);
+    border: 2px dashed #e0b9b9;
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        box-shadow 0.2s;
+}
+
+.adm-add-dropzone:hover,
+.adm-add-dropzone:focus-visible,
+.adm-add-dropzone.is-drag {
+    border-color: var(--e-red);
+    background: #fff;
+    outline: none;
+}
+
+.adm-add-dropzone.is-drag {
+    box-shadow: 0 0 0 4px rgba(200, 32, 42, 0.14);
+}
+
+.adm-add-dropzone.has-error {
+    border-color: var(--e-red);
+    background: #fff5f5;
+}
+
+.adm-add-dz-ico {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fde8e8;
+}
+
+.adm-add-dz-ico svg {
+    width: 34px;
+    height: 34px;
+    fill: none;
+    stroke: var(--e-red);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-dz-title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.adm-add-dz-title u {
+    color: var(--e-red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.adm-add-dz-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--e-muted);
+}
+
+.adm-add-dz-empty[hidden],
+.adm-add-dz-file[hidden] {
+    display: none;
+}
+
+.adm-add-dz-file {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1.5px solid #e7c9c9;
+    border-radius: 14px;
+    text-align: left;
+}
+
+.adm-add-dz-file-ico {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #dff3e4;
+}
+
+.adm-add-dz-file-ico svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #1f9d4d;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-dz-file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.adm-add-dz-file-name {
+    display: block;
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.adm-add-dz-file-size {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--e-muted);
+}
+
+.adm-add-dz-remove {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: #fde8e8;
+    color: var(--e-red);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.adm-add-dz-remove svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+}
+
+.adm-add-dz-remove:hover {
+    background: var(--e-red);
+    color: #fff;
+}
+
+.adm-add-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: none;
+}
+
+/* ----- Tombol ----- */
+.adm-add-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #f1e3e3;
+}
+
+.adm-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 50px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        transform 0.08s,
+        box-shadow 0.08s,
+        filter 0.2s,
+        background 0.2s;
+}
+
+.adm-add-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.adm-add-btn--cancel {
+    background: #fde8e8;
+    color: var(--e-red);
+}
+
+.adm-add-btn--cancel svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.adm-add-btn--cancel:hover {
+    background: #fbd6d6;
+}
+
+.adm-add-btn--save {
+    background: var(--e-red);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--e-red-dark);
+}
+
+.adm-add-btn--save:hover {
+    filter: brightness(1.06);
+}
+
+.adm-add-btn--save:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--e-red-dark);
+}
+
+.adm-add-btn--save:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+@keyframes admAddIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ----- Pop-up konfirmasi ----- */
+.adm-add-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.adm-add-modal[hidden] {
+    display: none;
+}
+
+.adm-add-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 4, 6, 0.55);
+    backdrop-filter: blur(3px);
+    animation: admAddFade 0.2s ease;
+}
+
+.adm-add-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    padding: 32px 28px 26px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(40, 4, 6, 0.4);
+    text-align: center;
+    animation: admAddPop 0.22s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+
+.adm-add-modal-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fde8cf;
+}
+
+.adm-add-modal-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.adm-add-modal[data-tone="save"] .adm-add-modal-icon--leave,
+.adm-add-modal[data-tone="leave"] .adm-add-modal-icon--save {
+    display: none;
+}
+
+.adm-add-modal[data-tone="save"] .adm-add-modal-icon {
+    background: #dff3e4;
+}
+
+.adm-add-modal-title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.adm-add-modal-text {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #5a4a4a;
+}
+
+.adm-add-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.adm-add-modal-actions .adm-add-btn {
+    flex: 1;
+    padding: 0 12px;
+}
+
+.adm-add-btn--outline {
+    background: #fff;
+    border: 1.5px solid #d9c3c3;
+    color: #3a2a2a;
+}
+
+.adm-add-btn--outline:hover {
+    background: #faf3f3;
+}
+
+@keyframes admAddFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes admAddPop {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* =====================================================
+   TAB (<= 1100px)
+   ===================================================== */
+@media (max-width: 1100px) {
+    .adm-add-card {
+        padding: 24px 24px 22px;
+    }
+
+    .adm-add-steps {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+/* =====================================================
+   MOBILE (<= 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+    .adm-add {
+        gap: 16px;
+    }
+
+    .adm-add-head h1 {
+        font-size: 24px;
+    }
+
+    .adm-add-head p {
+        font-size: 13px;
+    }
+
+    .adm-add-card {
+        padding: 20px 16px 18px;
+        border-radius: 18px;
+    }
+
+    .adm-add-card-head {
+        margin-bottom: 18px;
+    }
+
+    .adm-add-card-head h2 {
+        font-size: 18px;
+    }
+
+    .adm-add-modes {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .adm-add-collapsed-note {
+        display: none !important;
+    }
+
+    .adm-add-mode {
+        padding: 14px 16px;
+        border-radius: 16px;
+    }
+
+    .adm-add-template {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .adm-add-template .adm-add-btn {
+        width: 100%;
+    }
+
+    .adm-add-dropzone {
+        padding: 22px 14px;
+    }
+
+    .adm-add-grid,
+    .adm-add-dates {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .adm-add-dates {
+        grid-column: auto;
+    }
+
+    /* kalender tanggal selesai ikut rata kiri di layar kecil */
+    .adm-add-date--right .adm-add-cal {
+        left: 0;
+        right: auto;
+    }
+
+    .adm-add-actions {
+        gap: 10px;
+        margin-top: 22px;
+        padding-top: 18px;
+    }
+
+    .adm-add-btn {
+        flex: 1;
+        padding: 0 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adm-add-collapse,
+    .adm-add-card,
+    .adm-add-card-head {
+        transition: none;
+    }
+
+    .adm-add-combo-list,
+    .adm-add-cal,
+    .adm-add-modal-backdrop,
+    .adm-add-modal-box {
+        animation: none;
+    }
+}
