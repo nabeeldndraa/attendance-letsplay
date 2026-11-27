@@ -50,18 +50,27 @@
 
 <div class="adm-user">
 
-    {{-- ===== JUDUL + TOMBOL TAMBAH ===== --}}
-    <div class="adm-user-head">
-        <div>
-            <h1>Data User</h1>
-            <p>Kelola akun dan informasi peserta magang.</p>
-        </div>
+        {{-- ===== JUDUL + TOMBOL AKSI ===== --}}
+        <div class="adm-user-head">
+            <div>
+                <h1>Data User</h1>
+                <p>Kelola akun dan informasi peserta magang.</p>
+            </div>
 
-        <a href="{{ route('admin.data-user.create') }}" class="adm-user-btn adm-user-btn--primary adm-user-btn--lg">
-            <svg aria-hidden="true"><use href="#p-admuser-plus"/></svg>
-            Tambah User
-        </a>
-    </div>
+            <div class="adm-user-head-actions">
+                @if (\Illuminate\Support\Facades\Route::has('admin.tambah-point'))
+                    <a href="{{ route('admin.tambah-point') }}" class="adm-user-btn adm-user-btn--point adm-user-btn--lg">
+                        <svg aria-hidden="true"><use href="#i-star"/></svg>
+                        Tambah Point
+                    </a>
+                @endif
+
+                <a href="{{ route('admin.data-user.create') }}" class="adm-user-btn adm-user-btn--primary adm-user-btn--lg">
+                    <svg aria-hidden="true"><use href="#p-admuser-plus"/></svg>
+                    Tambah User
+                </a>
+            </div>
+        </div>
 
 
     {{-- ===== NOTIFIKASI ===== --}}
