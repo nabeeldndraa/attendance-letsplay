@@ -52,16 +52,14 @@
 
     const roleSelect = document.getElementById("bidang_magang_select");
     const roleCustom = document.getElementById("bidang_magang_custom");
-    const roleHidden = document.getElementById("bidang_magang");
+    const roleWrapper = document.getElementById("custom_role_wrapper");
 
     function syncRoleField() {
-        if (!roleSelect || !roleHidden) return;
-
-        const wrapper = document.getElementById("custom_role_wrapper");
+        if (!roleSelect) return;
         const isOther = roleSelect.value === "lainnya";
 
-        if (wrapper) {
-            wrapper.style.display = isOther ? "block" : "none";
+        if (roleWrapper) {
+            roleWrapper.style.display = isOther ? "block" : "none";
         }
 
         if (roleCustom) {
@@ -69,16 +67,6 @@
             if (!isOther) {
                 roleCustom.value = "";
             }
-        }
-
-        roleHidden.value = isOther
-            ? (roleCustom ? roleCustom.value.trim() : "")
-            : roleSelect.value;
-
-        if (isOther && roleCustom) {
-            roleCustom.addEventListener("input", () => {
-                roleHidden.value = roleCustom.value.trim();
-            });
         }
     }
 

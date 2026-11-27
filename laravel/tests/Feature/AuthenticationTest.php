@@ -46,10 +46,29 @@ class AuthenticationTest extends TestCase
         $this->get('/register')
             ->assertOk()
             ->assertSee('Magang di Posisi')
-            ->assertSee('Illustrator 2D')
+            ->assertSee('Ilustrator 2D')
             ->assertSee('Yang lain')
             ->assertSee('id="bidang_magang_select"', false)
             ->assertSee('id="bidang_magang_custom"', false);
+    }
+
+    public function test_registration_saves_custom_position_for_other_option(): void
+    {
+        $this->post('/register', $this->registrationData([
+            'bidang_magang_select' => 'lainnya',
+            'bidang_magang_custom' => 'Quality Assurance',
+        ]))->assertRedirect('/login-test');
+
+        $this->assertDatabaseHas('users', [
+            'bidang_magang' => 'Quality Assurance',
+        ]);
+    }
+
+    public function test_registration_rejects_a_position_outside_the_dropdown(): void
+    {
+        $this->post('/register', $this->registrationData([
+            'bidang_magang_select' => 'Backend Developer',
+        ]))->assertSessionHasErrors('bidang_magang_select');
     }
 
     public function test_login_remembers_the_user_when_remember_is_selected(): void
@@ -89,7 +108,7 @@ class AuthenticationTest extends TestCase
         return array_merge([
             'nama' => 'Peserta Magang',
             'asal_instansi' => 'Universitas Contoh',
-            'bidang_magang' => 'Backend Developer',
+            'bidang_magang_select' => 'Programmer',
             'tanggal_mulai' => '2026-10-26',
             'tanggal_selesai' => '2026-10-30',
             'no_wa' => '081234567890',

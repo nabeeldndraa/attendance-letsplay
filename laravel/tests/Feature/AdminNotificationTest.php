@@ -218,7 +218,7 @@ class AdminNotificationTest extends TestCase
         $this->post('/register', [
             'nama' => 'Peserta Baru',
             'asal_instansi' => 'Universitas Contoh',
-            'bidang_magang' => 'Backend Developer',
+            'bidang_magang_select' => 'Programmer',
             'tanggal_mulai' => '2026-10-26',
             'tanggal_selesai' => '2026-10-30',
             'no_wa' => '081234567890',
