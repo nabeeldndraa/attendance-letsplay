@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminAnnouncementController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleAuthController;
@@ -10,7 +12,6 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', function () {
     return redirect('/login-test');
@@ -26,6 +27,8 @@ Route::get('/dashboard-test', [UserDashboardController::class, 'index'])
     ->middleware('auth');
 
 Route::post('/presensi', [PresensiController::class, 'store'])
+    ->middleware('auth');
+Route::post('/presensi/izin', [PresensiController::class, 'storeIzin'])
     ->middleware('auth');
 
 Route::get('/presensi-test', function () {
@@ -150,6 +153,33 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     ])->name('data-user.status');
 
     Route::view('/leaderboard', 'admin.leaderboard')->name('leaderboard');
-    Route::view('/notifikasi', 'admin.notifikasi')->name('notifikasi');
-    Route::view('/pengumuman', 'admin.pengumuman')->name('pengumuman');
+    Route::get('/notifikasi', [
+        AdminNotificationController::class,
+        'index',
+    ])->name('notifikasi');
+    Route::get('/notifikasi/data', [
+        AdminNotificationController::class,
+        'data',
+    ])->name('notifikasi.data');
+    Route::post('/notifikasi/dibaca-semua', [
+        AdminNotificationController::class,
+        'markAllAsRead',
+    ])->name('notifikasi.dibaca-semua');
+    Route::post('/notifikasi/{id}/dibaca', [
+        AdminNotificationController::class,
+        'markAsRead',
+    ])->whereNumber('id')->name('notifikasi.dibaca');
+    Route::post('/notifikasi/{id}/{action}', [
+        AdminNotificationController::class,
+        'decide',
+    ])->whereNumber('id')->whereIn('action', ['setujui', 'tolak'])
+        ->name('notifikasi.keputusan');
+    Route::get('/pengumuman', [
+        AdminAnnouncementController::class,
+        'index',
+    ])->name('pengumuman');
+    Route::post('/pengumuman', [
+        AdminAnnouncementController::class,
+        'store',
+    ])->name('pengumuman.store');
 });

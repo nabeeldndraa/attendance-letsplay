@@ -15,8 +15,7 @@
          data-url-data="{{ url('/admin/notifikasi/data') }}"
          data-url-mark-all="{{ url('/admin/notifikasi/dibaca-semua') }}"
          data-url-base="{{ url('/admin/notifikasi') }}"
-         data-csrf="{{ csrf_token() }}"
-         data-demo="{{ config('app.debug') ? 'true' : 'false' }}">
+         data-csrf="{{ csrf_token() }}">
 
         <x-page-hero title="Notifikasi"
                      subtitle="Informasi terbaru seputar aktivitas, presensi, dan peserta magang"

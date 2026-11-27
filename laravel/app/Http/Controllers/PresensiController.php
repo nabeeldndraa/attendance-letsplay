@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeaveRequest;
 use App\Models\LokasiKantor;
 use App\Models\Presensi;
+use App\Models\User;
 use App\Models\UserNotification;
+use App\Services\AdminNotificationService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -13,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class PresensiController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, AdminNotificationService $adminNotifications)
     {
         $request->validate([
             'tipe_kerja' => ['required', 'in:WFO,WFH'],
@@ -25,6 +28,19 @@ class PresensiController extends Controller
         $user = Auth::user();
         $tanggal = Carbon::now('Asia/Jakarta')->toDateString();
         $jam = Carbon::now('Asia/Jakarta');
+
+        $sudahIzin = LeaveRequest::query()
+            ->where('id_user', $user->id)
+            ->whereDate('tanggal', $tanggal)
+            ->whereIn('status', ['Diajukan', 'Disetujui'])
+            ->exists();
+
+        if ($sudahIzin) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pengajuan izin hari ini sedang menunggu atau sudah disetujui.',
+            ], 422);
+        }
 
         // Cek apakah user sudah presensi hari ini
         $sudahPresensi = Presensi::where('id_user', $user->id)
@@ -65,6 +81,10 @@ class PresensiController extends Controller
             $status = 'Terlambat';
             $point = 5;
         }
+
+        $statusKonfirmasi = $status === 'Terlambat' && $jam->hour < 12
+            ? 'Diajukan'
+            : '-';
 
         $jarakDariKantor = null;
         $lokasiTerdeteksi = null;
@@ -142,7 +162,7 @@ class PresensiController extends Controller
             $jarakDariKantor = null;
         }
 
-        [$presensi] = DB::transaction(function () use (
+        $presensi = DB::transaction(function () use (
             $user,
             $tanggal,
             $jam,
@@ -150,8 +170,26 @@ class PresensiController extends Controller
             $idLokasi,
             $jarakDariKantor,
             $status,
-            $point
+            $point,
+            $statusKonfirmasi,
+            $adminNotifications
         ) {
+            User::query()->whereKey($user->getKey())->lockForUpdate()->firstOrFail();
+
+            if (
+                Presensi::query()
+                    ->where('id_user', $user->getKey())
+                    ->whereDate('tanggal', $tanggal)
+                    ->exists()
+                || LeaveRequest::query()
+                    ->where('id_user', $user->getKey())
+                    ->whereDate('tanggal', $tanggal)
+                    ->whereIn('status', ['Diajukan', 'Disetujui'])
+                    ->exists()
+            ) {
+                return null;
+            }
+
             $presensi = Presensi::create([
                 'id_user' => $user->id,
                 'tanggal' => $tanggal,
@@ -164,7 +202,7 @@ class PresensiController extends Controller
                 'progress_hari_ini' => $request->input('progress_hari_ini')
                     ?: 'Tidak ada catatan kegiatan.',
                 'status_presensi' => $status,
-                'status_konfirmasi' => '-',
+                'status_konfirmasi' => $statusKonfirmasi,
                 'id_admin_konfirmasi' => null,
                 'catatan_admin' => null,
                 'point_didapat' => $point,
@@ -195,8 +233,31 @@ class PresensiController extends Controller
                 'url_tujuan' => url('/history-test'),
             ]);
 
-            return [$presensi];
+            if ($statusKonfirmasi === 'Diajukan') {
+                $adminNotifications->notifyAdmins([
+                    'kategori' => 'keterlambatan',
+                    'judul' => 'Permintaan Konfirmasi Keterlambatan',
+                    'deskripsi' => $user->nama.' meminta konfirmasi presensi tanggal '.$jam->locale('id')->translatedFormat('j F Y'),
+                    'detail' => 'Peserta: '.$user->nama
+                        ."\nTanggal: ".$jam->locale('id')->translatedFormat('j F Y')
+                        ."\nJam presensi: ".$jam->format('H:i').' WIB'
+                        ."\nTipe kerja: ".$request->tipe_kerja
+                        ."\nProgress: ".($request->input('progress_hari_ini') ?: 'Tidak ada catatan kegiatan.'),
+                    'sumber_tipe' => 'presensi',
+                    'sumber_id' => $presensi->getKey(),
+                    'status' => 'Diajukan',
+                ]);
+            }
+
+            return $presensi;
         });
+
+        if (! $presensi) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Presensi sudah tercatat atau pengajuan izin hari ini sedang menunggu atau sudah disetujui.',
+            ], 422);
+        }
 
         return response()->json([
             'success' => true,
@@ -212,14 +273,114 @@ class PresensiController extends Controller
         ], 201);
     }
 
-    public function statusHariIni()
+    public function storeIzin(Request $request, AdminNotificationService $adminNotifications)
     {
-        $user = Auth::user();
+        abort_unless($request->user()?->role === 'user', 403);
+
+        $validated = $request->validate([
+            'jenis' => ['required', 'in:izin,sakit'],
+            'keterangan' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $user = $request->user();
+        $tanggal = Carbon::now('Asia/Jakarta')->toDateString();
+
+        $created = DB::transaction(function () use (
+            $user,
+            $tanggal,
+            $validated,
+            $adminNotifications
+        ) {
+            User::query()->whereKey($user->getKey())->lockForUpdate()->firstOrFail();
+
+            if (
+                Presensi::query()
+                    ->where('id_user', $user->getKey())
+                    ->whereDate('tanggal', $tanggal)
+                    ->exists()
+                || LeaveRequest::query()
+                    ->where('id_user', $user->getKey())
+                    ->whereDate('tanggal', $tanggal)
+                    ->exists()
+            ) {
+                return false;
+            }
+
+            $leaveRequest = LeaveRequest::create([
+                'id_user' => $user->getKey(),
+                'tanggal' => $tanggal,
+                'jenis' => $validated['jenis'],
+                'keterangan' => trim($validated['keterangan']),
+                'status' => 'Diajukan',
+            ]);
+
+            $tanggalLabel = Carbon::parse($tanggal, 'Asia/Jakarta')
+                ->locale('id')
+                ->translatedFormat('j F Y');
+
+            $adminNotifications->notifyAdmins([
+                'kategori' => 'perizinan',
+                'judul' => 'Pengajuan '.ucfirst($leaveRequest->jenis).' Intern',
+                'deskripsi' => $user->nama.' mengajukan '.$leaveRequest->jenis.' tanggal '.$tanggalLabel,
+                'detail' => 'Peserta: '.$user->nama
+                    ."\nJenis: ".ucfirst($leaveRequest->jenis)
+                    ."\nTanggal: ".$tanggalLabel
+                    ."\nKeterangan: ".$leaveRequest->keterangan,
+                'sumber_tipe' => 'izin',
+                'sumber_id' => $leaveRequest->getKey(),
+                'status' => 'Diajukan',
+            ]);
+
+            UserNotification::create([
+                'id_user' => $user->getKey(),
+                'kategori' => 'presensi',
+                'judul' => 'Pengajuan Izin Terkirim',
+                'isi' => "Pengajuan {$leaveRequest->jenis} tanggal {$tanggalLabel} sedang menunggu konfirmasi admin.",
+                'url_tujuan' => url('/notifikasi-test'),
+            ]);
+
+            return true;
+        });
+
+        if (! $created) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kamu sudah mengajukan izin atau melakukan presensi hari ini.',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengajuan izin berhasil dikirim dan sedang menunggu konfirmasi admin.',
+        ], 201);
+    }
+
+    public function statusHariIni(Request $request)
+    {
+        $user = $request->user();
         $tanggal = Carbon::now('Asia/Jakarta')->toDateString();
 
         $presensi = Presensi::where('id_user', $user->id)
             ->where('tanggal', $tanggal)
             ->first();
+
+        $leaveRequest = LeaveRequest::query()
+            ->where('id_user', $user->getKey())
+            ->whereDate('tanggal', $tanggal)
+            ->whereIn('status', ['Diajukan', 'Disetujui'])
+            ->first();
+
+        if ($leaveRequest) {
+            return response()->json([
+                'success' => true,
+                'sudah_presensi' => true,
+                'data' => [
+                    'is_izin' => true,
+                    'jenis' => $leaveRequest->jenis,
+                    'status' => $leaveRequest->status,
+                ],
+            ]);
+        }
 
         if (! $presensi) {
             return response()->json([

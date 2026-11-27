@@ -220,26 +220,6 @@
                 return;
             }
 
-            // MODE TAMPILAN: route simpan belum ada (backend belum dibuat),
-            // jadi form tidak dikirim. Otomatis nonaktif begitu route
-            // admin.pengumuman.store tersedia (atribut data-demo hilang).
-            if (form.hasAttribute("data-demo")) {
-                e.preventDefault();
-
-                var info = document.getElementById("pgmDemo");
-                if (!info) {
-                    info = document.createElement("div");
-                    info.id = "pgmDemo";
-                    info.setAttribute("role", "status");
-                    form.parentNode.insertBefore(info, form);
-                }
-
-                info.className = "pgm-alert pgm-alert--ok";
-                info.textContent =
-                    "Mode tampilan: pengumuman belum dikirim karena backend belum tersedia.";
-                return;
-            }
-
             // cegah kirim ganda
             kirim.disabled = true;
         });

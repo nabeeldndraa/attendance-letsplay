@@ -122,11 +122,20 @@
                     </div>
 
                     <div class="field">
-                        <label for="bidang_magang">Bidang Magang :</label>
-                        <div class="input-wrap">
+                        <label for="bidang_magang_select">Magang di Posisi :</label>
+                        <div class="input-wrap select-wrap">
                             <svg aria-hidden="true"><use href="#i-bag"/></svg>
-                            <input type="text" id="bidang_magang" name="bidang_magang" value="{{ old('bidang_magang') }}"
-                                   placeholder="Contoh : Backend Developer" required>
+                            <select id="bidang_magang_select" name="bidang_magang_select" required>
+                                <option value="" {{ old('bidang_magang_select') == '' ? 'selected' : '' }}>Pilih posisi</option>
+                                @foreach ($bidangMagangOptions as $position)
+                                    <option value="{{ $position }}" {{ old('bidang_magang_select') === $position ? 'selected' : '' }}>{{ $position }}</option>
+                                @endforeach
+                                <option value="lainnya" {{ old('bidang_magang_select') == 'lainnya' ? 'selected' : '' }}>Yang lain</option>
+                            </select>
+                        </div>
+                        <div class="input-wrap custom-role-wrap" id="custom_role_wrapper" style="display: {{ old('bidang_magang_select') == 'lainnya' ? 'block' : 'none' }}; margin-top: 10px;">
+                            <input type="text" id="bidang_magang_custom" name="bidang_magang_custom" value="{{ old('bidang_magang_custom') }}"
+                                   placeholder="Tuliskan posisi lain" {{ old('bidang_magang_select') == 'lainnya' ? 'required' : '' }}>
                         </div>
                     </div>
 

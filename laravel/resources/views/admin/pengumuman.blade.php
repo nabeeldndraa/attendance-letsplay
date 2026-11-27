@@ -1,18 +1,7 @@
 {{--
     HALAMAN ADMIN: PENGUMUMAN
-    Data dari controller (opsional, backend TIDAK diubah):
-      $pengumuman : paginator (->total(), ->firstItem(), ->count(), ->currentPage(), ->lastPage(), ->url($n))
-      $total      : (opsional) total semua pengumuman, default ->total()
-      tiap item   : judul, isi, status ('terbit'/'draft'), created_at
-    Request GET: q (cari), urut (terbaru|terlama)
-    Route: admin.pengumuman (daftar), admin.pengumuman.store (kirim, POST),
-           admin.pengumuman.show (detail, opsional - dicek dengan Route::has)
-
-    Selama controller belum mengirim $pengumuman, halaman memakai DATA DUMMY
-    (blok di awal @section('content')).
-
-    Ganti halaman / cari / urutkan: hanya #pgmListWrap yang diganti lewat fetch
-    (lihat public/js/admin/admin-pengumuman.js). Tanpa JS tetap jalan sebagai link biasa.
+    Daftar pengumuman dan totalnya disediakan oleh AdminAnnouncementController.
+    Ganti halaman / cari / urutkan: hanya #pgmListWrap yang diganti lewat fetch.
 --}}
 @extends('layouts.admin')
 @section('title', 'Pengumuman')
@@ -23,63 +12,10 @@
 
 @section('content')
     @php
-        /*
-         * TODO (backend): selama controller belum mengirim $pengumuman, halaman memakai
-         * DATA DUMMY di bawah. Begitu controller mengirim $pengumuman (paginator), blok
-         * dummy ini otomatis tidak dipakai dan boleh dihapus.
-         */
-        if (! isset($pengumuman)) {
-            $dummy = collect([
-                ['Jadwal Meeting Mingguan',    'Meeting internal dilaksanakan setiap Senin pukul 09.30 WIB di MCC Office. Mohon hadir tepat waktu.', 'terbit', '2026-10-28 09:00'],
-                ['Pembaruan Aturan Presensi',  'Batas presensi tepat waktu adalah pukul 10.00 WIB. Presensi setelah itu dihitung terlambat.',       'terbit', '2026-10-26 14:30'],
-                ['Template Laporan Mingguan',  'Template laporan mingguan sudah diperbarui. Silakan unduh dan gunakan mulai minggu ini.',           'terbit', '2026-10-22 10:15'],
-                ['Libur Nasional',             'Kegiatan magang diliburkan pada tanggal merah. Presensi dibuka kembali di hari kerja berikutnya.',  'terbit', '2026-10-18 08:00'],
-                ['Evaluasi Bulanan',           'Evaluasi bulanan akan dilakukan bersama mentor. Jadwal lengkap menyusul.',                          'draft',  '2026-10-15 16:45'],
-                ['Pembaruan Poin Leaderboard', 'Poin leaderboard direset setiap awal bulan. Pantau peringkatmu di menu Leaderboard.',              'terbit', '2026-10-10 11:20'],
-                ['Kunjungan Tim Klien',        'Akan ada kunjungan tim klien ke kantor. Harap berpakaian rapi dan menjaga ketertiban.',             'draft',  '2026-10-05 13:10'],
-            ])->map(fn ($d, $i) => (object) [
-                'id'         => $i + 1,
-                'judul'      => $d[0],
-                'isi'        => $d[1],
-                'status'     => $d[2],
-                'created_at' => \Carbon\Carbon::parse($d[3], 'Asia/Jakarta'),
-            ]);
-
-            $total = $dummy->count();   // total sebelum difilter
-
-            // pencarian (?q=...)
-            $kataCari = \Illuminate\Support\Str::lower(trim((string) request('q')));
-            if ($kataCari !== '') {
-                $dummy = $dummy->filter(fn ($p) => \Illuminate\Support\Str::contains(
-                    \Illuminate\Support\Str::lower($p->judul . ' ' . $p->isi),
-                    $kataCari
-                ));
-            }
-
-            // urutan (?urut=terbaru|terlama)
-            $dummy = request('urut', 'terbaru') === 'terlama'
-                ? $dummy->sortBy('created_at')
-                : $dummy->sortByDesc('created_at');
-
-            // halaman (5 per halaman supaya pagination terlihat)
-            $perHalaman   = 5;
-            $halamanDummy = max(1, (int) request('page', 1));
-
-            $pengumuman = new \Illuminate\Pagination\LengthAwarePaginator(
-                $dummy->forPage($halamanDummy, $perHalaman)->values(),
-                $dummy->count(),
-                $perHalaman,
-                $halamanDummy,
-                ['path' => request()->url(), 'query' => request()->query()]
-            );
-        }
-
         $totalSemua = $total ?? $pengumuman->total();
         $urut       = request('urut') === 'terlama' ? 'terlama' : 'terbaru';
         $adaShow    = \Illuminate\Support\Facades\Route::has('admin.pengumuman.show');
-        $adaStore   = \Illuminate\Support\Facades\Route::has('admin.pengumuman.store');
 
-        // semua link halaman membawa ?q & ?urut (sekali saja di sini)
         $pengumuman->appends(request()->except('page'));
     @endphp
 
@@ -143,8 +79,7 @@
     <section class="pgm-card pgm-write" aria-labelledby="pgmTulis">
         <h2 id="pgmTulis" class="pgm-title">Tulis Pengumuman</h2>
 
-        <form method="POST" action="{{ $adaStore ? route('admin.pengumuman.store') : '#' }}" id="pgmForm"
-              @if (! $adaStore) data-demo="1" @endif>
+        <form method="POST" action="{{ route('admin.pengumuman.store') }}" id="pgmForm">
             @csrf
             <textarea name="isi" id="pgmIsi" rows="3" required
                       class="{{ $errors->has('isi') ? 'is-invalid' : '' }}"

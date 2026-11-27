@@ -16,9 +16,6 @@
      judul, deskripsi, waktu (ISO 8601), dibaca (bool),
      perlu_keputusan (bool), status (menunggu|disetujui|ditolak),
      detail (opsional, teks lengkap), link + link_label (opsional)
-
-   Jika endpoint gagal dan APP_DEBUG aktif, data contoh dipakai
-   supaya tampilan tetap bisa dicek.
 ========================================================= */
 
 (function () {
@@ -33,8 +30,7 @@
         urlData: app.dataset.urlData,
         urlMarkAll: app.dataset.urlMarkAll,
         urlBase: (app.dataset.urlBase || '').replace(/\/$/, ''),
-        csrf: app.dataset.csrf,
-        demo: app.dataset.demo === 'true'
+        csrf: app.dataset.csrf
     };
 
     var PER_PAGE = 5;
@@ -105,7 +101,6 @@
         page: 1,
         loaded: false,
         error: false,
-        demo: false,
         openId: null
     };
 
@@ -199,18 +194,6 @@
         });
     }
 
-    function demoData() {
-        return normalize([
-            { id: 1, kategori: 'keterlambatan', judul: 'Permintaan Konfirmasi Keterlambatan', deskripsi: 'Nabila meminta perubahan status presensi tanggal 3 November 2026', waktu: '2026-11-03T10:15:00+07:00', dibaca: false, perlu_keputusan: true, status: 'menunggu' },
-            { id: 2, kategori: 'perizinan', judul: 'Pengajuan Izin Intern', deskripsi: 'Aji menginformasikan izin tidak masuk pada tanggal 4 November 2026', waktu: '2026-11-03T09:30:00+07:00', dibaca: false },
-            { id: 3, kategori: 'leaderboard', judul: 'Leaderboard Berhasil Diperbarui', deskripsi: 'Leaderboard periode Oktober 2026 telah diperbarui secara otomatis.', waktu: '2026-11-02T00:00:00+07:00', dibaca: false },
-            { id: 4, kategori: 'akun', judul: 'Akun Intern Baru', deskripsi: 'Akun peserta magang atas nama Dinda berhasil dibuat dan terdaftar', waktu: '2026-10-27T13:20:00+07:00', dibaca: false },
-            { id: 5, kategori: 'keterlambatan', judul: 'Permintaan Konfirmasi Keterlambatan', deskripsi: 'Raka meminta perubahan status presensi tanggal 31 Oktober 2026', waktu: '2026-10-31T08:40:00+07:00', dibaca: true, perlu_keputusan: true, status: 'disetujui' },
-            { id: 6, kategori: 'perizinan', judul: 'Pengajuan Izin Intern', deskripsi: 'Salsa mengajukan izin sakit pada tanggal 30 Oktober 2026', waktu: '2026-10-29T16:05:00+07:00', dibaca: true },
-            { id: 7, kategori: 'perizinan', judul: 'Pengajuan Izin Intern', deskripsi: 'Bagas menginformasikan izin keperluan keluarga pada tanggal 28 Oktober 2026', waktu: '2026-10-27T07:50:00+07:00', dibaca: true }
-        ]);
-    }
-
     function load() {
         return fetch(cfg.urlData, {
             credentials: 'same-origin',
@@ -224,13 +207,8 @@
                 state.items = normalize(Array.isArray(j) ? j : (j.data || []));
             })
             .catch(function () {
-                if (cfg.demo) {
-                    state.demo = true;
-                    state.items = demoData();
-                } else {
-                    state.error = true;
-                    state.items = [];
-                }
+                state.error = true;
+                state.items = [];
             })
             .then(function () {
                 state.loaded = true;
@@ -388,22 +366,33 @@
 
     function markRead(n) {
         if (!n || n.dibaca) return;
-        n.dibaca = true;
-        if (!state.demo) post(cfg.urlBase + '/' + encodeURIComponent(n.id) + '/dibaca').catch(function () {});
+        post(cfg.urlBase + '/' + encodeURIComponent(n.id) + '/dibaca')
+            .then(function () {
+                n.dibaca = true;
+                render();
+            })
+            .catch(function () {
+                toast('Gagal menandai notifikasi sudah dibaca');
+            });
     }
 
     function markAll() {
         var any = state.items.some(function (n) { return !n.dibaca; });
-        state.items.forEach(function (n) { n.dibaca = true; });
-        render();
         if (filterDialog.open) filterDialog.close();
 
         if (!any) {
             toast('Semua notifikasi sudah dibaca');
             return;
         }
-        toast('Semua notifikasi ditandai sudah dibaca');
-        if (!state.demo) post(cfg.urlMarkAll).catch(function () {});
+        post(cfg.urlMarkAll)
+            .then(function () {
+                state.items.forEach(function (n) { n.dibaca = true; });
+                render();
+                toast('Semua notifikasi ditandai sudah dibaca');
+            })
+            .catch(function () {
+                toast('Gagal menandai semua notifikasi sudah dibaca');
+            });
     }
 
     function decide(id, aksi, btns) {
@@ -419,11 +408,6 @@
             render();
             toast(aksi === 'setujui' ? 'Permintaan disetujui' : 'Permintaan ditolak');
         };
-
-        if (state.demo) {
-            done();
-            return;
-        }
 
         post(cfg.urlBase + '/' + encodeURIComponent(n.id) + '/' + aksi)
             .then(done)

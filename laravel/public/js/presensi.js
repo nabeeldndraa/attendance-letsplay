@@ -15,7 +15,7 @@
         status: app.dataset.urlStatus,
         cekLokasi: app.dataset.urlCekLokasi,
         presensi: app.dataset.urlPresensi,
-        izin: app.dataset.urlIzin, // TODO: endpoint izin/sakit (koordinasi dengan backend)
+        izin: app.dataset.urlIzin,
     };
 
     const csrfToken = document
@@ -155,6 +155,8 @@
 
         aturCard(el.cardPresensi, el.bodyPresensi, mode === "presensi");
         aturCard(el.cardIzin, el.bodyIzin, mode === "izin");
+        el.btnKirimLabel.textContent =
+            mode === "izin" ? "Ajukan Izin" : "Kirim Presensi";
 
         sembunyikanPesan();
         updateSubmitState();
@@ -358,11 +360,12 @@
         el.btnKirim.disabled = !bisaKirim;
     }
 
-    function kunciForm(label) {
+    function kunciForm(label, bannerText) {
         state.sudahPresensi = true;
 
         el.btnKirimLabel.textContent = label || "Sudah Presensi";
         el.btnKirim.disabled = true;
+        if (bannerText) el.banner.textContent = "✓ " + bannerText;
         el.banner.hidden = false;
 
         // Form presensi: terkunci tapi tetap terlihat normal
@@ -394,6 +397,17 @@
             }
 
             const data = result.data || {};
+
+            if (data.is_izin) {
+                const status = data.status === "Disetujui"
+                    ? "sudah disetujui"
+                    : "sedang menunggu konfirmasi admin";
+                kunciForm(
+                    "Pengajuan Izin",
+                    "Pengajuan " + data.jenis + " kamu " + status + ".",
+                );
+                return;
+            }
 
             if (data.jam_presensi) {
                 el.jam.textContent = data.jam_presensi.substring(0, 5) + " WIB";
@@ -444,14 +458,13 @@
     }
 
     async function kirimIzin() {
-        // TODO: sesuaikan nama field & endpoint dengan backend
         const result = await postJson(API.izin, {
             jenis: state.jenisIzin,
             keterangan: el.keterangan.value.trim(),
         });
 
         tampilkanPesan(result.message, "success");
-        kunciForm("Pengajuan Terkirim");
+        kunciForm("Pengajuan Terkirim", result.message);
     }
 
     async function kirim() {
@@ -474,7 +487,8 @@
             }
         } catch (error) {
             tampilkanPesan(error.message, "error");
-            el.btnKirimLabel.textContent = "Kirim Presensi";
+            el.btnKirimLabel.textContent =
+                state.mode === "izin" ? "Ajukan Izin" : "Kirim Presensi";
         } finally {
             state.sedangKirim = false;
             updateSubmitState();

@@ -50,6 +50,34 @@
 
     const pickers = [];
 
+    const roleSelect = document.getElementById("bidang_magang_select");
+    const roleCustom = document.getElementById("bidang_magang_custom");
+    const roleWrapper = document.getElementById("custom_role_wrapper");
+
+    function syncRoleField() {
+        if (!roleSelect) return;
+        const isOther = roleSelect.value === "lainnya";
+
+        if (roleWrapper) {
+            roleWrapper.style.display = isOther ? "block" : "none";
+        }
+
+        if (roleCustom) {
+            roleCustom.required = isOther;
+            if (!isOther) {
+                roleCustom.value = "";
+            }
+        }
+    }
+
+    if (roleSelect) {
+        roleSelect.addEventListener("change", syncRoleField);
+        if (roleCustom) {
+            roleCustom.addEventListener("input", syncRoleField);
+        }
+        syncRoleField();
+    }
+
     function closeAll(except) {
         pickers.forEach((p) => {
             if (p !== except) p.close();

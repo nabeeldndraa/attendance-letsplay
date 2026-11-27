@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\AdminNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -48,7 +49,7 @@ class AdminUserController extends Controller
         return view('admin.tambah-user');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, AdminNotificationService $adminNotifications)
     {
         $this->pastikanAdmin();
 
@@ -70,7 +71,8 @@ class AdminUserController extends Controller
         $validated['role'] = 'user';
         $validated['status_akun'] = 'aktif';
 
-        User::create($validated);
+        $user = User::create($validated);
+        $adminNotifications->notifyNewAccount($user, 'berhasil ditambahkan');
 
         return redirect()
             ->route('admin.data-user')

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\LeaveRequest;
 use App\Models\Presensi;
 use App\Models\User;
 use Carbon\Carbon;
@@ -64,6 +65,25 @@ class UserDashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Belum ada presensi tercatat.')
             ->assertViewHas('last', null);
+    }
+
+    public function test_approved_leave_is_not_counted_as_an_absence(): void
+    {
+        $user = $this->createUser();
+        LeaveRequest::create([
+            'id_user' => $user->getKey(),
+            'tanggal' => '2026-10-27',
+            'jenis' => 'sakit',
+            'keterangan' => 'Sedang sakit.',
+            'status' => 'Disetujui',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/dashboard-test')
+            ->assertOk()
+            ->assertViewHas('stat', function (array $stat): bool {
+                return $stat['hari_kerja'] === 3 && $stat['alpha'] === 2;
+            });
     }
 
     private function createUser(): User
