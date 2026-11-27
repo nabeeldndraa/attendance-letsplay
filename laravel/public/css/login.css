@@ -153,6 +153,66 @@ body {
     box-shadow: 0 0 0 3px rgba(201, 48, 42, 0.15);
 }
 
+/* ===== Tombol lihat/sembunyikan password ===== */
+.input-wrap input.has-toggle {
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.toggle-password:hover {
+    background: rgba(201, 48, 42, 0.08);
+}
+
+.toggle-password:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 1px;
+}
+
+/* override aturan `.input-wrap svg` (ikon kiri) */
+.input-wrap .toggle-password svg {
+    position: static;
+    transform: none;
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.toggle-password .eye-open {
+    display: none;
+}
+.toggle-password .eye-closed {
+    display: block;
+}
+
+.toggle-password.is-visible .eye-open {
+    display: block;
+}
+.toggle-password.is-visible .eye-closed {
+    display: none;
+}
+
 .options {
     display: flex;
     align-items: center;

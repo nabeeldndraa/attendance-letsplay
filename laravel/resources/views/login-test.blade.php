@@ -14,7 +14,7 @@
 </head>
 
 <body>
-
+    @include('partials.icons')
     {{-- Popup sukses --}}
     @if (session('success'))
         <div class="notification" id="notification" role="status">
@@ -90,10 +90,17 @@
                             type="password"
                             id="password"
                             name="password"
+                            class="has-toggle"
                             placeholder="Masukkan Password"
                             autocomplete="current-password"
                             required
                         >
+
+                        <button type="button" class="toggle-password" data-toggle-password="password"
+                                aria-label="Tampilkan password" aria-pressed="false">
+                            <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
+                            <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye-off"/></svg>
+                        </button>
                     </div>
                 </div>
 
@@ -148,13 +155,31 @@
             }
         }
 
-        // Popup menghilang otomatis setelah 4 detik.
         document.addEventListener('DOMContentLoaded', () => {
+            // Popup menghilang otomatis setelah 4 detik.
             const notification = document.getElementById('notification');
 
             if (notification) {
                 setTimeout(closeNotification, 4000);
             }
+
+            // Lihat / sembunyikan password (berlaku untuk semua tombol dengan data-toggle-password)
+            document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+                const input = document.getElementById(button.dataset.togglePassword);
+
+                if (!input) return;
+
+                button.addEventListener('click', () => {
+                    const show = input.type === 'password';
+
+                    input.type = show ? 'text' : 'password';
+                    button.classList.toggle('is-visible', show);
+                    button.setAttribute('aria-pressed', String(show));
+                    button.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+
+                    input.focus();
+                });
+            });
         });
     </script>
 

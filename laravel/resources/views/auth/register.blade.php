@@ -40,6 +40,8 @@
         </symbol>
     </svg>
 
+    @include('partials.icons')
+
     <img src="{{ asset('images/login/logo_letsplay.png') }}" alt="Let's Play Indonesia" class="logo">
 
     <main class="page">
@@ -91,8 +93,14 @@
                         <label for="password">Password :</label>
                         <div class="input-wrap">
                             <svg aria-hidden="true"><use href="#i-lock"/></svg>
-                            <input type="password" id="password" name="password" minlength="8"
-                                   placeholder="Buat password (min. 8 karakter)" autocomplete="new-password" required>
+                            <input type="password" id="password" name="password" class="has-toggle" minlength="8"
+                                placeholder="Buat password (min. 8 karakter)" autocomplete="new-password" required>
+
+                            <button type="button" class="toggle-password" data-toggle-password="password"
+                                    aria-label="Tampilkan password" aria-pressed="false">
+                                <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
+                                <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye-off"/></svg>
+                            </button>
                         </div>
                     </div>
 
@@ -100,8 +108,14 @@
                         <label for="password_confirmation">Konfirmasi Password :</label>
                         <div class="input-wrap">
                             <svg aria-hidden="true"><use href="#i-lock"/></svg>
-                            <input type="password" id="password_confirmation" name="password_confirmation" minlength="8"
-                                   placeholder="Ulangi password" autocomplete="new-password" required>
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="has-toggle" minlength="8"
+                                placeholder="Ulangi password" autocomplete="new-password" required>
+
+                            <button type="button" class="toggle-password" data-toggle-password="password_confirmation"
+                                    aria-label="Tampilkan password" aria-pressed="false">
+                                <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
+                                <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye-off"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>

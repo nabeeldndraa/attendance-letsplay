@@ -5,8 +5,8 @@
     --ink: #2a0606;
     --muted: #6d4a4a;
     --border: #7a5555;
-    --font-display: 'Fredoka', 'Arial Rounded MT Bold', Arial, sans-serif;
-    --font-body: 'Open Sans', Arial, sans-serif;
+    --font-display: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif;
+    --font-body: "Open Sans", Arial, sans-serif;
 }
 
 * {
@@ -27,7 +27,7 @@ body {
     font-family: var(--font-body);
     color: var(--ink);
     background-color: #b53a3a;
-    background-image: url('../images/login/background_login.png');
+    background-image: url("../images/login/background_login.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -164,17 +164,24 @@ body {
     font-size: 13px;
     color: var(--ink);
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .select-wrap select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--ink) 50%),
         linear-gradient(135deg, var(--ink) 50%, transparent 50%);
-    background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 13px) calc(50% - 3px);
-    background-size: 5px 5px, 5px 5px;
+    background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 13px) calc(50% - 3px);
+    background-size:
+        5px 5px,
+        5px 5px;
     background-repeat: no-repeat;
     padding-right: 32px;
 }
@@ -197,6 +204,65 @@ body {
     padding-left: 12px !important;
 }
 
+/* ===== Tombol lihat/sembunyikan password ===== */
+.input-wrap input.has-toggle {
+    padding-right: 44px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.toggle-password:hover {
+    background: var(--red-soft);
+}
+
+.toggle-password:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 1px;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.toggle-password .eye-open {
+    display: none;
+}
+
+.toggle-password .eye-closed {
+    display: block;
+}
+
+.toggle-password.is-visible .eye-open {
+    display: block;
+}
+
+.toggle-password.is-visible .eye-closed {
+    display: none;
+}
+
 .dp-input {
     cursor: pointer;
 }
@@ -216,7 +282,10 @@ body {
     letter-spacing: 0.5px;
     cursor: pointer;
     box-shadow: 0 4px 0 var(--red-dark);
-    transition: transform 0.08s, box-shadow 0.08s, filter 0.2s;
+    transition:
+        transform 0.08s,
+        box-shadow 0.08s,
+        filter 0.2s;
 }
 
 .btn-primary:hover {
@@ -315,7 +384,9 @@ body {
     font-weight: 700;
     line-height: 1;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+        background 0.15s,
+        color 0.15s;
 }
 
 .dp-nav:hover {
@@ -398,8 +469,14 @@ body {
 }
 
 @keyframes dpIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== Ekor balon komik (mengarah ke kanan, ke kucing) ===== */
