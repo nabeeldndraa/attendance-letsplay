@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Replace this example cap with your own artwork. Keep the 180 x 180 canvas. -->
+  <path d="M45 57c5-23 23-35 45-35s40 12 45 35l-8 9H53l-8-9Z" fill="#C9302A" stroke="#5C0F0C" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M34 66c0-5 4-9 9-9h94c5 0 9 4 9 9v7H34v-7Z" fill="#E8323A" stroke="#5C0F0C" stroke-width="3"/>
+  <path d="M76 40c8-5 20-5 28 0" stroke="#FFF8F2" stroke-width="3" stroke-linecap="round"/>
+</svg>
